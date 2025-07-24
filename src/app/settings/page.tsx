@@ -1,16 +1,14 @@
-import Sidebar from "@/components/Sidebar";
+import { theme } from "isskinui";
 
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Relatórios",
+  title: "Configurações",
   description: "Description specific to this page",
 };
 
 export default function Signup() {
   return (
-    <div>
-      <Sidebar currentPage={"reports"} />
-    </div>
+    <p style={{ fontFamily: theme.typography.fontFamilyBody }}>Configurações</p>
   );
 }
