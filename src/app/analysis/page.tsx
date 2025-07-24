@@ -1,4 +1,4 @@
-import { theme } from "isskinui";
+import Sidebar from "@/components/Sidebar";
 
 import type { Metadata } from "next";
 
@@ -8,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function Signup() {
-  return <p style={{ fontFamily: theme.typography.fontFamilyBody }}>Análise</p>;
+  return (
+    <div style={{ display: "flex" }}>
+      <Sidebar currentPage={"analysis"} />
+    </div>
+  );
 }
