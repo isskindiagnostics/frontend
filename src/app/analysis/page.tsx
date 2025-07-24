@@ -1,4 +1,3 @@
-import Loader from "@/components/Loader";
 import Sidebar from "@/components/Sidebar";
 
 import type { Metadata } from "next";
@@ -12,9 +11,6 @@ export default function Signup() {
   return (
     <div style={{ display: "flex" }}>
       <Sidebar currentPage={"analysis"} />
-      <div style={{ margin: 200 }}>
-        <Loader />
-      </div>
     </div>
   );
 }
