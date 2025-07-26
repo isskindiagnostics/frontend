@@ -1,5 +1,6 @@
 import Script from "next/script";
 import "./global.css";
+import 'isskinui/dist/assets/main.css'
 // import { AuthProvider } from "../../context/AuthContext";
 
 import type { Metadata } from "next";
