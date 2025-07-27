@@ -1,13 +1,13 @@
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, Timestamp } from "firebase/firestore";
 
-import { db } from "./firebase";
+import { db } from "./config";
 
 export async function saveAnalysisData({
   uid,
   jobId,
   name,
   insurance,
-  date,
+  birthDate,
   gender,
   skinLocation,
   skinType,
@@ -16,7 +16,7 @@ export async function saveAnalysisData({
   jobId: string;
   name: string;
   insurance: string;
-  date: Date | null;
+  birthDate: Date | null;
   gender: string;
   skinLocation: string;
   skinType: string;
@@ -29,7 +29,7 @@ export async function saveAnalysisData({
       patientData: {
         name: name.trim(),
         insurance: insurance.trim(),
-        date: date,
+        birthDate: birthDate ? Timestamp.fromDate(birthDate) : null,
         gender: gender.trim(),
         skinLocation: skinLocation.trim(),
         skinType: skinType.trim(),

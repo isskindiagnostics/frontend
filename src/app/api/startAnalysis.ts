@@ -1,4 +1,3 @@
-// lib/api/startAnalysis.ts
 export async function startAnalysis(
   image: File,
   userId: string

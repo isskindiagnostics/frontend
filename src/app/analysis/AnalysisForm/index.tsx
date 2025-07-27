@@ -1,88 +1,44 @@
 "use client";
+import { doc, getDoc } from "firebase/firestore";
 import { Button, DatePicker, InputField, Notification, Select } from "isskinui";
 import Image from "next/image";
+import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
-import { startAnalysis } from "@/api/startAnalysis";
+import { startAnalysis } from "@/app/api/startAnalysis";
 import ProfileImg from "@/assets/images/default-profile-image.png";
 import AnalysisLoader from "@/components/AnalysisLoader";
 import ContentBlock from "@/components/ContentBlock";
 import HelpCardOverlay from "@/components/HelpCardOverlay";
 import { saveAnalysisData } from "@/firebase/analysisData";
+import { db } from "@/firebase/config";
 
-import {
-  topBar,
-  main,
-  pageTitle,
-  profileImg,
-  pageContent,
-  formSection,
-  photoSection,
-  fieldWrapper,
-} from "./index.css";
+import * as pageStyles from "../index.css";
+import { uid } from "../uid";
 
-const uid = "9prkhkBQPBxeAXmBEGRJ";
-
-const insurances = [
-  { label: "Amil", value: "amil" },
-  { label: "Bradesco Saúde", value: "bradesco_saude" },
-  { label: "SulAmérica", value: "sulamerica" },
-  { label: "Unimed", value: "unimed" },
-  { label: "NotreDame Intermédica", value: "notredame" },
-  { label: "Hapvida", value: "hapvida" },
-  { label: "Porto Seguro Saúde", value: "porto_seguro" },
-  { label: "Cassi", value: "cassi" },
-  { label: "Mediservice", value: "mediservice" },
-  { label: "Omint", value: "omint" },
-  { label: "Marítima Saúde", value: "maritima" },
-  { label: "Life Empresarial", value: "life_empresarial" },
-  { label: "Greenline", value: "greenline" },
-  { label: "Prevent Senior", value: "prevent_senior" },
-  { label: "One Health", value: "one_health" },
-  { label: "Gama Saúde", value: "gama_saude" },
-  { label: "Postal Saúde", value: "postal_saude" },
-  { label: "Samp", value: "samp" },
-  { label: "Santa Helena Saúde", value: "santa_helena" },
-  { label: "São Cristóvão Saúde", value: "sao_cristovao" },
-  { label: "Assim Saúde", value: "assim" },
-  { label: "Biovida", value: "biovida" },
-  { label: "Promed", value: "promed" },
-  { label: "Vivest", value: "vivest" },
-  { label: "Planserv", value: "planserv" },
-];
-
-const genders = [
-  { label: "Feminino", value: "feminine" },
-  { label: "Masculino", value: "masculine" },
-  { label: "Outro", value: "other" },
-  { label: "Prefiro não dizer", value: "preferNotToSay" },
-];
-
-const skinTypes = [
-  { label: "Tipo I", value: "typeOne" },
-  { label: "Tipo II", value: "typeTwo" },
-  { label: "Tipo III", value: "typeThree" },
-  { label: "Tipo IV", value: "typeFour" },
-  { label: "Tipo V", value: "typeFive" },
-  { label: "Tipo VI", value: "typeSix" },
-];
+import { formSection, photoSection, fieldWrapper } from "./index.css";
+import { genders, insurances, skinTypes } from "./staticData";
 
 const AnalysisForm = () => {
-  const [showAnalysisError, setShowAnalysisError] = useState(false);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const errorInQuery = searchParams.get("error") === "1";
+  const [showAnalysisError, setShowAnalysisError] = useState(errorInQuery);
 
   const [name, setName] = useState("");
   const [insurance, setInsurance] = useState("");
-  const [date, setDate] = useState<Date | null>(null);
+  const [birthDate, setBirthDate] = useState<Date | null>(null);
   const [gender, setGender] = useState("");
   const [skinLocation, setSkinLocation] = useState("");
   const [skinType, setSkinType] = useState("");
 
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [jobId, setJobId] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [touched, setTouched] = useState({
     name: false,
     insurance: false,
-    date: false,
+    birthDate: false,
     gender: false,
     skinLocation: false,
     skinType: false,
@@ -90,46 +46,69 @@ const AnalysisForm = () => {
 
   const nameInvalid = touched.name && name.trim() === "";
   const insuranceInvalid = touched.insurance && insurance.trim() === "";
-  const dateInvalid = touched.date && !date;
+  const birthDateInvalid = touched.birthDate && !birthDate;
   const genderInvalid = touched.gender && gender.trim() === "";
   const skinLocationInvalid =
     touched.skinLocation && skinLocation.trim() === "";
 
   const isFormValid =
     name.trim() !== "" &&
-    date !== null &&
+    birthDate !== null &&
     gender.trim() !== "" &&
     skinLocation.trim() !== "" &&
     imageFile;
 
   const handleSubmit = async () => {
-    console.log("clicking");
     if (!imageFile) return;
 
     try {
       setLoading(true);
 
       const jobId = await startAnalysis(imageFile, uid);
+      setJobId(jobId);
 
       await saveAnalysisData({
         uid: uid,
         jobId,
         name,
         insurance,
-        date,
+        birthDate,
         gender,
         skinLocation,
         skinType,
       });
-
-      setLoading(true);
     } catch (error) {
-      console.error("Erro:", error);
+      console.error("Error:", error);
       setShowAnalysisError(true);
-    } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (!jobId) return;
+
+    const checkStatus = async () => {
+      const docRef = doc(db, "users", uid, "jobs", jobId);
+      const docSnap = await getDoc(docRef);
+
+      if (!docSnap.exists()) {
+        router.push("/analysis?error=1"); // shows notification popup
+        return;
+      }
+
+      const data = docSnap.data();
+      if (data.status === "done") {
+        router.push(`/analysis/result/${jobId}`);
+      } else if (data.status === "error") {
+        router.push("/analysis?error=1");
+      }
+    };
+
+    const interval = setInterval(checkStatus, 2000);
+    checkStatus();
+
+    return () => clearInterval(interval);
+  }, [jobId, router]);
 
   useEffect(() => {
     if (!showAnalysisError) return;
@@ -142,7 +121,7 @@ const AnalysisForm = () => {
   }, [showAnalysisError]);
 
   return (
-    <main className={main}>
+    <main className={pageStyles.main}>
       {showAnalysisError && (
         <Notification
           type="error"
@@ -150,17 +129,20 @@ const AnalysisForm = () => {
         />
       )}
 
-      <div className={topBar}>
-        <h1 className={pageTitle}>Análise</h1>
-        <Button
-          variant="solid"
-          disabled={!isFormValid}
-          onClick={handleSubmit}
-        >
-          Analisar
-        </Button>
+      <div className={pageStyles.topBar}>
+        <h1 className={pageStyles.pageTitle}>Análise</h1>
+        {!loading && (
+          <Button
+            variant="solid"
+            disabled={!isFormValid}
+            onClick={handleSubmit}
+          >
+            Analisar
+          </Button>
+        )}
+
         <Image
-          className={profileImg}
+          className={pageStyles.profileImg}
           src={ProfileImg}
           alt="Sua foto de perfil"
           width={34}
@@ -171,7 +153,7 @@ const AnalysisForm = () => {
       {loading ? (
         <AnalysisLoader />
       ) : (
-        <div className={pageContent}>
+        <div className={pageStyles.pageContent}>
           <ContentBlock className={formSection}>
             <h2>Dados do Paciente</h2>
             <InputField
@@ -198,9 +180,11 @@ const AnalysisForm = () => {
                 label="Data de Nascimento"
                 placeholder="DD/MM/AAAA"
                 width="100%"
-                selected={date}
-                onChange={(value) => setDate(value)}
-                errorMessage={dateInvalid ? "Esse campo é obrigatório" : ""}
+                selected={birthDate}
+                onChange={(value) => setBirthDate(value)}
+                errorMessage={
+                  birthDateInvalid ? "Esse campo é obrigatório" : ""
+                }
               />
 
               <Select
