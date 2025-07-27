@@ -1,5 +1,8 @@
 import Sidebar from "@/components/Sidebar";
 
+import AnalysisForm from "./AnalysisForm";
+import { container } from "./index.css";
+
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,8 +12,9 @@ export const metadata: Metadata = {
 
 export default function Signup() {
   return (
-    <div style={{ display: "flex" }}>
+    <div className={container} style={{ display: "flex" }}>
       <Sidebar currentPage={"analysis"} />
+      <AnalysisForm />
     </div>
   );
 }

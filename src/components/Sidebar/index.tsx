@@ -14,7 +14,7 @@ import {
 } from "./index.css";
 import SidebarItem from "./SidebarItem";
 
-type Pages = "analysis" | "reports" | "subscription" | "settings";
+export type Pages = "analysis" | "reports" | "subscription" | "settings";
 
 type SidebarProps = {
   currentPage: Pages;

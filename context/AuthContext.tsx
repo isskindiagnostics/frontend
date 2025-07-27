@@ -10,7 +10,7 @@ import {
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { auth } from "../utils/firebase";
+import { auth } from "../src/firebase/config";
 
 interface AuthContextType {
   user: User | null;
