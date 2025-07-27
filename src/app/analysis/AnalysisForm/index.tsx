@@ -10,6 +10,7 @@ import ProfileImg from "@/assets/images/default-profile-image.png";
 import AnalysisLoader from "@/components/AnalysisLoader";
 import ContentBlock from "@/components/ContentBlock";
 import HelpCardOverlay from "@/components/HelpCardOverlay";
+import PhotoAnalysis from "@/components/PhotoAnalysis";
 import { saveAnalysisData } from "@/firebase/analysisData";
 import { db } from "@/firebase/config";
 
@@ -104,7 +105,7 @@ const AnalysisForm = () => {
       }
     };
 
-    const interval = setInterval(checkStatus, 2000);
+    const interval = setInterval(checkStatus, 1000);
     checkStatus();
 
     return () => clearInterval(interval);
@@ -220,15 +221,7 @@ const AnalysisForm = () => {
 
           <ContentBlock className={photoSection}>
             <h2>Foto da Lesão</h2>
-            {/* Substituir pelo componente */}
-            <input
-              type="file"
-              accept="image/*"
-              onChange={(e) =>
-                setImageFile(e.target.files ? e.target.files[0] : null)
-              }
-            />
-            {/* Substituir pelo componente */}
+            <PhotoAnalysis onImageSelect={(file) => setImageFile(file)} />
             <HelpCardOverlay />
           </ContentBlock>
         </div>
