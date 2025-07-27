@@ -13,7 +13,6 @@ export const container = style({
   justifyContent: "center",
   gap: "10px",
   textAlign: "center",
-  cursor: "pointer",
 });
 
 export const icon = style({

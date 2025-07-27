@@ -28,7 +28,7 @@ import {
 type PhotoAnalysisProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {
   defaultImage?: string;
   width?: CSSProperties["width"];
-  onImageSelect?: (src: string) => void;
+  onImageSelect: (file: File) => void;
 };
 
 const PhotoAnalysis = ({
@@ -58,7 +58,7 @@ const PhotoAnalysis = ({
       const file = acceptedFiles[0];
       if (file) {
         setImageFile(file);
-        onImageSelect?.(URL.createObjectURL(file));
+        onImageSelect?.(file);
 
         setUploadProgress(0);
         setUploadStarted(true);
@@ -107,9 +107,9 @@ const PhotoAnalysis = ({
         {previewSrc && uploadProgress === 100 && !uploadStarted ? (
           <Image
             src={previewSrc}
-            alt="Selected Image"
+            alt="Imagem da lesão selecionada"
             className={selectedImage}
-            unoptimized
+            fill
           />
         ) : (
           <>
