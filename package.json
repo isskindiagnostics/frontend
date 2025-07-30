@@ -7,15 +7,18 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "lint:fix": "next lint --fix"
+    "lint:fix": "next lint --fix",
+    "serve:pdf": "npx serve ./src/templates/"
   },
   "dependencies": {
     "firebase": "^12.0.0",
     "firebase-admin": "^13.4.0",
-    "isskinui": "^1.3.2",
+    "handlebars": "^4.7.8",
+    "isskinui": "^1.3.9",
     "motion": "^12.23.9",
     "next": "15.4.2",
     "next-transpile-modules": "^10.0.1",
+    "puppeteer": "^24.15.0",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-dropzone": "^14.3.8"

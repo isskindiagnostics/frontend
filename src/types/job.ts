@@ -1,6 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 
 export type JobData = {
+  protocol: string;
   createdAt: Date;
   completedAt?: Date;
   imageUrl: string;
@@ -14,6 +15,8 @@ export type JobData = {
     skinLocation: string;
     skinType: string;
   };
+
+  comment?: string;
 
   result: {
     binary_prediction: {
