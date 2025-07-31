@@ -2,17 +2,16 @@ import { doc, getDoc } from "firebase/firestore";
 import { Icons } from "isskinui";
 import Image from "next/image";
 
-import ProfileImg from "@/assets/images/default-profile-image.png";
+import { container, main, pageContent } from "@/app/global.css";
 import ContentBlock from "@/components/ContentBlock";
 import DataChip from "@/components/DataChip";
 import Sidebar from "@/components/Sidebar";
+import TopBar from "@/components/TopBar";
 import { db } from "@/firebase/config";
 import { JobData } from "@/types/job";
 import { getAge } from "@/utils/date";
 
-import * as pageStyles from "../../index.css";
-import { container } from "../../index.css";
-import { uid } from "../../uid";
+import { uid } from "../../../uid";
 
 import CommentBlock from "./CommentBlock";
 import * as styles from "./index.css";
@@ -88,23 +87,13 @@ export default async function ResultsPage({
   return (
     <div className={container} style={{ display: "flex" }}>
       <Sidebar currentPage={"analysis"} />
-      <main className={pageStyles.main}>
-        <div className={pageStyles.topBar}>
-          <h1 className={pageStyles.pageTitle}>Análise</h1>
-
+      <main className={main}>
+        <TopBar title="Análise">
           <RestartAnalysis />
           <SaveButton jobId={jobId} uid={uid} />
+        </TopBar>
 
-          <Image
-            className={pageStyles.profileImg}
-            src={ProfileImg}
-            alt="Sua foto de perfil"
-            width={34}
-            height={34}
-          />
-        </div>
-
-        <div className={pageStyles.pageContent}>
+        <div className={pageContent}>
           <div className={styles.resultsDashboard}>
             <ContentBlock
               className={styles.patientDataWrapper}

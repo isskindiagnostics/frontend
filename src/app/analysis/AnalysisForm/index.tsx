@@ -1,21 +1,21 @@
 "use client";
 import { doc, getDoc } from "firebase/firestore";
 import { Button, DatePicker, InputField, Notification, Select } from "isskinui";
-import Image from "next/image";
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { startAnalysis } from "@/app/api/startAnalysis";
-import ProfileImg from "@/assets/images/default-profile-image.png";
+import { main, pageContent } from "@/app/global.css";
 import AnalysisLoader from "@/components/AnalysisLoader";
 import ContentBlock from "@/components/ContentBlock";
 import HelpCardOverlay from "@/components/HelpCardOverlay";
 import PhotoAnalysis from "@/components/PhotoAnalysis";
+import TopBar from "@/components/TopBar";
 import { saveAnalysisData } from "@/firebase/analysisData";
 import { db } from "@/firebase/config";
+import generateProtocol from "@/utils/generateProtocol";
 
-import * as pageStyles from "../index.css";
-import { uid } from "../uid";
+import { uid } from "../../uid";
 
 import { formSection, photoSection, fieldWrapper } from "./index.css";
 import { genders, insurances, skinTypes } from "./staticData";
@@ -59,6 +59,8 @@ const AnalysisForm = () => {
     skinLocation.trim() !== "" &&
     imageFile;
 
+  console.log(generateProtocol());
+
   const handleSubmit = async () => {
     if (!imageFile) return;
 
@@ -71,6 +73,7 @@ const AnalysisForm = () => {
       await saveAnalysisData({
         uid: uid,
         jobId,
+        protocol: generateProtocol(),
         name,
         insurance,
         birthDate,
@@ -122,7 +125,7 @@ const AnalysisForm = () => {
   }, [showAnalysisError]);
 
   return (
-    <main className={pageStyles.main}>
+    <main className={main}>
       {showAnalysisError && (
         <Notification
           type="error"
@@ -130,8 +133,7 @@ const AnalysisForm = () => {
         />
       )}
 
-      <div className={pageStyles.topBar}>
-        <h1 className={pageStyles.pageTitle}>Análise</h1>
+      <TopBar title="Análise">
         {!loading && (
           <Button
             variant="solid"
@@ -141,20 +143,12 @@ const AnalysisForm = () => {
             Analisar
           </Button>
         )}
-
-        <Image
-          className={pageStyles.profileImg}
-          src={ProfileImg}
-          alt="Sua foto de perfil"
-          width={34}
-          height={34}
-        />
-      </div>
+      </TopBar>
 
       {loading ? (
         <AnalysisLoader />
       ) : (
-        <div className={pageStyles.pageContent}>
+        <div className={pageContent}>
           <ContentBlock className={formSection}>
             <h2>Dados do Paciente</h2>
             <InputField

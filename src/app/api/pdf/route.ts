@@ -1,0 +1,60 @@
+export const runtime = "nodejs";
+import handlebars from "handlebars";
+import { NextRequest } from "next/server";
+import puppeteer from "puppeteer";
+
+import htmlTemplate from "@/templates/report.html?raw";
+import formatDate from "@/utils/formatDate";
+
+export async function POST(req: NextRequest) {
+  const { userData, jobData } = await req.json();
+
+  const template = handlebars.compile(htmlTemplate);
+
+  const formattedData = {
+    doctorName: userData.name,
+    doctorPhoneNumber: userData.phoneNumber,
+    doctorPLCouncil: userData.professionalLicense.council,
+    doctorPLState: userData.professionalLicense.state,
+    doctorPLNumber: userData.professionalLicense.number,
+
+    patientName: jobData.patientData.name,
+    patientGender: jobData.patientData.gender,
+    patientBirthDate: new Date(
+      jobData.patientData.birthDate.seconds * 1000
+    ).toLocaleDateString("pt-BR"),
+    patientInsurance: jobData.patientData.insurance,
+    patientSkinLocation: jobData.patientData.skinLocation,
+    patientSkinType: jobData.patientData.skinType,
+
+    completedAt: formatDate(jobData.completedAt),
+    comment: jobData.comment,
+
+    benign: jobData.result.binary_prediction.benign,
+    malignant: jobData.result.binary_prediction.malignant,
+    dx_prediction: jobData.result.dx_prediction,
+  };
+
+  const html = template(formattedData);
+
+  const browser = await puppeteer.launch({
+    headless: true,
+    args: ["--no-sandbox", "--disable-setuid-sandbox"],
+  });
+
+  const page = await browser.newPage();
+  await page.setContent(html);
+  const pdfBuffer = await page.pdf({
+    format: "A4",
+    printBackground: true,
+  });
+
+  await browser.close();
+
+  return new Response(pdfBuffer, {
+    headers: {
+      "Content-Type": "application/pdf",
+      "Content-Disposition": "inline; filename=report.pdf",
+    },
+  });
+}

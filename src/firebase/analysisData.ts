@@ -5,6 +5,7 @@ import { db } from "./config";
 export async function saveAnalysisData({
   uid,
   jobId,
+  protocol,
   name,
   insurance,
   birthDate,
@@ -14,6 +15,7 @@ export async function saveAnalysisData({
 }: {
   uid: string;
   jobId: string;
+  protocol: string;
   name: string;
   insurance: string;
   birthDate: Date | null;
@@ -26,6 +28,7 @@ export async function saveAnalysisData({
   await setDoc(
     ref,
     {
+      protocol: protocol.trim(),
       patientData: {
         name: name.trim(),
         insurance: insurance.trim(),
