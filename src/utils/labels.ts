@@ -111,3 +111,35 @@ export function getRecCardLabel(
     ];
   }
 }
+
+export function getInsuranceLabel(value: string): string {
+  const insuranceMap: Record<string, string> = {
+    amil: "Amil",
+    bradesco_saude: "Bradesco Saúde",
+    sulamerica: "SulAmérica",
+    unimed: "Unimed",
+    notredame: "NotreDame Intermédica",
+    hapvida: "Hapvida",
+    porto_seguro: "Porto Seguro Saúde",
+    cassi: "Cassi",
+    mediservice: "Mediservice",
+    omint: "Omint",
+    maritima: "Marítima Saúde",
+    life_empresarial: "Life Empresarial",
+    greenline: "Greenline",
+    prevent_senior: "Prevent Senior",
+    one_health: "One Health",
+    gama_saude: "Gama Saúde",
+    postal_saude: "Postal Saúde",
+    samp: "Samp",
+    santa_helena: "Santa Helena Saúde",
+    sao_cristovao: "São Cristóvão Saúde",
+    assim: "Assim Saúde",
+    biovida: "Biovida",
+    promed: "Promed",
+    vivest: "Vivest",
+    planserv: "Planserv",
+  };
+
+  return insuranceMap[value] ?? value;
+}

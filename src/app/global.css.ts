@@ -48,7 +48,10 @@ export const container = style({
 });
 
 export const main = style({
+  display: "flex",
+  flexDirection: "column",
   width: "100%",
+  height: "100vh",
   padding: "25px 37px",
   maxWidth: 1700,
 });
