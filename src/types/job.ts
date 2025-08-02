@@ -1,16 +1,16 @@
-import { Timestamp } from "firebase/firestore";
+export type JobDataWithId = JobData & { id: string };
 
 export type JobData = {
   protocol: string;
-  createdAt: Date;
-  completedAt?: Date;
+  createdAt: string;
+  completedAt?: string;
   imageUrl: string;
   status: "pending" | "processing" | "done" | "error";
 
   patientData: {
     name: string;
     gender: "masculine" | "feminine" | "other" | "preferNotToSay";
-    birthDate: Timestamp;
+    birthDate: string;
     insurance: string;
     skinLocation: string;
     skinType: string;
@@ -23,33 +23,12 @@ export type JobData = {
       benign: number;
       malignant: number;
     };
-    dx_prediction: {
-      ak: number;
-      bcc: number;
-      df: number;
-      lentigo: number;
-      melanoma: number;
-      nevus: number;
-      scc: number;
-      seborrheic_keratosis: number;
-      uncertain: number;
-      vasc: number;
-    };
+    dx_prediction: DxPrediction;
     metadata: {
       image_path_binary: string;
       image_path_dx: string;
-
-      processing_time_binary: {
-        preprocess: number;
-        inference: number;
-        postprocess: number;
-      };
-
-      processing_time_dx: {
-        preprocess: number;
-        inference: number;
-        postprocess: number;
-      };
+      processing_time_binary: TimingInfo;
+      processing_time_dx: TimingInfo;
     };
   };
 };
@@ -65,4 +44,10 @@ export type DxPrediction = {
   seborrheic_keratosis: number;
   uncertain: number;
   vasc: number;
+};
+
+type TimingInfo = {
+  preprocess: number;
+  inference: number;
+  postprocess: number;
 };

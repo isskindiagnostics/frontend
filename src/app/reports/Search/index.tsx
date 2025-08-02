@@ -3,17 +3,21 @@
 import { Notification, Search as IsskinSearch } from "isskinui";
 
 import { uid } from "@/app/uid";
-import { getJobById, getJobs } from "@/firebase/queryJobs";
+import { getJobs } from "@/firebase/queryJobs";
 import { getUserDataById } from "@/firebase/queryUser";
+import { useShowToast } from "@/hooks/useShowToast";
+import { JobDataWithId } from "@/types/job";
 import generatePdf from "@/utils/generatePdf";
 
-import { useShowToast } from "../../../../hooks/useShowToast";
+type SearchProps = {
+  fetchJob: (id: string) => Promise<JobDataWithId | null>;
+};
 
-const Search = () => {
+const Search = ({ fetchJob }: SearchProps) => {
   const [showToast, setShowToast] = useShowToast();
 
   const handleSuggestionSelect = async (jobId: string) => {
-    const jobData = await getJobById(uid!, jobId);
+    const jobData = await fetchJob(jobId);
     const userData = await getUserDataById(uid);
 
     if (jobData) {

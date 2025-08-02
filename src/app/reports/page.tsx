@@ -1,10 +1,12 @@
-import { container, main } from "@/app/global.css";
+import { Metadata } from "next";
+import { Suspense } from "react";
+
 import Sidebar from "@/components/Sidebar";
-import TopBar from "@/components/TopBar";
 
-import Search from "./Search";
+import { container } from "../global.css";
 
-import type { Metadata } from "next";
+import ReportsContent from "./ReportsContent";
+import ReportsSkeleton from "./ReportsSkeleton";
 
 export const metadata: Metadata = {
   title: "Relatórios",
@@ -16,12 +18,10 @@ export const metadata: Metadata = {
 export default function Reports() {
   return (
     <div className={container}>
-      <Sidebar currentPage={"reports"} />
-      <main className={main}>
-        <TopBar title="Relatórios">
-          <Search />
-        </TopBar>
-      </main>
+      <Sidebar currentPage="reports" />
+      <Suspense fallback={<ReportsSkeleton />}>
+        <ReportsContent />
+      </Suspense>
     </div>
   );
 }

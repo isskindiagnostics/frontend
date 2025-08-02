@@ -4,7 +4,8 @@ import { NextRequest } from "next/server";
 import puppeteer from "puppeteer";
 
 import htmlTemplate from "@/templates/report.html?raw";
-import formatDate from "@/utils/formatDate";
+import { formatDate } from "@/utils/date";
+import { getSkinTypeLabel } from "@/utils/labels";
 
 export async function POST(req: NextRequest) {
   const { userData, jobData } = await req.json();
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
     ).toLocaleDateString("pt-BR"),
     patientInsurance: jobData.patientData.insurance,
     patientSkinLocation: jobData.patientData.skinLocation,
-    patientSkinType: jobData.patientData.skinType,
+    patientSkinType: getSkinTypeLabel(jobData.patientData.skinType),
 
     completedAt: formatDate(jobData.completedAt),
     comment: jobData.comment,

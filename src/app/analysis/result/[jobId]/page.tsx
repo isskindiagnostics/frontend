@@ -10,18 +10,18 @@ import TopBar from "@/components/TopBar";
 import { db } from "@/firebase/config";
 import { JobData } from "@/types/job";
 import { getAge } from "@/utils/date";
-
-import { uid } from "../../../uid";
-
-import CommentBlock from "./CommentBlock";
-import * as styles from "./index.css";
 import {
   getGenderLabel,
   getSkinTypeLabel,
   getProbabilityLabel,
   getDxLabel,
   getRecCardLabel,
-} from "./labels";
+} from "@/utils/labels";
+
+import { uid } from "../../../uid";
+
+import CommentBlock from "./CommentBlock";
+import * as styles from "./index.css";
 import RestartAnalysis from "./RestartAnalysis";
 import { SaveButton } from "./SaveButton";
 
@@ -57,7 +57,7 @@ export default async function ResultsPage({
     {
       icon: "Cake",
       label: "Idade",
-      value: `${getAge(data.patientData.birthDate.toDate())} anos`,
+      value: `${getAge(data.patientData.birthDate)} anos`,
     },
     {
       icon: "Skin",
