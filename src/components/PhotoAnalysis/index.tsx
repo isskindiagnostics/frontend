@@ -16,9 +16,9 @@ import {
   container,
   icon,
   contentWrapper,
-  progressBarWrapper,
-  progressBar,
-  progressFill,
+  // progressBarWrapper,
+  // progressBar,
+  // progressFill,
   imageRestrictions,
   hiddenInput,
   selectedImage,
@@ -33,12 +33,12 @@ type PhotoAnalysisProps = PropsWithChildren<HTMLAttributes<HTMLDivElement>> & {
 
 const PhotoAnalysis = ({
   defaultImage,
-  width = "254px",
+  width = "100%",
   onImageSelect,
   ...props
 }: PhotoAnalysisProps) => {
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadStarted, setUploadStarted] = useState(false);
+  // const [uploadProgress, setUploadProgress] = useState(0);
+  // const [uploadStarted, setUploadStarted] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [previewSrc, setPreviewSrc] = useState<string | null>(
     defaultImage || null
@@ -60,18 +60,18 @@ const PhotoAnalysis = ({
         setImageFile(file);
         onImageSelect?.(file);
 
-        setUploadProgress(0);
-        setUploadStarted(true);
-        const interval = setInterval(() => {
-          setUploadProgress((prev) => {
-            if (prev >= 100) {
-              clearInterval(interval);
-              setUploadStarted(false);
-              return 100;
-            }
-            return prev + 10;
-          });
-        }, 100);
+        // setUploadProgress(0);
+        // setUploadStarted(true);
+        // const interval = setInterval(() => {
+        //   setUploadProgress((prev) => {
+        //     if (prev >= 100) {
+        //       clearInterval(interval);
+        //       setUploadStarted(false);
+        //       return 100;
+        //     }
+        //     return prev + 10;
+        //   });
+        // }, 100);
       }
     },
     [onImageSelect]
@@ -104,7 +104,8 @@ const PhotoAnalysis = ({
         className={container}
         style={{ position: "relative" }}
       >
-        {previewSrc && uploadProgress === 100 && !uploadStarted ? (
+        {/* {previewSrc && uploadProgress === 100 && !uploadStarted ? ( */}
+        {previewSrc ? (
           <Image
             src={previewSrc}
             alt="Imagem da lesão selecionada"
@@ -124,7 +125,7 @@ const PhotoAnalysis = ({
                 escolha uma foto
               </Link>
             </div>
-            {uploadStarted && (
+            {/* {uploadStarted && (
               <div className={progressBarWrapper}>
                 <div className={progressBar}>
                   <div
@@ -133,14 +134,15 @@ const PhotoAnalysis = ({
                   />
                 </div>
               </div>
-            )}
+            )} */}
           </>
         )}
 
         <input {...getInputProps()} className={hiddenInput} />
       </div>
 
-      {previewSrc && uploadProgress === 100 && !uploadStarted && (
+      {/* {previewSrc && uploadProgress === 100 && !uploadStarted && ( */}
+      {previewSrc && (
         <Button
           variant="outlined"
           onClick={handleChooseAnother}
@@ -150,7 +152,8 @@ const PhotoAnalysis = ({
         </Button>
       )}
 
-      {!previewSrc && !uploadStarted && (
+      {/* {!previewSrc && !uploadStarted && ( */}
+      {!previewSrc && (
         <p className={imageRestrictions}>Máx 5MB | PNG, JPG, JPEG, HEIC</p>
       )}
     </div>

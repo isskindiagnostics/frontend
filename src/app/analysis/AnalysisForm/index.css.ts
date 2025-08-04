@@ -8,7 +8,7 @@ export const formSection = style({
 });
 
 export const photoSection = style({
-  width: 300,
+  width: 450,
   height: "max-content",
   gap: 20,
 });

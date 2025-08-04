@@ -1,4 +1,3 @@
-import { doc, getDoc } from "firebase/firestore";
 import { Icons } from "isskinui";
 import Image from "next/image";
 
@@ -7,8 +6,7 @@ import ContentBlock from "@/components/ContentBlock";
 import DataChip from "@/components/DataChip";
 import Sidebar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
-import { db } from "@/firebase/config";
-import { JobData } from "@/types/job";
+import { getJobById } from "@/firebase/queryJobs";
 import { getAge } from "@/utils/date";
 import {
   getGenderLabel,
@@ -44,14 +42,11 @@ export default async function ResultsPage({
   params: Promise<{ jobId: string }>;
 }) {
   const { jobId } = await params;
-  const jobRef = doc(db, "users", uid, "jobs", jobId);
-  const jobSnap = await getDoc(jobRef);
+  const data = await getJobById(uid, jobId);
 
-  if (!jobSnap.exists()) {
-    return <div>Resultado não encontrado.</div>; // change to 404 page
+  if (!data) {
+    return <div>Resultado não encontrado.</div>; // TODO: change to 404 page
   }
-
-  const data = jobSnap.data() as JobData;
 
   const chips: Chip[] = [
     {
