@@ -14,7 +14,7 @@ import {
 } from "./index.css";
 import SidebarItem from "./SidebarItem";
 
-type Pages = "analysis" | "reports" | "subscription" | "settings";
+export type Pages = "analysis" | "reports" | "subscription" | "settings";
 
 type SidebarProps = {
   currentPage: Pages;
@@ -26,7 +26,7 @@ const Sidebar = ({ currentPage, onClick }: SidebarProps) => {
 
   const handleClick = (page?: Pages) => {
     if (page) {
-      router.push(page);
+      router.push(`/${page}`);
     }
 
     if (onClick) {
@@ -46,13 +46,13 @@ const Sidebar = ({ currentPage, onClick }: SidebarProps) => {
           label="Análise"
           icon={<ChartPie width={22} height={22} />}
           selected={currentPage === "analysis"}
-          onClick={() => handleClick("analysis")}
+          onClick={() => currentPage !== "analysis" && handleClick("analysis")}
         />
         <SidebarItem
           label="Relatórios"
           icon={<Document width={22} height={22} />}
           selected={currentPage === "reports"}
-          onClick={() => handleClick("reports")}
+          onClick={() => currentPage !== "reports" && handleClick("reports")}
         />
       </div>
 
@@ -63,13 +63,15 @@ const Sidebar = ({ currentPage, onClick }: SidebarProps) => {
           label="Assinatura"
           icon={<Money width={22} height={22} />}
           selected={currentPage === "subscription"}
-          onClick={() => handleClick("subscription")}
+          onClick={() =>
+            currentPage !== "subscription" && handleClick("subscription")
+          }
         />
         <SidebarItem
           label="Configurações"
           icon={<Settings width={22} height={22} />}
           selected={currentPage === "settings"}
-          onClick={() => handleClick("settings")}
+          onClick={() => currentPage !== "settings" && handleClick("settings")}
         />
       </div>
 

@@ -1,4 +1,4 @@
-import { globalStyle } from "@vanilla-extract/css";
+import { globalStyle, style } from "@vanilla-extract/css";
 import { theme } from "isskinui";
 
 globalStyle("*", {
@@ -11,6 +11,8 @@ globalStyle("html, body", {
 });
 
 globalStyle("body", {
+  width: "100%",
+  height: "100vh",
   backgroundColor: theme.colors.backgroundDefault,
 });
 
@@ -36,4 +38,27 @@ globalStyle("h1", {
 globalStyle("h2", {
   fontSize: theme.typography.headline.desktop.md.fontSize,
   lineHeight: theme.typography.headline.desktop.md.lineHeight,
+});
+
+export const container = style({
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  overflow: "hidden",
+});
+
+export const main = style({
+  display: "flex",
+  flexDirection: "column",
+  width: "100%",
+  height: "100vh",
+  padding: "25px 37px",
+  maxWidth: 1700,
+});
+
+export const pageContent = style({
+  width: "100%",
+  height: "100%",
+  display: "flex",
+  gap: 30,
 });

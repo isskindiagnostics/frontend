@@ -1,0 +1,325 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        width: 210mm;
+        height: 297mm;
+        margin: 0 auto;
+        padding: 2cm;
+        box-sizing: border-box;
+        background-color: #fff;
+      }
+      .header-wrapper {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      h1 {
+        color: #1a1c1e;
+        font-family: "Manrope";
+        font-size: 16px;
+        font-weight: 700;
+        line-height: 24px;
+        margin: 0;
+      }
+      h2 {
+        color: #000;
+        font-family: "Manrope";
+        font-size: 12px;
+        font-weight: 700;
+        line-height: 14px;
+        margin: 0;
+      }
+      h3 {
+        color: #000;
+        font-family: "Manrope";
+        font-size: 12px;
+        line-height: 12px;
+        margin: 0;
+      }
+      p {
+        color: #000;
+        font-family: "Manrope";
+        font-size: 12px;
+        font-style: normal;
+        line-height: 14px;
+        margin: 0;
+      }
+      span {
+        color: #000;
+        font-family: "Manrope";
+        font-size: 9px;
+        line-height: 14px;
+      }
+      table {
+        border-spacing: 0;
+        margin-bottom: 30px;
+      }
+      th {
+        text-align: start;
+        padding: 6px 7px;
+      }
+      td {
+        padding: 6px 7px;
+      }
+      .section {
+        margin: 18px 0px;
+      }
+      .section.top-info {
+        display: flex;
+        gap: 60px;
+        margin-top: 25px;
+      }
+      .top-info-wrapper {
+        display: flex;
+        gap: 10px;
+        color: #000;
+        font-family: "Manrope";
+        font-size: 12px;
+        font-style: normal;
+        line-height: 14px;
+        margin: 3px;
+      }
+      .top-info-wrapper.completedAt {
+        gap: 40px;
+      }
+      .top-info-topic {
+        font-weight: 800;
+      }
+      .top-info-wrapper.doctor {
+        gap: 19px;
+      }
+      .divider {
+        height: 1px;
+        background-color: #ced8da;
+        border: none;
+        margin: 18px 0;
+      }
+      .full-width {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        margin: 18px 0;
+      }
+      .declaration {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        margin-top: 60px;
+      }
+      .declaration > h2 {
+        margin-bottom: 5px;
+      }
+      .signature-wrapper {
+        width: min-content;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-left: auto;
+        margin-top: 80px;
+      }
+      .signature {
+        width: 190px;
+        height: 0.5px;
+        background-color: #000;
+        border: none;
+        margin: 0 0 3px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header-wrapper">
+      <svg
+        width="143"
+        height="44"
+        viewBox="0 0 143 44"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <g clip-path="url(#clip0_802_2820)">
+          <path
+            d="M16.8582 41.2805C18.1421 41.2805 19.4134 41.0276 20.5996 40.5363C21.7858 40.045 22.8636 39.3248 23.7714 38.417C24.6793 37.5091 25.3994 36.4313 25.8908 35.2452C26.3821 34.059 26.635 32.7876 26.635 31.5037C26.635 30.2198 26.3821 28.9485 25.8908 27.7623C25.3994 26.5761 24.6793 25.4984 23.7714 24.5905C22.8636 23.6826 21.7858 22.9625 20.5996 22.4712C19.4134 21.9798 18.1421 21.727 16.8582 21.727V31.5037V41.2805Z"
+            fill="#1A1C1E"
+          />
+          <path
+            d="M26.1634 41.2805C27.4473 41.2805 28.7186 41.0276 29.9048 40.5363C31.091 40.045 32.1688 39.3248 33.0766 38.417C33.9845 37.5091 34.7046 36.4313 35.196 35.2452C35.6873 34.059 35.9402 32.7876 35.9402 31.5037C35.9402 30.2198 35.6873 28.9485 35.196 27.7623C34.7046 26.5761 33.9845 25.4984 33.0766 24.5905C32.1688 23.6826 31.091 22.9625 29.9048 22.4712C28.7186 21.9798 27.4473 21.727 26.1634 21.727V31.5037V41.2805Z"
+            fill="#1A1C1E"
+          />
+          <path
+            d="M16.8582 2.17339C15.5743 2.17339 14.303 2.42627 13.1168 2.9176C11.9306 3.40893 10.8528 4.12908 9.94497 5.03694C9.03712 5.9448 8.31696 7.02258 7.82563 8.20876C7.3343 9.39493 7.08142 10.6663 7.08142 11.9502C7.08142 13.2341 7.3343 14.5054 7.82563 15.6916C8.31696 16.8778 9.03712 17.9555 9.94498 18.8634C10.8528 19.7713 11.9306 20.4914 13.1168 20.9827C14.303 21.4741 15.5743 21.727 16.8582 21.727L16.8582 11.9502V2.17339Z"
+            fill="#1A1C1E"
+          />
+          <path
+            d="M26.1634 2.17339C24.8795 2.17339 23.6081 2.42627 22.422 2.9176C21.2358 3.40893 20.158 4.12908 19.2502 5.03694C18.3423 5.9448 17.6221 7.02258 17.1308 8.20876C16.6395 9.39493 16.3866 10.6663 16.3866 11.9502C16.3866 13.2341 16.6395 14.5054 17.1308 15.6916C17.6221 16.8778 18.3423 17.9555 19.2502 18.8634C20.158 19.7713 21.2358 20.4914 22.422 20.9827C23.6081 21.4741 24.8795 21.727 26.1634 21.727L26.1634 11.9502V2.17339Z"
+            fill="#1A1C1E"
+          />
+          <path
+            d="M35.9401 2.17339C34.6562 2.17339 33.3849 2.42627 32.1987 2.9176C31.0125 3.40893 29.9347 4.12908 29.0269 5.03694C28.119 5.9448 27.3989 7.02258 26.9075 8.20876C26.4162 9.39493 26.1633 10.6663 26.1633 11.9502L35.9401 11.9502V2.17339Z"
+            fill="#1A1C1E"
+          />
+          <path
+            d="M7.08147 41.2805C8.36538 41.2805 9.63671 41.0276 10.8229 40.5363C12.0091 40.045 13.0868 39.3248 13.9947 38.417C14.9026 37.5091 15.6227 36.4313 16.114 35.2452C16.6054 34.059 16.8583 32.7876 16.8583 31.5037H7.08147V41.2805Z"
+            fill="#1A1C1E"
+          />
+        </g>
+        <path
+          d="M51.1879 30.7358V10.9019H55.6438V30.7358H51.1879ZM66.1321 31.2521C64.3389 31.2521 62.8265 30.9713 61.5948 30.4098C60.3631 29.8302 59.4303 29.0513 58.7963 28.0732C58.1623 27.077 57.8454 25.9358 57.8454 24.6498H62.1654C62.1654 25.157 62.3012 25.6279 62.5729 26.0626C62.8627 26.4974 63.2974 26.8506 63.8771 27.1223C64.4567 27.3758 65.2084 27.5026 66.1321 27.5026C66.9654 27.5026 67.6627 27.394 68.2242 27.1766C68.7857 26.9592 69.2114 26.6604 69.5012 26.28C69.791 25.8815 69.9359 25.4287 69.9359 24.9215C69.9359 24.2875 69.6642 23.7894 69.1208 23.4272C68.5774 23.0468 67.6989 22.8023 66.4854 22.6936L64.991 22.5577C63.0167 22.3947 61.4408 21.7789 60.2635 20.7102C59.0861 19.6415 58.4974 18.2287 58.4974 16.4717C58.4974 15.2038 58.7963 14.1079 59.394 13.1841C60.0099 12.2604 60.8612 11.554 61.948 11.0649C63.0348 10.5577 64.3208 10.3041 65.8061 10.3041C67.3638 10.3041 68.6952 10.5758 69.8001 11.1192C70.9231 11.6445 71.7835 12.3962 72.3812 13.3743C72.9789 14.3343 73.2778 15.4664 73.2778 16.7706H68.9306C68.9306 16.2815 68.8129 15.8377 68.5774 15.4392C68.342 15.0226 67.9888 14.6875 67.5178 14.434C67.065 14.1804 66.4944 14.0536 65.8061 14.0536C65.154 14.0536 64.6016 14.1623 64.1488 14.3796C63.714 14.597 63.388 14.8958 63.1706 15.2762C62.9533 15.6385 62.8446 16.037 62.8446 16.4717C62.8446 17.0332 63.0438 17.5223 63.4423 17.9389C63.8408 18.3555 64.4929 18.6 65.3986 18.6725L66.9201 18.8083C68.3691 18.9351 69.6461 19.2521 70.751 19.7592C71.8559 20.2483 72.7163 20.9275 73.3321 21.797C73.9661 22.6483 74.2831 23.6898 74.2831 24.9215C74.2831 26.1894 73.948 27.3034 73.2778 28.2634C72.6257 29.2053 71.6929 29.9389 70.4793 30.4641C69.2657 30.9894 67.8167 31.2521 66.1321 31.2521ZM83.3304 31.2521C81.5372 31.2521 80.0248 30.9713 78.7931 30.4098C77.5614 29.8302 76.6285 29.0513 75.9946 28.0732C75.3606 27.077 75.0436 25.9358 75.0436 24.6498H79.3636C79.3636 25.157 79.4995 25.6279 79.7712 26.0626C80.061 26.4974 80.4957 26.8506 81.0753 27.1223C81.655 27.3758 82.4067 27.5026 83.3304 27.5026C84.1636 27.5026 84.861 27.394 85.4225 27.1766C85.984 26.9592 86.4097 26.6604 86.6995 26.28C86.9893 25.8815 87.1342 25.4287 87.1342 24.9215C87.1342 24.2875 86.8625 23.7894 86.3191 23.4272C85.7757 23.0468 84.8972 22.8023 83.6836 22.6936L82.1893 22.5577C80.215 22.3947 78.6391 21.7789 77.4617 20.7102C76.2844 19.6415 75.6957 18.2287 75.6957 16.4717C75.6957 15.2038 75.9946 14.1079 76.5923 13.1841C77.2082 12.2604 78.0595 11.554 79.1463 11.0649C80.2331 10.5577 81.5191 10.3041 83.0044 10.3041C84.5621 10.3041 85.8934 10.5758 86.9984 11.1192C88.1214 11.6445 88.9817 12.3962 89.5795 13.3743C90.1772 14.3343 90.4761 15.4664 90.4761 16.7706H86.1289C86.1289 16.2815 86.0112 15.8377 85.7757 15.4392C85.5402 15.0226 85.187 14.6875 84.7161 14.434C84.2633 14.1804 83.6927 14.0536 83.0044 14.0536C82.3523 14.0536 81.7999 14.1623 81.347 14.3796C80.9123 14.597 80.5863 14.8958 80.3689 15.2762C80.1516 15.6385 80.0429 16.037 80.0429 16.4717C80.0429 17.0332 80.2421 17.5223 80.6406 17.9389C81.0391 18.3555 81.6912 18.6 82.5968 18.6725L84.1184 18.8083C85.5674 18.9351 86.8444 19.2521 87.9493 19.7592C89.0542 20.2483 89.9146 20.9275 90.5304 21.797C91.1644 22.6483 91.4814 23.6898 91.4814 24.9215C91.4814 26.1894 91.1463 27.3034 90.4761 28.2634C89.824 29.2053 88.8912 29.9389 87.6776 30.4641C86.464 30.9894 85.015 31.2521 83.3304 31.2521ZM106.669 30.7358L99.8223 21.4709H97.0781L105.392 10.9019H110.5L103.028 20.3841L102.974 18.4551L112.049 30.7358H106.669ZM93.6276 30.7358V10.9019H98.0834V30.7358H93.6276ZM113.189 30.7358V10.9019H117.644V30.7358H113.189ZM121.232 30.7358V10.9019H128.54L136.012 27.1223H136.936L136.392 27.6113V10.9019H140.577V30.7358H133.214L125.742 14.5155H124.818L125.361 14.0264V30.7358H121.232Z"
+          fill="#1A1C1E"
+        />
+        <defs>
+          <clipPath id="clip0_802_2820">
+            <rect width="43.4717" height="43.4717" fill="white" />
+          </clipPath>
+        </defs>
+      </svg>
+      <h1>Resultado da Análise</h1>
+    </div>
+
+    <div class="section top-info">
+      <div>
+        <div class="top-info-wrapper">
+          <p class="top-info-topic">Protocolo:</p>
+          <p>{{protocol}}</p>
+        </div>
+        <div class="top-info-wrapper completedAt">
+          <p class="top-info-topic">Data:</p>
+          <p>{{completedAt}}</p>
+        </div>
+      </div>
+      <div>
+        <div class="top-info-wrapper">
+          <p class="top-info-topic">Paciente:</p>
+          <p>{{patientName}}</p>
+        </div>
+        <div class="top-info-wrapper doctor">
+          <p class="top-info-topic">Médico:</p>
+          <p>
+            {{doctorName}}
+            <span style="margin-right: 10px"></span>
+            {{doctorPLCouncil}}/{{doctorPLState}} - {{doctorPLNumber}}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <hr class="divider" />
+
+    <div class="full-width">
+      <h2>Análise de Lesão Cutânea</h2>
+      <div class="top-info-wrapper">
+        <p class="top-info-topic">Local:</p>
+        <p>{{patientSkinLocation}}</p>
+      </div>
+      <div class="top-info-wrapper">
+        <p class="top-info-topic">Pele:</p>
+        <p>{{patientSkinType}}</p>
+      </div>
+    </div>
+
+    <table style="width: 100%">
+      <thead>
+        <tr style="background-color: #e3eff1">
+          <th style="width: 55%"><p>Classificação da Lesão</p></th>
+          <th><p>Resultado</p></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><p>Benigno</p></td>
+          <td><p>{{benign}}%</p></td>
+        </tr>
+        <tr>
+          <td><p>Maligno</p></td>
+          <td><p>{{malignant}}%</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table style="width: 100%">
+      <thead>
+        <tr style="background-color: #e3eff1">
+          <th style="width: 55%"><p>Classificação da Lesão</p></th>
+          <th><p>Resultado</p></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><p>Carcinoma Basocelular</p></td>
+          <td><p>{{dx_prediction.bcc}}%</p></td>
+        </tr>
+        <tr>
+          <td><p>Carcinoma Espinocelular</p></td>
+          <td><p>{{dx_prediction.scc}}%</p></td>
+        </tr>
+        <tr>
+          <td><p>Ceratoactinose</p></td>
+          <td><p>{{dx_prediction.ak}}%</p></td>
+        </tr>
+        <tr>
+          <td><p>Dermatofibroma</p></td>
+          <td><p>{{dx_prediction.df}}%</p></td>
+        </tr>
+        <tr>
+          <td><p>Lentigo</p></td>
+          <td><p>{{dx_prediction.lentigo}}%</p></td>
+        </tr>
+        <tr>
+          <td><p>Lesão Vascular</p></td>
+          <td><p>{{dx_prediction.vasc}}%</p></td>
+        </tr>
+        <tr>
+          <td><p>Melanoma</p></td>
+          <td><p>{{dx_prediction.melanoma}}%</p></td>
+        </tr>
+        <tr>
+          <td><p>Nevus</p></td>
+          <td><p>{{dx_prediction.nevus}}%</p></td>
+        </tr>
+        <tr>
+          <td><p>Queratose Seborreica</p></td>
+          <td><p>{{dx_prediction.seborrheic_keratosis}}%</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <table style="width: 100%">
+      <thead>
+        <tr style="background-color: #e3eff1">
+          <th><p>Anamnese e Observações Clínicas</p></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><p>{{comment}}</p></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="declaration">
+      <h2>Declaração de Responsabilidade</h2>
+      <p>
+        Este relatório foi gerado com o apoio de ferramentas de inteligência
+        artificial treinadas para análise de imagens dermatológicas. Os
+        resultados aqui apresentados têm caráter estritamente auxiliar e não
+        substituem o julgamento clínico do médico responsável.
+      </p>
+      <p>
+        O diagnóstico final é estabelecido exclusivamente pelo profissional de
+        saúde, considerando a avaliação presencial, histórico clínico do
+        paciente e, quando necessário, biópsia, exames complementares ou
+        acompanhamento especializado.
+      </p>
+    </div>
+
+    <div class="signature-wrapper">
+      <hr class="signature" />
+      <span>Assinatura do médico responsável</span>
+    </div>
+  </body>
+</html>
