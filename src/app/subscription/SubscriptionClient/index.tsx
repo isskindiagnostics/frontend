@@ -3,6 +3,8 @@
 // import { Switch } from "isskinui";
 // import { useState } from "react";
 
+import { useRouter } from "next/navigation";
+
 import ContentBlock from "@/components/ContentBlock";
 import Tabs from "@/components/Tabs";
 import { TabElement } from "@/components/Tabs/TabItem";
@@ -18,17 +20,18 @@ const tabs: TabElement[] = [
     selected: true,
     onSelect: () => console.log("clicked"),
   },
-  {
-    label: "Faturas",
-    selected: false,
-    onSelect: () => console.log("clicked"),
-  },
+  // {
+  //   label: "Faturas",
+  //   selected: false,
+  //   onSelect: () => console.log("clicked"),
+  // },
 ];
 
 const SubscriptionClient = () => {
+  const router = useRouter();
   // const [toggle, setToggle] = useState(false);
 
-  // TODO: IMPLEMENT LOADING SCREEN 
+  // TODO: IMPLEMENT LOADING SCREEN
   return (
     <div className={container}>
       <Tabs tabs={tabs} />
@@ -49,7 +52,7 @@ const SubscriptionClient = () => {
           </p>
 
           <div className={blocks}>
-            <SubscriptionOverview onClick={() => console.log("TODO")} />
+            <SubscriptionOverview href="/pricing" />
             {/* <NextBilling /> */}
           </div>
         </ContentBlock>
