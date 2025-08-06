@@ -38,7 +38,7 @@ export default function ReportsClient({
     null
   );
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
-  const [showToast, setShowToast] = useShowToast();
+  const [errorMessage, setErrorMessage] = useShowToast();
 
   const [overviewData, setOverviewData] = useState<JobDataWithId | null>(null);
   const [overviewLoading, setOverviewLoading] = useState(false);
@@ -53,7 +53,9 @@ export default function ReportsClient({
       await deleteById(jobId);
       setJobs((prev) => prev.filter((job) => job.id !== jobId));
     } catch {
-      setShowToast(true);
+      setErrorMessage(
+        "Ocorreu um erro ao excluir. Por favor, tente mais tarde."
+      );
     }
   };
 
@@ -81,12 +83,7 @@ export default function ReportsClient({
 
   return (
     <main className={main}>
-      {showToast && (
-        <Notification
-          type="error"
-          label="Ocorreu um erro ao excluir. Por favor, tente mais tarde."
-        />
-      )}
+      {errorMessage && <Notification type="error" label={errorMessage} />}
 
       <TopBar title="Relatórios">
         <Search fetchJob={fetchJob} />

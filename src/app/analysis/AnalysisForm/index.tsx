@@ -1,7 +1,7 @@
 "use client";
 import { doc, getDoc } from "firebase/firestore";
 import { Button, DatePicker, InputField, Notification, Select } from "isskinui";
-import { useSearchParams, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 
 import { startAnalysis } from "@/app/api/startAnalysis";
@@ -11,8 +11,14 @@ import ContentBlock from "@/components/ContentBlock";
 import HelpCardOverlay from "@/components/HelpCardOverlay";
 import PhotoAnalysis from "@/components/PhotoAnalysis";
 import TopBar from "@/components/TopBar";
-import { saveAnalysisData } from "@/firebase/analysisData";
 import { db } from "@/firebase/config";
+import { ANALYSIS_ERROR_MESSAGES } from "@/firebase/constants";
+import { saveAnalysisData } from "@/firebase/queryAnalysis";
+import {
+  canPerformAnalysis,
+  incrementAnalysisCount,
+} from "@/firebase/queryAnalysis";
+import { useShowToast } from "@/hooks/useShowToast";
 import generateProtocol from "@/utils/generateProtocol";
 
 import { uid } from "../../uid";
@@ -22,9 +28,7 @@ import { genders, insurances, skinTypes } from "./staticData";
 
 const AnalysisForm = () => {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const errorInQuery = searchParams.get("error") === "1";
-  const [showAnalysisError, setShowAnalysisError] = useState(errorInQuery);
+  const [errorMessage, setErrorMessage] = useShowToast();
 
   const [name, setName] = useState("");
   const [insurance, setInsurance] = useState("");
@@ -59,13 +63,18 @@ const AnalysisForm = () => {
     skinLocation.trim() !== "" &&
     imageFile;
 
-  console.log(generateProtocol());
-
   const handleSubmit = async () => {
     if (!imageFile) return;
 
     try {
       setLoading(true);
+
+      const allowed = await canPerformAnalysis(uid);
+      if (!allowed) {
+        setLoading(false);
+        setErrorMessage(ANALYSIS_ERROR_MESSAGES.limit);
+        return;
+      }
 
       const jobId = await startAnalysis(imageFile, uid);
       setJobId(jobId);
@@ -81,9 +90,9 @@ const AnalysisForm = () => {
         skinLocation,
         skinType,
       });
+      await incrementAnalysisCount(uid);
     } catch (error) {
       console.error("Error:", error);
-      setShowAnalysisError(true);
       setLoading(false);
     }
   };
@@ -96,7 +105,7 @@ const AnalysisForm = () => {
       const docSnap = await getDoc(docRef);
 
       if (!docSnap.exists()) {
-        router.push("/analysis?error=1"); // shows notification popup
+        setErrorMessage(ANALYSIS_ERROR_MESSAGES.notFound);
         return;
       }
 
@@ -104,7 +113,7 @@ const AnalysisForm = () => {
       if (data.status === "done") {
         router.push(`/analysis/result/${jobId}`);
       } else if (data.status === "error") {
-        router.push("/analysis?error=1");
+        setErrorMessage(ANALYSIS_ERROR_MESSAGES.generic);
       }
     };
 
@@ -112,26 +121,11 @@ const AnalysisForm = () => {
     checkStatus();
 
     return () => clearInterval(interval);
-  }, [jobId, router]);
-
-  useEffect(() => {
-    if (!showAnalysisError) return;
-
-    const timeout = setTimeout(() => {
-      setShowAnalysisError(false);
-    }, 5000);
-
-    return () => clearTimeout(timeout);
-  }, [showAnalysisError]);
+  }, [jobId, router, setErrorMessage]);
 
   return (
     <main className={main}>
-      {showAnalysisError && (
-        <Notification
-          type="error"
-          label={"Não foi possível realizar sua análise."}
-        />
-      )}
+      {errorMessage && <Notification type="error" label={errorMessage} />}
 
       <TopBar title="Análise">
         {!loading && (
