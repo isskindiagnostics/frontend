@@ -3,3 +3,4 @@ Disallow: /
 
 Allow: /login
 Allow: /signup
+Allow: /pricing
