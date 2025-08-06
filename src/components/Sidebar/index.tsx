@@ -67,20 +67,20 @@ const Sidebar = ({ currentPage, onClick }: SidebarProps) => {
             currentPage !== "subscription" && handleClick("subscription")
           }
         />
-        <SidebarItem
+        {/* <SidebarItem
           label="Configurações"
           icon={<Settings width={22} height={22} />}
           selected={currentPage === "settings"}
           onClick={() => currentPage !== "settings" && handleClick("settings")}
-        />
+        /> */}
       </div>
 
-      <SidebarItem
+      {/* <SidebarItem
         className={logout}
         label="Sair"
         icon={<Logout width={22} height={22} />}
         onClick={() => console.log("To implement")}
-      />
+      /> */}
     </div>
   );
 };
