@@ -6,12 +6,14 @@ import {
   isSelectBtn,
 } from "./index.css";
 
+export type TabElement = {
+  label: string;
+  selected: boolean;
+  onSelect: () => void;
+};
+
 export type TabItemProps = {
-  tabs: {
-    label: string;
-    selected: boolean;
-    onSelect: () => void;
-  }[];
+  tabs: TabElement[];
   className?: string;
 };
 

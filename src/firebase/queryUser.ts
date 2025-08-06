@@ -17,12 +17,17 @@ export async function getUserDataById(uid: string): Promise<UserData> {
     name: "",
     email: "",
     phoneNumber: "",
-    subscription: "",
     fieldOfWork: "",
     professionalLicense: {
       council: "",
       state: "",
       number: "",
+    },
+    subscription: {
+      plan: "free",
+      status: "trialing",
+      startDate: "",
+      endDate: null,
     },
   };
 }

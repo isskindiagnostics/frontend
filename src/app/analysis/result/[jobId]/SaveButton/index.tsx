@@ -5,8 +5,8 @@ import { Button } from "isskinui";
 import { Notification } from "isskinui";
 import { useEffect, useState } from "react";
 
-import { saveAnalysisComment } from "@/firebase/analysisComment";
 import { db } from "@/firebase/config";
+import { saveAnalysisComment } from "@/firebase/queryAnalysis";
 import { useCommentStore } from "@/stores/useCommentStore";
 
 type NotificationText = {

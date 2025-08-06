@@ -4,6 +4,11 @@ import Image from "next/image";
 import { uid } from "@/app/uid";
 import ContentBlock from "@/components/ContentBlock";
 import SkeletonCell from "@/components/SkeletonCell";
+import { REPORT_ERROR_MESSAGES } from "@/firebase/constants";
+import {
+  canCreateReportPdf,
+  incrementReportPdfCount,
+} from "@/firebase/queryReport";
 import { getUserDataById } from "@/firebase/queryUser";
 import { useShowToast } from "@/hooks/useShowToast";
 import { JobDataWithId } from "@/types/job";
@@ -30,25 +35,36 @@ const ReportOverview = ({
   onClose,
   fetchJob,
 }: ReportOverviewProps) => {
-  const [showToast, setShowToast] = useShowToast(8000);
+  const [successMessage, setSuccessMessage] = useShowToast();
+  const [errorMessage, setErrorMessage] = useShowToast();
 
   const handleSaveJob = async (jobId: string) => {
-    const jobData = await fetchJob(jobId);
-    const userData = await getUserDataById(uid);
+    try {
+      const jobData = await fetchJob(jobId);
+      const userData = await getUserDataById(uid);
 
-    if (jobData) {
-      setShowToast(true);
-      generatePdf(userData, jobData);
+      const allowed = await canCreateReportPdf(uid);
+
+      if (!allowed) {
+        setErrorMessage(REPORT_ERROR_MESSAGES.limit);
+        return;
+      }
+
+      if (jobData) {
+        setSuccessMessage("Gerando o relatório do paciente selecionado.");
+        generatePdf(userData, jobData);
+        await incrementReportPdfCount(uid);
+      }
+    } catch (error) {
+      setErrorMessage(REPORT_ERROR_MESSAGES.generic || "Erro desconhecido");
+      console.error("Error:", error);
     }
   };
+
   return (
     <>
-      {showToast && (
-        <Notification
-          type="general"
-          label="Gerando o relatório do paciente selecionado."
-        />
-      )}
+      {successMessage && <Notification type="general" label={successMessage} />}
+      {errorMessage && <Notification type="error" label={errorMessage} />}
 
       {show && (
         <div className={styles.analysisOverview}>
