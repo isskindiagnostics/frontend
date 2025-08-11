@@ -7,7 +7,7 @@ import PricingCard from "@/components/PricingCard";
 import { cardsWrapper } from "../index.css";
 
 const featureFree = [
-  "10 análises totais",
+  "5 análises totais",
   "5 relatórios de análise totais",
   "Suporte básico via FAQs",
   "Acesso básico às funcionalidades",

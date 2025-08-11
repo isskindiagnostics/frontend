@@ -30,6 +30,7 @@ export async function POST(req: NextRequest) {
 
     completedAt: formatDate(jobData.completedAt),
     comment: jobData.comment,
+    protocol: jobData.protocol,
 
     benign: jobData.result.binary_prediction.benign,
     malignant: jobData.result.binary_prediction.malignant,

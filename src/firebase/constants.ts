@@ -1,4 +1,5 @@
-export const MAX_FREE_ANALYSIS_COUNT = 10;
+export const MAX_FREE_ANALYSIS_COUNT = 5;
+export const MAX_FREE_PDF_COUNT = 5;
 
 export const REPORT_ERROR_MESSAGES = {
   generic: "Não foi possível gerar seu relatório.",

@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { HTMLAttributes, PropsWithChildren } from "react";
 
-import ProfileImg from "@/assets/images/default-profile-image.png";
+import ProfileImg from "@/assets/images/doctor.png";
 
 import { pageTitle, profileImg, topBar } from "./index.css";
 
