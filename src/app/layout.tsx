@@ -1,7 +1,9 @@
 import Script from "next/script";
+
 import "./global.css";
 import "isskinui/css";
-// import { AuthProvider } from "../../context/AuthContext";
+
+import { AuthProvider } from "@/context/AuthContext";
 
 import type { Metadata } from "next";
 
@@ -79,9 +81,7 @@ export default function RootLayout({
             `,
           }}
         />
-        {/* <AuthProvider> */}
-        {children}
-        {/* </AuthProvider> */}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
