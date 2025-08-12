@@ -1,5 +1,6 @@
 "use client";
 
+import { auth } from "@/firebase/config";
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -10,7 +11,6 @@ import {
 } from "firebase/auth";
 import { createContext, useContext, useEffect, useState } from "react";
 
-import { auth } from "../src/firebase/config";
 
 interface AuthContextType {
   user: User | null;

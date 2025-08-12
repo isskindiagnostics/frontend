@@ -1,13 +1,16 @@
 "use client";
 
 import { motion, Transition } from "motion/react";
-import { HTMLAttributes } from "react";
+import { CSSProperties, HTMLAttributes } from "react";
 
 import { container, ball } from "./index.css";
 
-type LoaderProps = HTMLAttributes<HTMLDivElement> & {};
+type LoaderProps = HTMLAttributes<HTMLDivElement> & {
+  size?: "big" | "small";
+  color?: CSSProperties["color"];
+};
 
-const Loader = ({ className }: LoaderProps) => {
+const Loader = ({ size = "big", color, className }: LoaderProps) => {
   const ballContainer = {
     rotate: 360,
   };
@@ -40,7 +43,6 @@ const Loader = ({ className }: LoaderProps) => {
     ease: "easeInOut",
     times: [0, 0.5, 1],
     repeat: Infinity,
-    // repeatType: "loop",
     repeatType: "mirror",
   };
 
@@ -49,22 +51,37 @@ const Loader = ({ className }: LoaderProps) => {
       className={`${container} ${className}`}
       animate={ballContainer}
       transition={transitionContainer}
+      style={{ scale: size === "big" ? 1 : 0.6 }}
     >
       <motion.div
         className={`${ball}`}
-        style={{ marginLeft: -15, marginTop: -15 }}
+        style={{
+          marginLeft: -15,
+          marginTop: -15,
+          backgroundColor: color,
+        }}
         animate={ballOne}
         transition={{ ...transition, delay: 0 }}
       ></motion.div>
       <motion.div
         className={`${ball}`}
-        style={{ marginRight: -15, marginTop: -15 }}
+        style={{
+          marginRight: -15,
+          marginTop: -15,
+          color,
+          backgroundColor: color,
+        }}
         animate={ballTwo}
         transition={{ ...transition, delay: 0.1 }}
       ></motion.div>
       <motion.div
         className={`${ball}`}
-        style={{ marginLeft: -15, marginBottom: -15 }}
+        style={{
+          marginLeft: -15,
+          marginBottom: -15,
+          color,
+          backgroundColor: color,
+        }}
         animate={ballThree}
         transition={{ ...transition, delay: 0.2 }}
       ></motion.div>
