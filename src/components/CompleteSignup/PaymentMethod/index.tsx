@@ -42,7 +42,7 @@ const elementOptions = {
 
 interface PaymentMethodProps {
   onNext: (paymentMethodId: string) => void;
-  onBack: () => void;
+  onBack?: () => void;
   isSubmitting?: boolean;
 }
 
@@ -121,7 +121,6 @@ function PaymentMethodForm({
       // Create customer with enhanced error handling
       let customerId = "";
       try {
-        console.log("Creating customer...");
         const customerResponse = await fetch("/api/stripe/create-customer", {
           method: "POST",
           headers: {
@@ -134,15 +133,8 @@ function PaymentMethodForm({
           }),
         });
 
-        console.log("Customer response status:", customerResponse.status);
-        console.log(
-          "Customer response headers:",
-          Object.fromEntries(customerResponse.headers.entries())
-        );
-
         // Get the response text first
         const responseText = await customerResponse.text();
-        console.log("Customer response text:", responseText);
 
         if (!customerResponse.ok) {
           // If it starts with HTML, it's likely a Next.js error page
@@ -168,7 +160,6 @@ function PaymentMethodForm({
         try {
           const customerData = JSON.parse(responseText);
           customerId = customerData.customerId;
-          console.log("Customer created:", customerId);
         } catch (parseError) {
           throw new Error("Invalid JSON response from customer API");
         }
@@ -182,7 +173,6 @@ function PaymentMethodForm({
 
       // Create subscription with enhanced error handling
       try {
-        console.log("Creating subscription...");
         const subscriptionResponse = await fetch(
           "/api/stripe/create-subscription",
           {
@@ -198,13 +188,7 @@ function PaymentMethodForm({
           }
         );
 
-        console.log(
-          "Subscription response status:",
-          subscriptionResponse.status
-        );
-
         const responseText = await subscriptionResponse.text();
-        console.log("Subscription response text:", responseText);
 
         if (!subscriptionResponse.ok) {
           if (
@@ -229,14 +213,12 @@ function PaymentMethodForm({
         let subscriptionData;
         try {
           subscriptionData = JSON.parse(responseText);
-          console.log("Subscription created:", subscriptionData);
         } catch (parseError) {
           throw new Error("Invalid JSON response from subscription API");
         }
 
         // If payment requires confirmation (3D Secure, etc.)
         if (subscriptionData.clientSecret) {
-          console.log("Confirming payment...");
           const { error: confirmError } = await stripe.confirmCardPayment(
             subscriptionData.clientSecret
           );
@@ -247,7 +229,6 @@ function PaymentMethodForm({
         }
 
         // Success - move to next step
-        console.log("Payment successful!");
         onNext(paymentMethod.id);
       } catch (subscriptionError) {
         console.error("Subscription creation error:", subscriptionError);

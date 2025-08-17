@@ -13,7 +13,7 @@ import {
 type WorkFieldProps = {
   professionalInfo: UserProfessionalInfo;
   onNext: (professionalInfo: UserProfessionalInfo) => void;
-  onBack: () => void;
+  onBack?: () => void;
   isSubmitting: boolean;
 };
 

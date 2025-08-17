@@ -27,9 +27,9 @@ type PricingCardProps = HTMLAttributes<HTMLButtonElement> & {
   variant?: "default" | "highlight";
 };
 
-const formatPrice = (price: number) => {
-  if (price === 0) return "R$ 0";
-  return price
+const formatPrice = (priceInCents: number) => {
+  if (priceInCents === 0) return "R$0.00";
+  return (priceInCents / 100)
     .toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
     .replace(/\s/g, "");
 };

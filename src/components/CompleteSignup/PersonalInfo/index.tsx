@@ -86,10 +86,8 @@ export default function PersonalInfo({
   return (
     <form className={stepForm} onSubmit={handleSubmit}>
       <div className={formHeading}>
-        <h2>Informações profissionais</h2>
-        <p>
-          Esses dados ajudam a validar seu vínculo profissional na plataforma.
-        </p>
+        <h2>Precisamos conhecer você!</h2>
+        <p>Preencha seus dados para que possamos identificar seu perfil.</p>
       </div>
 
       <InputField

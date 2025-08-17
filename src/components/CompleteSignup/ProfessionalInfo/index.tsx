@@ -15,7 +15,7 @@ import { BRAZILIAN_STATES, PROFESSIONAL_REGISTRATION } from "./data";
 type ProfessionalInfoProps = {
   professionalInfo: UserProfessionalInfo;
   onNext: (professionalInfo: UserProfessionalInfo) => void;
-  onBack: () => void;
+  onBack?: () => void;
   isSubmitting: boolean;
 };
 
@@ -118,8 +118,6 @@ export default function ProfessionalInfo({
 
     onNext(formData);
   };
-
-  console.log(errors);
 
   return (
     <form className={stepForm} onSubmit={handleSubmit}>

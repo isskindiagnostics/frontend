@@ -16,7 +16,6 @@ export default function PaymentPlan({
   // isSubmitting = false,
 }: PaymentPlanProps) {
   const handlePlanSelect = (planKey: string) => {
-    console.log("clicked");
     const plan = planKey as PlanType;
     onNext(plan);
   };

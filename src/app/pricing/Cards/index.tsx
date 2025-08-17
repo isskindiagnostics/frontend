@@ -31,21 +31,21 @@ export default function Cards() {
     <div className={cardsWrapper}>
       <PricingCard
         subscription={SUBSCRIPTION_PLANS.free.name}
-        price={SUBSCRIPTION_PLANS.free.price / 100}
+        price={SUBSCRIPTION_PLANS.free.price}
         description={SUBSCRIPTION_PLANS.free.description}
         features={SUBSCRIPTION_PLANS.free.features}
-        cta="comece de graça já"
-        onButtonClick={() => router.push("/")}
+        // cta="comece de graça já"
+        // onButtonClick={() => router.push("/")}
       />
 
       <PricingCard
         subscription={SUBSCRIPTION_PLANS.premium.name}
-        price={SUBSCRIPTION_PLANS.premium.price / 100}
+        price={SUBSCRIPTION_PLANS.premium.price}
         description={SUBSCRIPTION_PLANS.premium.description}
         features={SUBSCRIPTION_PLANS.premium.features}
-        cta="em breve"
+        // cta="em breve"
         variant="highlight"
-        buttonDisabled={true}
+        // buttonDisabled={true}
       />
     </div>
   );
