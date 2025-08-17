@@ -2,6 +2,7 @@
 import { Notification } from "isskinui";
 
 import SmallLogo from "@/assets/svgs/SmallLogo";
+import Loader from "@/components/Loader";
 import { FORM_STEPS, TOTAL_STEPS } from "@/config/formSteps";
 import { useFormNavigation } from "@/hooks/useFormNavigation";
 import { useUserProfile } from "@/hooks/useUserProfile";
@@ -42,10 +43,6 @@ export default function CompleteSignup() {
   };
 
   const renderStep = () => {
-    if (isLoading) {
-      return <div>Carregando...</div>;
-    }
-
     const step = FORM_STEPS[currentStep - 1];
     if (!step) return null;
 
@@ -118,6 +115,7 @@ export default function CompleteSignup() {
       </div>
     );
   };
+  const currentStepData = FORM_STEPS[currentStep - 1];
 
   return (
     <>
@@ -136,7 +134,23 @@ export default function CompleteSignup() {
             {renderProgressIndicators()}
           </div>
         </div>
-        <main className={styles.main}>{renderStep()}</main>
+
+        <main className={styles.main}>
+          {currentStepData && !isLoading && (
+            <div className={styles.stepForm}>
+              <div className={styles.formHeading}>
+                <h2>{currentStepData.title}</h2>
+                <p>{currentStepData.description}</p>
+              </div>
+              {renderStep()}
+            </div>
+          )}
+          {isLoading && (
+            <div className={styles.loaderWrapper}>
+              <Loader />
+            </div>
+          )}
+        </main>
       </div>
     </>
   );

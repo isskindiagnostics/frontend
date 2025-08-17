@@ -7,22 +7,63 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { Button, InputField, Notification } from "isskinui";
+import { Button, InputField, Notification, theme } from "isskinui";
 import React, { useState } from "react";
 
+import { stepForm } from "@/app/complete-signup/index.css";
 import { useAuth } from "@/context/AuthContext";
 import { stripePromise } from "@/stripe/config";
 import {
-  stepForm,
-  formHeading,
+  CreateCustomerRequest,
+  CreateCustomerResponse,
+  CreateSubscriptionRequest,
+  CreateSubscriptionResponse,
+  StripeError,
+} from "@/types/stripeApi";
+import { parseAPIResponse } from "@/utils/parseAPIResponse";
+import { translateStripeError } from "@/utils/stripeErrorTranslator";
+
+import {
   stripeLabel,
   stripeInputField,
   inputFieldWrapper,
   twoFieldsRow,
   formButtonContainer,
+  stripeError,
+  stripeInputFieldError,
 } from "../index.css";
 
-// Stripe Elements styling
+type PaymentMethodProps = {
+  onNext: (paymentMethodId: string) => void;
+  onBack?: () => void;
+  isSubmitting?: boolean;
+};
+
+type CardCompletionState = {
+  cardNumber: boolean;
+  cardExpiry: boolean;
+  cardCvc: boolean;
+};
+
+type CardErrors = {
+  cardNumber?: string;
+  cardExpiry?: string;
+  cardCvc?: string;
+  cardholderName?: string;
+  general?: string;
+};
+
+type StripeElementChangeEvent = {
+  complete: boolean;
+  error?: {
+    message: string;
+    type: string;
+    code?: string;
+  };
+  elementType: string;
+};
+
+// Stripe Elements styling - TODO
 const elementOptions = {
   style: {
     base: {
@@ -35,37 +76,32 @@ const elementOptions = {
       padding: "12px",
     },
     invalid: {
-      color: "#9e2146",
+      color: theme.colors.brandBlack,
     },
   },
-};
+  hideIcon: true,
+  disableLink: true,
+} as const;
 
-interface PaymentMethodProps {
-  onNext: (paymentMethodId: string) => void;
-  onBack?: () => void;
-  isSubmitting?: boolean;
-}
-
-// Inner component that uses Stripe hooks
-function PaymentMethodForm({
+const PaymentMethodForm = ({
   onNext,
   onBack,
   isSubmitting,
-}: PaymentMethodProps) {
+}: PaymentMethodProps) => {
   const stripe = useStripe();
   const elements = useElements();
   const { user } = useAuth();
 
   const [cardholderName, setCardholderName] = useState("");
-  const [error, setError] = useState<string | null>(null);
   const [processing, setProcessing] = useState(false);
-  const [cardComplete, setCardComplete] = useState({
+  const [cardComplete, setCardComplete] = useState<CardCompletionState>({
     cardNumber: false,
     cardExpiry: false,
     cardCvc: false,
   });
+  const [errors, setErrors] = useState<CardErrors>({});
 
-  const isFormValid = () => {
+  const isFormValid = (): boolean => {
     return (
       cardholderName.trim().length >= 2 &&
       cardComplete.cardNumber &&
@@ -74,28 +110,91 @@ function PaymentMethodForm({
     );
   };
 
-  // Replace the handleSubmit function in your component with this enhanced version
+  const clearErrors = () => {
+    setErrors({});
+  };
+
+  const setFieldError = (field: keyof CardErrors, error: string) => {
+    const translatedError = translateStripeError(error);
+    setErrors((prev) => ({ ...prev, [field]: translatedError }));
+  };
+
+  const createCustomer = async (): Promise<string> => {
+    const requestData: CreateCustomerRequest = {
+      userId: user?.uid || "",
+      email: user?.email || "",
+      name: cardholderName,
+    };
+
+    try {
+      const response = await fetch("/api/stripe/create-customer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestData),
+      });
+
+      const customerData = (await parseAPIResponse(
+        response
+      )) as CreateCustomerResponse;
+      return customerData.customerId;
+    } catch (error) {
+      console.error("Customer creation error:", error);
+      throw new Error(
+        translateStripeError(
+          `Erro ao processar informações do cliente: ${(error as Error).message}`
+        )
+      );
+    }
+  };
+
+  const createSubscription = async (
+    customerId: string,
+    paymentMethodId: string
+  ): Promise<CreateSubscriptionResponse> => {
+    const requestData: CreateSubscriptionRequest = {
+      customerId,
+      paymentMethodId,
+      userId: user?.uid || "",
+    };
+
+    try {
+      const response = await fetch("/api/stripe/create-subscription", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(requestData),
+      });
+
+      return (await parseAPIResponse(response)) as CreateSubscriptionResponse;
+    } catch (error) {
+      console.error("Subscription creation error:", error);
+      throw error;
+    }
+  };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
     if (!stripe || !elements) {
-      setError("Pagamento não foi carregado. Tente novamente.");
+      setFieldError("general", "Pagamento não foi carregado. Tente novamente.");
       return;
     }
 
     if (!isFormValid()) {
-      setError("Por favor, preencha todos os campos obrigatórios.");
+      setFieldError(
+        "general",
+        "Por favor, preencha todos os campos obrigatórios."
+      );
       return;
     }
 
     setProcessing(true);
-    setError(null);
+    clearErrors();
 
     try {
       const cardNumberElement = elements.getElement(CardNumberElement);
 
       if (!cardNumberElement) {
+        setFieldError("general", "Elemento do cartão não encontrado");
         throw new Error("Elemento do cartão não encontrado");
       }
 
@@ -111,231 +210,193 @@ function PaymentMethodForm({
         });
 
       if (paymentMethodError) {
-        throw new Error(paymentMethodError.message);
+        const translatedError = translateStripeError(
+          paymentMethodError.message || "",
+          paymentMethodError.code,
+          paymentMethodError.decline_code
+        );
+        throw new Error(translatedError);
       }
 
       if (!paymentMethod) {
-        throw new Error("Falha ao criar método de pagamento");
+        setFieldError("general", "Falha ao criar método de pagamento");
       }
 
-      // Create customer with enhanced error handling
-      let customerId = "";
-      try {
-        const customerResponse = await fetch("/api/stripe/create-customer", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            userId: user?.uid,
-            email: user?.email,
-            name: cardholderName,
-          }),
-        });
+      // Create customer
+      const customerId = await createCustomer();
 
-        // Get the response text first
-        const responseText = await customerResponse.text();
+      // Create subscription
+      const subscriptionData = await createSubscription(
+        customerId,
+        paymentMethod.id
+      );
 
-        if (!customerResponse.ok) {
-          // If it starts with HTML, it's likely a Next.js error page
-          if (
-            responseText.trim().startsWith("<!DOCTYPE") ||
-            responseText.trim().startsWith("<html")
-          ) {
-            throw new Error(
-              `API route not found or returning HTML error page. Status: ${customerResponse.status}`
-            );
-          }
-
-          try {
-            const errorData = JSON.parse(responseText);
-            throw new Error(
-              errorData.error || `HTTP ${customerResponse.status}`
-            );
-          } catch (parseError) {
-            throw new Error(`API error: ${responseText}`);
-          }
-        }
-
-        try {
-          const customerData = JSON.parse(responseText);
-          customerId = customerData.customerId;
-        } catch (parseError) {
-          throw new Error("Invalid JSON response from customer API");
-        }
-      } catch (customerError) {
-        console.error("Customer creation error:", customerError);
-        throw new Error(
-          "Erro ao processar informações do cliente: " +
-            (customerError as Error).message
-        );
-      }
-
-      // Create subscription with enhanced error handling
-      try {
-        const subscriptionResponse = await fetch(
-          "/api/stripe/create-subscription",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              customerId,
-              paymentMethodId: paymentMethod.id,
-              userId: user?.uid,
-            }),
-          }
+      // Handle 3D Secure if required
+      if (subscriptionData.clientSecret) {
+        const { error: confirmError } = await stripe.confirmCardPayment(
+          subscriptionData.clientSecret
         );
 
-        const responseText = await subscriptionResponse.text();
-
-        if (!subscriptionResponse.ok) {
-          if (
-            responseText.trim().startsWith("<!DOCTYPE") ||
-            responseText.trim().startsWith("<html")
-          ) {
-            throw new Error(
-              `Subscription API route not found or returning HTML error page. Status: ${subscriptionResponse.status}`
-            );
-          }
-
-          try {
-            const errorData = JSON.parse(responseText);
-            throw new Error(
-              errorData.error || `HTTP ${subscriptionResponse.status}`
-            );
-          } catch (parseError) {
-            throw new Error(`Subscription API error: ${responseText}`);
-          }
-        }
-
-        let subscriptionData;
-        try {
-          subscriptionData = JSON.parse(responseText);
-        } catch (parseError) {
-          throw new Error("Invalid JSON response from subscription API");
-        }
-
-        // If payment requires confirmation (3D Secure, etc.)
-        if (subscriptionData.clientSecret) {
-          const { error: confirmError } = await stripe.confirmCardPayment(
-            subscriptionData.clientSecret
+        if (confirmError) {
+          // Enhanced error translation for 3D Secure errors
+          const translatedError = translateStripeError(
+            confirmError.message || "",
+            confirmError.code,
+            confirmError.decline_code
           );
-
-          if (confirmError) {
-            throw new Error(confirmError.message);
-          }
+          throw new Error(translatedError);
         }
-
-        // Success - move to next step
-        onNext(paymentMethod.id);
-      } catch (subscriptionError) {
-        console.error("Subscription creation error:", subscriptionError);
-        throw subscriptionError;
       }
-    } catch (err: any) {
-      console.error("Payment error:", err);
-      setError(err.message || "Erro ao processar pagamento. Tente novamente.");
+
+      // Success
+      onNext(paymentMethod.id);
+    } catch (err) {
+      const error = err as StripeError;
+      console.error("Payment error:", error);
+
+      // Translate the error message to Portuguese
+      const translatedError = translateStripeError(
+        error.message || "Erro ao processar pagamento. Tente novamente."
+      );
+
+      setFieldError("general", translatedError);
     } finally {
       setProcessing(false);
     }
   };
 
-  const handleCardChange = (elementType: string) => (event: any) => {
-    setCardComplete((prev) => ({
-      ...prev,
-      [elementType]: event.complete,
-    }));
+  const handleCardChange =
+    (elementType: keyof CardCompletionState) =>
+    (event: StripeElementChangeEvent) => {
+      setCardComplete((prev) => ({
+        ...prev,
+        [elementType]: event.complete,
+      }));
 
-    if (event.error) {
-      setError(event.error.message);
-    } else {
-      setError(null);
+      if (event.error) {
+        const translatedError = translateStripeError(
+          event.error.message,
+          event.error.code,
+          undefined // decline codes are not used in element validation
+        );
+
+        setFieldError(elementType, translatedError);
+      } else {
+        setErrors((prev) => {
+          const newErrors = { ...prev };
+          delete newErrors[elementType];
+          return newErrors;
+        });
+      }
+    };
+
+  const handleCardholderNameChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = e.target.value;
+    setCardholderName(value);
+
+    if (errors.cardholderName && value.trim().length >= 2) {
+      setErrors((prev) => {
+        const newErrors = { ...prev };
+        delete newErrors.cardholderName;
+        return newErrors;
+      });
     }
   };
 
+  const handleCardholderNameBlur = () => {
+    if (cardholderName.trim().length > 0 && cardholderName.trim().length < 2) {
+      setFieldError(
+        "cardholderName",
+        "O nome do portador deve ter pelo menos 2 caracteres."
+      );
+    } else if (cardholderName.trim().length === 0) {
+      setFieldError("cardholderName", "Este campo é obrigatório.");
+    }
+  };
+
+  const isDisabled = processing || isSubmitting;
+
   return (
     <>
-      {error && <Notification type="error" label={error} />}
-      <div className={stepForm}>
-        <div className={formHeading}>
-          <h2>Informações de Pagamento</h2>
-          <p>Digite os dados do seu cartão para ativar o plano Premium.</p>
-        </div>
+      {errors.general && <Notification type="error" label={errors.general} />}
 
-        <form className={stepForm} onSubmit={handleSubmit}>
-          <InputField
-            label="Nome no cartão"
-            type="text"
-            value={cardholderName}
-            onChange={(e) => setCardholderName(e.target.value)}
-            placeholder="Digite o nome como está no cartão"
-            width="100%"
-            required
-            disabled={processing || isSubmitting}
-          />
+      <form className={stepForm} onSubmit={handleSubmit}>
+        <InputField
+          label="Nome no cartão"
+          type="text"
+          value={cardholderName}
+          onChange={handleCardholderNameChange}
+          onBlur={handleCardholderNameBlur}
+          placeholder="Digite o nome como está no cartão"
+          width="100%"
+          error={errors.cardholderName}
+          required
+          disabled={isDisabled}
+        />
 
+        <div className={twoFieldsRow}>
           <div className={inputFieldWrapper}>
             <label className={stripeLabel}>Número do cartão</label>
-
             <CardNumberElement
-              className={stripeInputField}
+              className={`${stripeInputField} ${errors.cardNumber && stripeInputFieldError}`}
               options={elementOptions}
               onChange={handleCardChange("cardNumber")}
-              // disabled={processing || isSubmitting}
             />
+            {errors.cardNumber && (
+              <div className={stripeError}>{errors.cardNumber}</div>
+            )}
           </div>
 
-          <div className={twoFieldsRow}>
-            <div className={inputFieldWrapper}>
-              <label className={stripeLabel}>Data de vencimento</label>
-
-              <CardExpiryElement
-                className={stripeInputField}
-                options={elementOptions}
-                onChange={handleCardChange("cardExpiry")}
-                // disabled={processing || isSubmitting}
-              />
-            </div>
-
-            <div className={inputFieldWrapper}>
-              <label className={stripeLabel}>CVC</label>
-
-              <CardCvcElement
-                className={stripeInputField}
-                options={elementOptions}
-                onChange={handleCardChange("cardCvc")}
-                // disabled={processing || isSubmitting}
-              />
-            </div>
+          <div className={inputFieldWrapper}>
+            <label className={stripeLabel}>Data de vencimento</label>
+            <CardExpiryElement
+              className={`${stripeInputField} ${errors.cardExpiry && stripeInputFieldError}`}
+              options={elementOptions}
+              onChange={handleCardChange("cardExpiry")}
+            />
+            {errors.cardExpiry && (
+              <div className={stripeError}>{errors.cardExpiry}</div>
+            )}
           </div>
 
-          <div className={formButtonContainer}>
-            <Button
-              type="button"
-              variant="outlined"
-              onClick={onBack}
-              disabled={processing || isSubmitting}
-            >
-              Voltar
-            </Button>
-
-            <Button
-              type="submit"
-              variant="solid"
-              disabled={!isFormValid() || processing || isSubmitting || !stripe}
-            >
-              {processing || isSubmitting ? "Processando..." : "Ativar Plano"}
-            </Button>
+          <div className={inputFieldWrapper}>
+            <label className={stripeLabel}>CVC</label>
+            <CardCvcElement
+              className={`${stripeInputField} ${errors.cardCvc && stripeInputFieldError}`}
+              options={elementOptions}
+              onChange={handleCardChange("cardCvc")}
+            />
+            {errors.cardCvc && (
+              <div className={stripeError}>{errors.cardCvc}</div>
+            )}
           </div>
-        </form>
-      </div>
+        </div>
+
+        <div className={formButtonContainer}>
+          <Button
+            type="button"
+            variant="outlined"
+            onClick={onBack}
+            disabled={isDisabled}
+          >
+            Voltar
+          </Button>
+
+          <Button
+            type="submit"
+            variant="solid"
+            disabled={!isFormValid() || isDisabled || !stripe}
+          >
+            {isDisabled ? "Processando..." : "Ativar Plano"}
+          </Button>
+        </div>
+      </form>
     </>
   );
-}
+};
 
-// Main component that provides Stripe Elements context
 export default function PaymentMethod(props: PaymentMethodProps) {
   return (
     <Elements stripe={stripePromise}>

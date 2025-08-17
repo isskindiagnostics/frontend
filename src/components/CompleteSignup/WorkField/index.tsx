@@ -1,14 +1,11 @@
 import { Button, Notification, FormCard } from "isskinui";
 import { useState } from "react";
 
+import { stepForm } from "@/app/complete-signup/index.css";
 import { UserProfessionalInfo } from "@/types/user";
 
-import {
-  cardsRow,
-  formButtonContainer,
-  formHeading,
-  stepForm,
-} from "../index.css";
+import { WORKING_FIELD } from "../data";
+import { cardsRow, formButtonContainer } from "../index.css";
 
 type WorkFieldProps = {
   professionalInfo: UserProfessionalInfo;
@@ -16,12 +13,6 @@ type WorkFieldProps = {
   onBack?: () => void;
   isSubmitting: boolean;
 };
-
-const fieldOfWork = [
-  { icon: "Doctor", description: "Médico Generalista" },
-  { icon: "Pipette", description: "Dermatologista" },
-  { icon: "Nurse", description: "Enfermeiro" },
-];
 
 export default function WorkField({
   professionalInfo,
@@ -62,13 +53,8 @@ export default function WorkField({
       {error && <Notification type="error" label={error} />}
 
       <form className={stepForm} onSubmit={handleSubmit}>
-        <div className={formHeading}>
-          <h2>Qual sua área de atuação?</h2>
-          <p>Isso nos ajuda a personalizar sua experiência.</p>
-        </div>
-
         <div className={cardsRow}>
-          {fieldOfWork.map((type) => (
+          {WORKING_FIELD.map((type) => (
             <FormCard
               key={type.description}
               icon={type.icon}

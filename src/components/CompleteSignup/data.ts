@@ -1,3 +1,67 @@
+export const PROFESSIONAL_REGISTRATION = [
+  { label: "CRM", value: "CRM" },
+  { label: "COREN", value: "COREN" },
+];
+
+export const WORKING_FIELD = [
+  { icon: "Doctor", description: "Médico Generalista" },
+  { icon: "Pipette", description: "Dermatologista" },
+  { icon: "Nurse", description: "Enfermeiro" },
+];
+
+export const BRAZILIAN_STATES = [
+  { label: "AC", value: "ac" },
+  { label: "AL", value: "al" },
+  { label: "AP", value: "ap" },
+  { label: "AM", value: "am" },
+  { label: "BA", value: "ba" },
+  { label: "CE", value: "ce" },
+  { label: "DF", value: "df" },
+  { label: "ES", value: "es" },
+  { label: "GO", value: "go" },
+  { label: "MA", value: "ma" },
+  { label: "MT", value: "mt" },
+  { label: "MS", value: "ms" },
+  { label: "MG", value: "mg" },
+  { label: "PA", value: "pa" },
+  { label: "PB", value: "pb" },
+  { label: "PR", value: "pr" },
+  { label: "PE", value: "pe" },
+  { label: "PI", value: "pi" },
+  { label: "RJ", value: "rj" },
+  { label: "RN", value: "rn" },
+  { label: "RS", value: "rs" },
+  { label: "RO", value: "ro" },
+  { label: "RR", value: "rr" },
+  { label: "SC", value: "sc" },
+  { label: "SP", value: "sp" },
+  { label: "SE", value: "se" },
+  { label: "TO", value: "to" },
+];
+
+export const REGISTER_FIELDS = [
+  {
+    label: "Registro Profissional",
+    placeholder: "Conselho",
+    options: PROFESSIONAL_REGISTRATION,
+    value: "council" as const,
+    errorKey: "council",
+  },
+  {
+    label: "",
+    placeholder: "Estado",
+    options: BRAZILIAN_STATES,
+    value: "state" as const,
+    errorKey: "state",
+  },
+];
+
+export const COUNCIL_VALIDATION = {
+  CRM: { min: 5, max: 6 },
+  COREN: { min: 6, max: 7 },
+  default: { min: 5, max: 8 },
+};
+
 export const VALID_AREA_CODES = [
   "11",
   "12",

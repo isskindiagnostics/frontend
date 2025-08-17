@@ -78,6 +78,28 @@ export const completed = style({
 
 export const main = style({
   width: "100%",
+  height: "100%",
   maxWidth: 788,
   marginTop: 70,
+});
+
+export const stepForm = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing.lg,
+});
+
+export const formHeading = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: 6,
+  marginBottom: 14,
+});
+
+export const loaderWrapper = style({
+  height: "100%",
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  paddingBottom: 70,
 });

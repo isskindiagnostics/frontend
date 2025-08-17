@@ -1,19 +1,6 @@
 import { style } from "@vanilla-extract/css";
 import { theme } from "isskinui";
 
-export const stepForm = style({
-  display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing.lg,
-});
-
-export const formHeading = style({
-  display: "flex",
-  flexDirection: "column",
-  gap: 6,
-  marginBottom: 14,
-});
-
 export const customLabel = style({
   fontFamily: theme.typography.fontFamilyBody,
   fontSize: theme.typography.text.desktop.md.fontSize,
@@ -69,4 +56,15 @@ export const stripeInputField = style({
   fontWeight: 300,
   backgroundColor: "transparent",
   width: "100%",
+});
+
+export const stripeInputFieldError = style({
+  border: `1px solid ${theme.colors.functionsError}`,
+});
+
+export const stripeError = style({
+  fontFamily: theme.typography.fontFamilyBody,
+  fontSize: theme.typography.text.desktop.md.fontSize,
+  lineHeight: theme.typography.text.desktop.md.lineHeight,
+  color: theme.colors.functionsError,
 });

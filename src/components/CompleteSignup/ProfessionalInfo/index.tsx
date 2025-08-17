@@ -1,16 +1,11 @@
 import { Button, InputField, Select } from "isskinui";
 import { useState } from "react";
 
+import { stepForm } from "@/app/complete-signup/index.css";
 import { UserProfessionalInfo } from "@/types/user";
 
-import {
-  formButtonContainer,
-  formHeading,
-  stepForm,
-  twoFieldsRow,
-} from "../index.css";
-
-import { BRAZILIAN_STATES, PROFESSIONAL_REGISTRATION } from "./data";
+import { COUNCIL_VALIDATION, REGISTER_FIELDS } from "../data";
+import { formButtonContainer, twoFieldsRow } from "../index.css";
 
 type ProfessionalInfoProps = {
   professionalInfo: UserProfessionalInfo;
@@ -26,84 +21,66 @@ export default function ProfessionalInfo({
   isSubmitting,
 }: ProfessionalInfoProps) {
   const [formData, setFormData] = useState(professionalInfo);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const professionalRegister = [
-    {
-      label: "Registro Profissional",
-      placeholder: "Conselho",
-      options: PROFESSIONAL_REGISTRATION,
-      value: "council" as keyof typeof formData.register,
-      errorKey: "council",
-    },
-    {
-      label: "",
-      placeholder: "Estado",
-      options: BRAZILIAN_STATES,
-      value: "state" as keyof typeof formData.register,
-      errorKey: "state",
-    },
-  ];
+  const validateRegisterNumber = (number: string, council: string): boolean => {
+    const rules =
+      COUNCIL_VALIDATION[council as keyof typeof COUNCIL_VALIDATION] ||
+      COUNCIL_VALIDATION.default;
 
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
+    return number.length >= rules.min && number.length <= rules.max;
+  };
+
+  const validateForm = (): Record<string, string> => {
+    const newErrors: Record<string, string> = {};
 
     if (!formData.institution.trim()) {
-      newErrors["institution"] = "Escolha uma opção.";
+      newErrors.institution = "Escolha uma opção.";
     }
 
     if (!formData.register.council.trim()) {
-      newErrors["council"] = "Escolha um conselho.";
+      newErrors.council = "Escolha um conselho.";
     }
 
     if (!formData.register.state.trim()) {
-      newErrors["state"] = "Escolha um estado.";
+      newErrors.state = "Escolha um estado.";
     }
+
     const registerNumber = formData.register.number.trim();
-    const council = formData.register.council;
-
     if (!registerNumber) {
-      newErrors["registerNumber"] = "O número do registro é obrigatório.";
-    } else {
-      let isValid = false;
-
-      if (
-        council === "CRM" &&
-        registerNumber.length >= 5 &&
-        registerNumber.length <= 6
-      ) {
-        isValid = true;
-      } else if (
-        council === "COREN" &&
-        registerNumber.length >= 6 &&
-        registerNumber.length <= 7
-      ) {
-        isValid = true;
-      } else if (
-        !council &&
-        registerNumber.length >= 5 &&
-        registerNumber.length <= 8
-      ) {
-        isValid = true;
-      }
-
-      if (!isValid) {
-        newErrors["registerNumber"] =
-          "Número de registro inválido para o conselho selecionado.";
-      }
+      newErrors.registerNumber = "O número do registro é obrigatório.";
+    } else if (
+      !validateRegisterNumber(registerNumber, formData.register.council)
+    ) {
+      newErrors.registerNumber =
+        "Número de registro inválido para o conselho selecionado.";
     }
 
     return newErrors;
+  };
+
+  const updateRegisterField = (
+    field: keyof typeof formData.register,
+    value: string
+  ) => {
+    setFormData((prev) => ({
+      ...prev,
+      register: { ...prev.register, [field]: value },
+    }));
   };
 
   const handleRegisterNumberChange = (
     e: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = e.target.value.replace(/\D/g, "").slice(0, 7);
-    setFormData((prev) => ({
-      ...prev,
-      register: { ...prev.register, number: value },
-    }));
+    updateRegisterField("number", value);
+  };
+
+  const handleSelectChange = (
+    field: keyof typeof formData.register,
+    value: string
+  ) => {
+    updateRegisterField(field, value);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -119,23 +96,18 @@ export default function ProfessionalInfo({
     onNext(formData);
   };
 
+  const hasErrors = Object.keys(errors).length > 0;
+
   return (
     <form className={stepForm} onSubmit={handleSubmit}>
-      <div className={formHeading}>
-        <h2>Informações profissionais</h2>
-        <p>
-          Esses dados ajudam a validar seu vínculo profissional na plataforma.
-        </p>
-      </div>
-
       <div>
         <div
           className={twoFieldsRow}
           style={{
-            alignItems: Object.keys(errors).length === 0 ? "end" : "center",
+            alignItems: hasErrors ? "center" : "end",
           }}
         >
-          {professionalRegister.map((register, idx) => (
+          {REGISTER_FIELDS.map((register, idx) => (
             <Select
               key={idx}
               label={register.label}
@@ -143,18 +115,13 @@ export default function ProfessionalInfo({
               placeholder={register.placeholder}
               value={formData.register[register.value]}
               onValueChange={(value: string) =>
-                setFormData((prev) => ({
-                  ...prev,
-                  register: {
-                    ...prev.register,
-                    [register.value]: value,
-                  },
-                }))
+                handleSelectChange(register.value, value)
               }
               error={errors[register.errorKey]}
               disabled={isSubmitting}
             />
           ))}
+
           <InputField
             label="Número do Registro"
             type="text"
@@ -163,7 +130,7 @@ export default function ProfessionalInfo({
             onChange={handleRegisterNumberChange}
             placeholder="Número"
             width="100%"
-            error={errors["registerNumber"]}
+            error={errors.registerNumber}
             disabled={isSubmitting}
             required
           />
@@ -179,7 +146,7 @@ export default function ProfessionalInfo({
           setFormData((prev) => ({ ...prev, institution: e.target.value }))
         }
         width="100%"
-        error={errors["institution"]}
+        error={errors.institution}
         disabled={isSubmitting}
         required
       />

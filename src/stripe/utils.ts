@@ -1,5 +1,3 @@
-import { PaymentMethod } from "@/types/subscription";
-
 export const formatCardBrand = (brand: string): string => {
   switch (brand.toLowerCase()) {
     case "visa":
@@ -34,7 +32,7 @@ export const maskCardNumber = (last4: string): string => {
 //   };
 
 //   return iconMap[brand.toLowerCase()] || "💳";
-// };
+// }; // TODO
 
 export const validateCardholderName = (name: string): boolean => {
   return name.trim().length >= 2 && /^[a-zA-Z\s]+$/.test(name.trim());

@@ -1,6 +1,7 @@
 import { Button, InputField } from "isskinui";
 import { useState } from "react";
 
+import { stepForm } from "@/app/complete-signup/index.css";
 import { UserData } from "@/types/user";
 
 import { VALID_AREA_CODES } from "../data";
@@ -8,8 +9,6 @@ import {
   customLabel,
   formAreaCode,
   formButtonContainer,
-  formHeading,
-  stepForm,
   twoFieldsRow,
 } from "../index.css";
 
@@ -25,49 +24,50 @@ export default function PersonalInfo({
   isSubmitting,
 }: PersonalInfoProps) {
   const [formData, setFormData] = useState(userData);
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
+  const validateForm = (): Record<string, string> => {
+    const newErrors: Record<string, string> = {};
 
     if (!formData.name.trim()) {
-      newErrors["name"] = "O nome completo é obrigatório.";
+      newErrors.name = "O nome completo é obrigatório.";
     }
 
     const areaCode = formData.phoneNumber.areaCode.trim();
     if (!areaCode) {
-      newErrors["areaCode"] = "O DDD é obrigatório.";
+      newErrors.areaCode = "O DDD é obrigatório.";
     } else if (!/^[1-9][1-9]$/.test(areaCode)) {
-      newErrors["areaCode"] =
+      newErrors.areaCode =
         "DDD inválido. Use apenas dois dígitos (ex: 11, 21).";
     } else if (!VALID_AREA_CODES.includes(areaCode)) {
-      newErrors["areaCode"] = "DDD não existe no Brasil.";
+      newErrors.areaCode = "DDD não existe no Brasil.";
     }
 
     const phoneNumber = formData.phoneNumber.number.replace(/\D/g, "");
     if (!phoneNumber) {
-      newErrors["number"] = "O telefone é obrigatório.";
+      newErrors.number = "O telefone é obrigatório.";
     } else if (!/^[9]?[0-9]{8}$/.test(phoneNumber)) {
-      newErrors["number"] = "Número inválido. Use 8 ou 9 dígitos.";
+      newErrors.number = "Número inválido. Use 8 ou 9 dígitos.";
     }
 
     return newErrors;
   };
 
-  const handleAreaCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\D/g, "").slice(0, 2);
+  const updatePhoneNumber = (field: "areaCode" | "number", value: string) => {
     setFormData((prev) => ({
       ...prev,
-      phoneNumber: { ...prev.phoneNumber, areaCode: value },
+      phoneNumber: { ...prev.phoneNumber, [field]: value },
     }));
+  };
+
+  const handleAreaCodeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\D/g, "").slice(0, 2);
+    updatePhoneNumber("areaCode", value);
   };
 
   const handlePhoneNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\D/g, "").slice(0, 9);
-    setFormData((prev) => ({
-      ...prev,
-      phoneNumber: { ...prev.phoneNumber, number: value },
-    }));
+    updatePhoneNumber("number", value);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -85,11 +85,6 @@ export default function PersonalInfo({
 
   return (
     <form className={stepForm} onSubmit={handleSubmit}>
-      <div className={formHeading}>
-        <h2>Precisamos conhecer você!</h2>
-        <p>Preencha seus dados para que possamos identificar seu perfil.</p>
-      </div>
-
       <InputField
         label="Nome Completo"
         type="text"
@@ -99,7 +94,7 @@ export default function PersonalInfo({
           setFormData((prev) => ({ ...prev, name: e.target.value }))
         }
         width="100%"
-        error={errors["name"]}
+        error={errors.name}
         disabled={isSubmitting}
         required
       />
@@ -117,7 +112,7 @@ export default function PersonalInfo({
             onChange={handleAreaCodeChange}
             placeholder="DDD"
             maxLength={2}
-            error={errors["areaCode"]}
+            error={errors.areaCode}
             disabled={isSubmitting}
             required
             style={{ padding: 14 }}
@@ -131,12 +126,13 @@ export default function PersonalInfo({
             placeholder="Número"
             maxLength={9}
             width="100%"
-            error={errors["number"]}
+            error={errors.number}
             disabled={isSubmitting}
             required
           />
         </div>
       </div>
+
       <div className={formButtonContainer}>
         <Button variant="solid" type="submit" disabled={isSubmitting}>
           Próximo
