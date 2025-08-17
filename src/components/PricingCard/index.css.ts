@@ -2,16 +2,25 @@ import { globalStyle, style } from "@vanilla-extract/css";
 import { theme } from "isskinui";
 
 export const container = style({
+  width: "100%",
+  maxWidth: 434,
+  // minHeight: 496,
   display: "flex",
   flexDirection: "column",
-  maxWidth: 434,
-  minHeight: 496,
   padding: theme.spacing.lg,
   backgroundColor: theme.colors.brandWhite,
-  borderRadius: theme.radius.xs,
+  borderRadius: theme.radius.md,
   boxShadow: theme.shadow.xs,
   justifyContent: "space-between",
   gap: theme.spacing.sm,
+  transition: "ease-in-out 0.5s",
+  border: "none",
+  cursor: "pointer",
+
+  ":hover": {
+    transform: "translateY(-7px)",
+    boxShadow: "0px 4px 54.3px 14px rgba(14, 19, 19, 0.1)",
+  },
 });
 
 export const containerHighlight = style({
@@ -25,12 +34,12 @@ export const contentWrapper = style({
 });
 
 export const badge = style({
-  backgroundColor: "transparent",
+  backgroundColor: "transparent !important",
   border: `1px solid ${theme.colors.brandBlack}`,
 });
 
 export const badgeHighlight = style({
-  backgroundColor: theme.colors.brandWhite,
+  backgroundColor: `${theme.colors.brandWhite} !important`,
   border: "none",
 });
 
@@ -70,6 +79,12 @@ export const listItem = style({
 
 export const checkIcon = style({
   color: theme.colors.brandPrimary,
+});
+
+export const cardText = style({
+  textAlign: "left",
+  fontSize: theme.typography.text.desktop.lg.fontSize,
+  lineHeight: theme.typography.text.desktop.lg.lineHeight,
 });
 
 export const button = style({

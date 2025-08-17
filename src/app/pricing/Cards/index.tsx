@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import PricingCard from "@/components/PricingCard";
 
 import { cardsWrapper } from "../index.css";
+import { SUBSCRIPTION_PLANS } from "@/stripe/config";
 
 const featureFree = [
   "5 análises totais",
@@ -24,21 +25,24 @@ const featurePremium = [
 
 export default function Cards() {
   const router = useRouter();
+
+  // SUBSCRIPTION_PLANS
   return (
     <div className={cardsWrapper}>
       <PricingCard
-        subscription="Grátis"
-        price={0}
-        description="Ideal para explorar e entender a nossa plataforma."
-        features={featureFree}
+        subscription={SUBSCRIPTION_PLANS.free.name}
+        price={SUBSCRIPTION_PLANS.free.price / 100}
+        description={SUBSCRIPTION_PLANS.free.description}
+        features={SUBSCRIPTION_PLANS.free.features}
         cta="comece de graça já"
         onButtonClick={() => router.push("/")}
       />
+
       <PricingCard
-        subscription="Premium"
-        price={49.99}
-        description="Apoio completo para um atendimento médico moderno e eficiente."
-        features={featurePremium}
+        subscription={SUBSCRIPTION_PLANS.premium.name}
+        price={SUBSCRIPTION_PLANS.premium.price / 100}
+        description={SUBSCRIPTION_PLANS.premium.description}
+        features={SUBSCRIPTION_PLANS.premium.features}
         cta="em breve"
         variant="highlight"
         buttonDisabled={true}

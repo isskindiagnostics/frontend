@@ -1,4 +1,5 @@
 import { Badge, Button, Check, theme } from "isskinui";
+import { HTMLAttributes } from "react";
 
 import {
   list,
@@ -15,16 +16,14 @@ import {
   badgeHighlight,
   textWhite,
   buttonHighlight,
+  cardText,
 } from "./index.css";
 
-type PricingCardProps = {
+type PricingCardProps = HTMLAttributes<HTMLButtonElement> & {
   subscription: string;
   price: number;
   description: string;
-  features: string[];
-  cta: string;
-  buttonDisabled?: boolean;
-  onButtonClick?: () => void;
+  features: readonly string[];
   variant?: "default" | "highlight";
 };
 
@@ -40,14 +39,13 @@ const PricingCard = ({
   price,
   description,
   features,
-  cta,
-  buttonDisabled,
-  onButtonClick,
   variant = "default",
+  ...props
 }: PricingCardProps) => {
   return (
-    <div
+    <button
       className={`${container} ${variant === "highlight" && containerHighlight}`}
+      {...props}
     >
       <div className={contentWrapper}>
         <Badge
@@ -68,21 +66,25 @@ const PricingCard = ({
             </p>
           )}
         </div>
-        <p className={variant === "highlight" ? textWhite : ""}>
+        <p
+          className={`${cardText} ${variant === "highlight" ? textWhite : ""}`}
+        >
           {description}
         </p>
         <ul className={list}>
           {features.map((feature, idx) => (
             <li className={listItem} key={idx}>
               <Check className={checkIcon} />
-              <p className={variant === "highlight" ? textWhite : ""}>
+              <p
+                className={`${cardText} ${variant === "highlight" ? textWhite : ""}`}
+              >
                 {feature}
               </p>
             </li>
           ))}
         </ul>
       </div>
-      <Button
+      {/* <Button
         variant={variant === "highlight" ? "solid" : "outlined"}
         disabled={buttonDisabled}
         className={`${button} ${variant === "highlight" && buttonHighlight}`}
@@ -97,8 +99,8 @@ const PricingCard = ({
         }
       >
         {cta}
-      </Button>
-    </div>
+      </Button> */}
+    </button>
   );
 };
 export default PricingCard;

@@ -1,6 +1,6 @@
 "use client";
 
-import { auth } from "@/firebase/config";
+import { auth, db } from "@/firebase/config";
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -9,8 +9,8 @@ import {
   sendPasswordResetEmail,
   User,
 } from "firebase/auth";
+import { doc, getDoc, setDoc } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
-
 
 interface AuthContextType {
   user: User | null;
@@ -41,7 +41,26 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const signUp = async (email: string, password: string) => {
-    await createUserWithEmailAndPassword(auth, email, password);
+    const userCredential = await createUserWithEmailAndPassword(
+      auth,
+      email,
+      password
+    );
+    const user = userCredential.user;
+
+    // Create initial user document in Firestore
+    const userRef = doc(db, "users", user.uid);
+    const userSnap = await getDoc(userRef);
+
+    if (!userSnap.exists()) {
+      await setDoc(userRef, {
+        userData: {
+          email: user.email,
+        },
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      });
+    }
   };
 
   const logout = async () => {

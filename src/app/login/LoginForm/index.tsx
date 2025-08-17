@@ -77,6 +77,7 @@ export default function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           width="100%"
           error={emailInvalid ? "Esse campo é obrigatório" : ""}
+          disabled={isSubmitting}
           required
         />
         <InputField
@@ -89,6 +90,7 @@ export default function LoginForm() {
           type={showPassword ? "text" : "password"}
           iconOnClick={() => setShowPassword(!showPassword)}
           error={passwordInvalid ? "Esse campo é obrigatório" : ""}
+          disabled={isSubmitting}
           required
         />
         {isSubmitting ? (
