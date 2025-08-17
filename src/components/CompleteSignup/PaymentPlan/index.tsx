@@ -4,16 +4,13 @@ import { SUBSCRIPTION_PLANS, PlanType } from "@/stripe/config";
 import { cardsRow } from "../index.css";
 
 interface PaymentPlanProps {
-  // selectedPlan: PlanType;
   onNext: (plan: PlanType) => void;
-  // onBack: () => void;
   isSubmitting?: boolean;
 }
 
 export default function PaymentPlan({
-  // selectedPlan,
   onNext,
-  // isSubmitting = false,
+  isSubmitting,
 }: PaymentPlanProps) {
   const handlePlanSelect = (planKey: string) => {
     const plan = planKey as PlanType;
@@ -31,6 +28,8 @@ export default function PaymentPlan({
           features={plan.features}
           variant={key === "premium" ? "highlight" : "default"}
           onClick={() => handlePlanSelect(key)}
+          disabled={isSubmitting}
+          animateOnHover
         />
       ))}
     </div>

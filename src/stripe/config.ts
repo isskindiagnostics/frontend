@@ -4,7 +4,6 @@ export const stripePromise = loadStripe(
   process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!
 );
 
-// Subscription plans configuration
 export const SUBSCRIPTION_PLANS = {
   free: {
     id: "free",
@@ -25,7 +24,7 @@ export const SUBSCRIPTION_PLANS = {
     name: "Premium",
     description:
       "Apoio completo para um atendimento médico moderno e eficiente.",
-    price: 1000, // R$10.00 in cents
+    price: 4999, // in cents
     stripePriceId: process.env.STRIPE_PREMIUM_PRICE_ID!,
     analysisLimit: -1, // Unlimited
     pdfLimit: -1, // Unlimited

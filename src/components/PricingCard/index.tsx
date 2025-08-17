@@ -1,37 +1,62 @@
-import { Badge, Button, Check, theme } from "isskinui";
-import { HTMLAttributes } from "react";
+import { Badge, Check } from "isskinui";
+import { ButtonHTMLAttributes } from "react";
 
-import {
-  list,
-  listItem,
-  checkIcon,
-  container,
-  contentWrapper,
-  badge,
-  priceLabel,
-  priceWrapper,
-  perMonth,
-  button,
-  containerHighlight,
-  badgeHighlight,
-  textWhite,
-  buttonHighlight,
-  cardText,
-} from "./index.css";
+import * as componentStyles from "./index.css";
+import { hoverAnimation } from "./index.css";
 
-type PricingCardProps = HTMLAttributes<HTMLButtonElement> & {
+type PricingCardProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   subscription: string;
   price: number;
   description: string;
   features: readonly string[];
   variant?: "default" | "highlight";
+  animateOnHover?: boolean;
 };
 
 const formatPrice = (priceInCents: number) => {
-  if (priceInCents === 0) return "R$0.00";
+  if (priceInCents === 0) return "R$0,00";
   return (priceInCents / 100)
     .toLocaleString("pt-BR", { style: "currency", currency: "BRL" })
     .replace(/\s/g, "");
+};
+
+const getStyleClasses = (
+  disabled: boolean,
+  variant: "default" | "highlight",
+  animateOnHover: boolean
+) => {
+  const isHighlight = variant === "highlight";
+
+  return {
+    container: `${componentStyles.container} ${animateOnHover && hoverAnimation} ${isHighlight && componentStyles.containerHighlight}`,
+
+    badge: (() => {
+      if (disabled && isHighlight)
+        return `${componentStyles.badge} ${componentStyles.badgeHighlightDisabled}`;
+      if (disabled && !isHighlight)
+        return `${componentStyles.badge} ${componentStyles.badgeDisabled}`;
+      if (!disabled && isHighlight)
+        return `${componentStyles.badge} ${componentStyles.badgeHighlight}`;
+      return componentStyles.badge;
+    })(),
+
+    textContent: (() => {
+      if (disabled && isHighlight)
+        return `${componentStyles.highlightTextDisabled}`;
+      if (disabled && !isHighlight)
+        return `${componentStyles.defaultTextDisabled}`;
+      if (!disabled && isHighlight) return `${componentStyles.textWhite}`;
+      return "";
+    })(),
+
+    checkIcon: (() => {
+      if (disabled && isHighlight)
+        return `${componentStyles.highlightTextDisabled}`;
+      if (disabled && !isHighlight)
+        return `${componentStyles.defaultTextDisabled}`;
+      return `${componentStyles.checkIcon}`;
+    })(),
+  };
 };
 
 const PricingCard = ({
@@ -39,44 +64,39 @@ const PricingCard = ({
   price,
   description,
   features,
+  disabled = false,
   variant = "default",
+  animateOnHover = false,
   ...props
 }: PricingCardProps) => {
+  const styles = getStyleClasses(disabled, variant, animateOnHover);
+
   return (
-    <button
-      className={`${container} ${variant === "highlight" && containerHighlight}`}
-      {...props}
-    >
-      <div className={contentWrapper}>
-        <Badge
-          label={subscription}
-          className={`${badge} ${variant === "highlight" && badgeHighlight}`}
-        />
-        <div className={priceWrapper}>
-          <p
-            className={`${priceLabel} ${variant === "highlight" && textWhite}`}
-          >
+    <button className={styles.container} disabled={disabled} {...props}>
+      <div className={componentStyles.contentWrapper}>
+        <Badge label={subscription} className={styles.badge} />
+
+        <div className={componentStyles.priceWrapper}>
+          <p className={`${componentStyles.priceLabel} ${styles.textContent}`}>
             {formatPrice(price)}
           </p>
           {price !== 0 && (
-            <p
-              className={`${perMonth} ${variant === "highlight" && textWhite}`}
-            >
+            <p className={`${componentStyles.perMonth} ${styles.textContent}`}>
               /mês
             </p>
           )}
         </div>
-        <p
-          className={`${cardText} ${variant === "highlight" ? textWhite : ""}`}
-        >
+
+        <p className={`${componentStyles.cardText} ${styles.textContent}`}>
           {description}
         </p>
-        <ul className={list}>
+
+        <ul className={componentStyles.list}>
           {features.map((feature, idx) => (
-            <li className={listItem} key={idx}>
-              <Check className={checkIcon} />
+            <li className={componentStyles.listItem} key={idx}>
+              <Check width={20} className={styles.checkIcon} />
               <p
-                className={`${cardText} ${variant === "highlight" ? textWhite : ""}`}
+                className={`${componentStyles.cardText} ${styles.textContent}`}
               >
                 {feature}
               </p>
@@ -84,23 +104,8 @@ const PricingCard = ({
           ))}
         </ul>
       </div>
-      {/* <Button
-        variant={variant === "highlight" ? "solid" : "outlined"}
-        disabled={buttonDisabled}
-        className={`${button} ${variant === "highlight" && buttonHighlight}`}
-        onClick={onButtonClick}
-        style={
-          buttonDisabled
-            ? {
-                borderColor: theme.colors.baseGrey300,
-                color: theme.colors.baseGrey300,
-              }
-            : {}
-        }
-      >
-        {cta}
-      </Button> */}
     </button>
   );
 };
+
 export default PricingCard;
