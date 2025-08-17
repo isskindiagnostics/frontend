@@ -1,16 +1,26 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, Timestamp } from "firebase/firestore";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
 import { db } from "@/firebase/config";
+import {
+  CreateCustomerRequest,
+  CreateCustomerResponse,
+  SubscriptionUpdate,
+  APIError,
+  StripeError,
+  createFirestoreUpdate,
+} from "@/types/stripeApi";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-07-30.basil",
 });
 
-export async function POST(req: NextRequest) {
+export async function POST(
+  req: NextRequest
+): Promise<NextResponse<CreateCustomerResponse | APIError>> {
   try {
-    const { userId, email, name } = await req.json();
+    const { userId, email, name }: CreateCustomerRequest = await req.json();
 
     if (!userId || !email) {
       return NextResponse.json(
@@ -22,7 +32,7 @@ export async function POST(req: NextRequest) {
     // Create Stripe customer
     const customer = await stripe.customers.create({
       email,
-      name,
+      name: name || undefined, // Convert empty string to undefined
       metadata: {
         firebaseUid: userId,
       },
@@ -30,17 +40,22 @@ export async function POST(req: NextRequest) {
 
     // Update user document with Stripe customer ID
     const userRef = doc(db, "users", userId);
-    await updateDoc(userRef, {
+    const updateData: SubscriptionUpdate = {
       "subscription.stripeData.customerId": customer.id,
-      updatedAt: new Date(),
-    });
+      updatedAt: Timestamp.now(), // Use Timestamp instead of Date
+    };
 
-    return NextResponse.json({ customerId: customer.id });
+    await updateDoc(userRef, createFirestoreUpdate(updateData));
+
+    return NextResponse.json({
+      customerId: customer.id,
+    });
   } catch (error) {
     console.error("Error creating customer:", error);
-    return NextResponse.json(
-      { error: "Failed to create customer" },
-      { status: 500 }
-    );
+
+    const stripeError = error as StripeError;
+    const errorMessage = stripeError.message || "Failed to create customer";
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }

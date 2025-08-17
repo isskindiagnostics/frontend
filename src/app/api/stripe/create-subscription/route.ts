@@ -4,14 +4,27 @@ import Stripe from "stripe";
 
 import { db } from "@/firebase/config";
 import { SUBSCRIPTION_PLANS } from "@/stripe/config";
+import {
+  CreateSubscriptionRequest,
+  CreateSubscriptionResponse,
+  SubscriptionUpdate,
+  APIError,
+  StripeError,
+  getPaymentIntentClientSecret,
+  getCardDetails,
+  createFirestoreUpdate,
+} from "@/types/stripeApi";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-07-30.basil",
 });
 
-export async function POST(req: NextRequest) {
+export async function POST(
+  req: NextRequest
+): Promise<NextResponse<CreateSubscriptionResponse | APIError>> {
   try {
-    const { customerId, paymentMethodId, userId } = await req.json();
+    const { customerId, paymentMethodId, userId }: CreateSubscriptionRequest =
+      await req.json();
 
     if (!customerId || !paymentMethodId || !userId) {
       return NextResponse.json(
@@ -46,16 +59,16 @@ export async function POST(req: NextRequest) {
 
     // Get payment method details for saving
     const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
-    const card = paymentMethod.card;
+    const cardDetails = getCardDetails(paymentMethod);
 
     // Calculate dates
     const now = Timestamp.now();
 
     // Update user document
     const userRef = doc(db, "users", userId);
-    await updateDoc(userRef, {
+    const updateData: SubscriptionUpdate = {
       "subscription.plan": "premium",
-      "subscription.status": "active", // Active immediately since payment is processed
+      "subscription.status": "active",
       "subscription.startDate": now,
       "subscription.usage.analysisLimit":
         SUBSCRIPTION_PLANS.premium.analysisLimit,
@@ -68,26 +81,31 @@ export async function POST(req: NextRequest) {
       "subscription.stripeData.savedCards": [
         {
           id: paymentMethodId,
-          brand: card?.brand || "",
-          last4: card?.last4 || "",
-          expMonth: card?.exp_month || 0,
-          expYear: card?.exp_year || 0,
+          brand: cardDetails.brand,
+          last4: cardDetails.last4,
+          expMonth: cardDetails.expMonth,
+          expYear: cardDetails.expYear,
           isDefault: true,
         },
       ],
       updatedAt: now,
-    });
+    };
+
+    await updateDoc(userRef, createFirestoreUpdate(updateData));
+
+    // Extract client secret safely using helper function
+    const clientSecret = getPaymentIntentClientSecret(subscription);
 
     return NextResponse.json({
       subscriptionId: subscription.id,
-      clientSecret: (subscription.latest_invoice as any)?.payment_intent
-        ?.client_secret,
+      clientSecret,
     });
   } catch (error) {
     console.error("Error creating subscription:", error);
-    return NextResponse.json(
-      { error: "Failed to create subscription" },
-      { status: 500 }
-    );
+
+    const stripeError = error as StripeError;
+    const errorMessage = stripeError.message || "Failed to create subscription";
+
+    return NextResponse.json({ error: errorMessage }, { status: 500 });
   }
 }
