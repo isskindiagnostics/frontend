@@ -11,6 +11,7 @@ export const customLabel = style({
 export const twoFieldsRow = style({
   display: "flex",
   gap: theme.spacing.xs,
+  alignItems: "flex-start",
 });
 
 export const cardsRow = style({

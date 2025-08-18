@@ -96,17 +96,10 @@ export default function ProfessionalInfo({
     onNext(formData);
   };
 
-  const hasErrors = Object.keys(errors).length > 0;
-
   return (
     <form className={stepForm} onSubmit={handleSubmit}>
       <div>
-        <div
-          className={twoFieldsRow}
-          style={{
-            alignItems: hasErrors ? "center" : "end",
-          }}
-        >
+        <div className={twoFieldsRow}>
           {REGISTER_FIELDS.map((register, idx) => (
             <Select
               key={idx}

@@ -1,13 +1,18 @@
 import { ReactNode } from "react";
 
 import { Subscription } from "@/types/subscription";
-import { UserData, UserProfessionalInfo } from "@/types/user";
+import {
+  UserBillingAddress,
+  UserData,
+  UserProfessionalInfo,
+} from "@/types/user";
 
 // Base step data that can be passed between steps
 export type StepData = Partial<{
   userData: UserData;
   professionalInfo: UserProfessionalInfo;
   subscription: Subscription;
+  billingAddress: UserBillingAddress;
 }>;
 
 // Props that each step component receives
@@ -38,10 +43,8 @@ export type PaymentMethodStepProps = BaseStepProps & {
   subscription: Subscription;
 };
 
-export type ConfirmationStepProps = BaseStepProps & {
-  userData: UserData;
-  professionalInfo: UserProfessionalInfo;
-  subscription: Subscription;
+export type BillingAddressProps = BaseStepProps & {
+  billingAddress: UserBillingAddress;
 };
 
 // Union type for all possible step props
@@ -51,7 +54,7 @@ export type StepProps =
   | ProfessionalInfoStepProps
   | PaymentPlanStepProps
   | PaymentMethodStepProps
-  | ConfirmationStepProps;
+  | BillingAddressProps;
 
 // Form step configuration type
 export type FormStep = {

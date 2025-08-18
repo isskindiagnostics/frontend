@@ -1,9 +1,10 @@
 "use client";
 import { Notification } from "isskinui";
+import { useEffect, useMemo, useRef } from "react";
 
 import SmallLogo from "@/assets/svgs/SmallLogo";
 import Loader from "@/components/Loader";
-import { FORM_STEPS, TOTAL_STEPS } from "@/config/formSteps";
+import { getFormSteps, getTotalSteps } from "@/config/formSteps";
 import { useFormNavigation } from "@/hooks/useFormNavigation";
 import { useUserProfile } from "@/hooks/useUserProfile";
 import {
@@ -12,7 +13,7 @@ import {
   ProfessionalInfoStepProps,
   PaymentPlanStepProps,
   PaymentMethodStepProps,
-  ConfirmationStepProps,
+  BillingAddressProps,
   StepData,
 } from "@/types/formSteps";
 
@@ -24,6 +25,7 @@ export default function CompleteSignup() {
     userData,
     professionalInfo,
     subscription,
+    billingAddress,
     // profileCompleted,
     isLoading,
     isSubmitting,
@@ -31,66 +33,102 @@ export default function CompleteSignup() {
     actions,
   } = useUserProfile();
 
+  const justSelectedPremium = useRef(false);
+
+  const isPaidSubscription = useMemo(() => {
+    return subscription?.plan === "premium";
+  }, [subscription?.plan]);
+
+  const formSteps = useMemo(
+    () => getFormSteps(isPaidSubscription),
+    [isPaidSubscription]
+  );
+
+  const totalSteps = useMemo(
+    () => getTotalSteps(isPaidSubscription),
+    [isPaidSubscription]
+  );
+
   const { currentStep, nextStep, prevStep, goToStep, getProgressPercentage } =
     useFormNavigation({
-      totalSteps: TOTAL_STEPS,
+      totalSteps,
       onSaveStep: actions.saveStep,
       onComplete: actions.completeProfile,
     });
 
+  const currentStepData = formSteps[currentStep - 1];
+
+  useEffect(() => {
+    if (
+      subscription?.plan === "premium" &&
+      currentStep === 4 &&
+      justSelectedPremium.current
+    ) {
+      justSelectedPremium.current = false;
+      goToStep(currentStep + 1);
+    }
+  }, [subscription?.plan, currentStep, goToStep]);
+
   const handleStepNavigation = async (stepData?: StepData): Promise<void> => {
+    if (currentStep === 4 && stepData?.subscription?.plan === "premium") {
+      justSelectedPremium.current = true;
+    }
+
     await nextStep(stepData);
   };
 
+  const handlePrevStep = () => {
+    justSelectedPremium.current = false;
+    prevStep();
+  };
+
   const renderStep = () => {
-    const step = FORM_STEPS[currentStep - 1];
+    const step = formSteps[currentStep - 1];
     if (!step) return null;
 
     // Create step-specific props based on current step
     const commonProps = {
       isSubmitting,
       onNext: handleStepNavigation,
-      onBack: prevStep,
+      onBack: handlePrevStep,
     };
 
-    switch (currentStep) {
-      case 1: // Personal Info
+    switch (step.id) {
+      case "personal-info":
         return step.component({
           ...commonProps,
           userData,
         } as PersonalInfoStepProps);
 
-      case 2: // Work Field
+      case "work-field":
         return step.component({
           ...commonProps,
           professionalInfo,
         } as WorkFieldStepProps);
 
-      case 3: // Professional Info
+      case "professional-info":
         return step.component({
           ...commonProps,
           professionalInfo,
         } as ProfessionalInfoStepProps);
 
-      case 4: // Payment Plan
+      case "payment-plan":
         return step.component({
           ...commonProps,
           subscription,
         } as PaymentPlanStepProps);
 
-      case 5: // Payment Method
+      case "payment-method":
         return step.component({
           ...commonProps,
           subscription,
         } as PaymentMethodStepProps);
 
-      case 6: // Confirmation
+      case "billing-address":
         return step.component({
           ...commonProps,
-          userData,
-          professionalInfo,
-          subscription,
-        } as ConfirmationStepProps);
+          billingAddress,
+        } as BillingAddressProps);
 
       default:
         return null;
@@ -100,14 +138,17 @@ export default function CompleteSignup() {
   const renderProgressIndicators = () => {
     return (
       <div className={styles.stepIndicators}>
-        {Array.from({ length: TOTAL_STEPS }, (_, i) => (
+        {Array.from({ length: totalSteps }, (_, i) => (
           <div
-            onClick={() => goToStep(i + 1)}
+            onClick={() => {
+              justSelectedPremium.current = false; // TODO - REMOVE
+              goToStep(i + 1);
+            }}
             key={i}
             className={`${styles.stepIndicator} ${
               i < currentStep ? styles.completed : ""
             }`}
-            title={FORM_STEPS[i]?.title}
+            title={formSteps[i]?.title}
           >
             {i + 1}
           </div>
@@ -115,7 +156,6 @@ export default function CompleteSignup() {
       </div>
     );
   };
-  const currentStepData = FORM_STEPS[currentStep - 1];
 
   return (
     <>

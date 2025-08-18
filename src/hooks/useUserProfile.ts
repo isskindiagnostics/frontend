@@ -6,7 +6,12 @@ import { useAuth } from "@/context/AuthContext";
 import { db } from "@/firebase/config";
 import { StepData } from "@/types/formSteps";
 import { Subscription } from "@/types/subscription";
-import { User, UserData, UserProfessionalInfo } from "@/types/user";
+import {
+  User,
+  UserBillingAddress,
+  UserData,
+  UserProfessionalInfo,
+} from "@/types/user";
 import {
   createDefaultUserData,
   createDefaultProfessionalInfo,
@@ -14,6 +19,8 @@ import {
   mergeProfessionalInfo,
   mergeSubscription,
   mergeUserData,
+  createDefaultBillingAddress,
+  mergeBillingAddress,
 } from "@/utils/userDefaults";
 
 import type { User as FirebaseUser } from "firebase/auth";
@@ -22,6 +29,7 @@ type UserProfileState = {
   userData: UserData;
   professionalInfo: UserProfessionalInfo;
   subscription: Subscription;
+  billingAddress: UserBillingAddress;
   profileCompleted: boolean;
 };
 
@@ -36,6 +44,7 @@ export const useUserProfile = () => {
     userData: createDefaultUserData(),
     professionalInfo: createDefaultProfessionalInfo(),
     subscription: createDefaultSubscription(),
+    billingAddress: createDefaultBillingAddress(),
     profileCompleted: false,
   });
 
@@ -45,6 +54,43 @@ export const useUserProfile = () => {
 
   const router = useRouter();
   const { user } = useAuth();
+
+  const isBillingAddressComplete = (address?: UserBillingAddress): boolean => {
+    if (!address) return false;
+    return Object.values(address).every(
+      (value) => !!value && value.trim() !== ""
+    );
+  };
+
+  const isProfileComplete = (userData: Partial<User>): boolean => {
+    const subscription = userData.subscription;
+
+    if (!subscription?.plan || !subscription?.status) {
+      return false;
+    }
+
+    // For free plan, status should be "active" and basic info should be complete
+    if (subscription.plan === "free") {
+      return (
+        subscription.status === "active" &&
+        !!userData.userData?.name &&
+        !!userData.professionalInfo?.fieldOfWork
+      );
+    }
+
+    // For premium plan, everything must be complete
+    if (subscription.plan === "premium") {
+      return (
+        subscription.status === "active" &&
+        !!userData.userData?.name &&
+        !!userData.professionalInfo?.fieldOfWork &&
+        isBillingAddressComplete(userData.billingAddress) &&
+        !!subscription.stripeData?.defaultPaymentMethodId
+      );
+    }
+
+    return false;
+  };
 
   // Initialize user profile
   useEffect(() => {
@@ -76,18 +122,23 @@ export const useUserProfile = () => {
             createDefaultSubscription()
           );
 
+          const safeBillingAddress = mergeBillingAddress(
+            existingData.billingAddress || {},
+            createDefaultBillingAddress()
+          );
+
+          const profileCompleted = isProfileComplete(existingData);
+
           setProfileState({
             userData: safeUserData,
             professionalInfo: safeProfessionalInfo,
             subscription: safeSubscription,
-            profileCompleted: !!existingData.subscription?.plan,
+            billingAddress: safeBillingAddress,
+            profileCompleted,
           });
 
-          // Redirect if profile is completed
-          if (
-            existingData.subscription?.plan &&
-            existingData.subscription.plan !== "free"
-          ) {
+          if (profileCompleted) {
+            console.log("initializeUserProfile");
             router.push("/analysis");
             return;
           }
@@ -116,8 +167,8 @@ export const useUserProfile = () => {
   ): Promise<User> => {
     const initialSubscription: Subscription = {
       plan: "free",
-      status: "active",
-      startDate: Timestamp.now(),
+      status: "incomplete",
+      startDate: null,
       endDate: null,
       usage: {
         analysisCount: 0,
@@ -156,7 +207,6 @@ export const useUserProfile = () => {
 
       await updateDoc(userRef, updatedData);
 
-      // Update local state with safe merging
       setProfileState((prev) => {
         const newState = { ...prev };
 
@@ -175,6 +225,13 @@ export const useUserProfile = () => {
           newState.subscription = mergeSubscription(
             stepData.subscription,
             prev.subscription
+          );
+        }
+
+        if (stepData.billingAddress) {
+          newState.billingAddress = mergeBillingAddress(
+            stepData.billingAddress,
+            prev.billingAddress
           );
         }
 
@@ -198,11 +255,34 @@ export const useUserProfile = () => {
 
     try {
       const userRef = doc(db, "users", user.uid);
+
+      const userSnap = await getDoc(userRef);
+      let currentState;
+
+      if (userSnap.exists()) {
+        currentState = userSnap.data() as Partial<User>;
+      } else {
+        // Fallback to local state if document doesn't exist
+        currentState = {
+          userData: profileState.userData,
+          professionalInfo: profileState.professionalInfo,
+          subscription: profileState.subscription,
+          billingAddress: profileState.billingAddress,
+        };
+      }
+
       await updateDoc(userRef, {
         updatedAt: Timestamp.now(),
       });
 
-      router.push("/analysis");
+      const profileCompleted = isProfileComplete(currentState);
+
+      if (profileCompleted) {
+        router.push("/analysis");
+      } else {
+        console.log("Profile is not complete yet");
+      }
+
       return true;
     } catch (error) {
       console.error("Error completing profile:", error);

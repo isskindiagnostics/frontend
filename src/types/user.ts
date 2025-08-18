@@ -5,6 +5,7 @@ import { Subscription } from "./subscription";
 export type User = {
   userData: UserData;
   professionalInfo: UserProfessionalInfo;
+  billingAddress?: UserBillingAddress;
   subscription: Subscription;
   createdAt: Timestamp;
   updatedAt: Timestamp;
@@ -30,4 +31,13 @@ export type UserProfessionalInfo = {
     state: string;
     number: string;
   };
+};
+
+export type UserBillingAddress = {
+  street: string;
+  houseNumber: string;
+  city: string;
+  district: string;
+  postalCode: string;
+  state: string;
 };

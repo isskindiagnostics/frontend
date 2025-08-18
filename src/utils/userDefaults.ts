@@ -1,7 +1,11 @@
 import { Timestamp } from "firebase/firestore";
 
 import { Subscription } from "@/types/subscription";
-import { UserData, UserProfessionalInfo } from "@/types/user";
+import {
+  UserBillingAddress,
+  UserData,
+  UserProfessionalInfo,
+} from "@/types/user";
 
 export const createDefaultUserData = (
   email = "",
@@ -30,7 +34,7 @@ export const createDefaultProfessionalInfo = (): UserProfessionalInfo => ({
 
 export const createDefaultSubscription = (): Subscription => ({
   plan: "free",
-  status: "trialing",
+  status: "incomplete",
   startDate: Timestamp.now(),
   endDate: null,
   usage: {
@@ -55,6 +59,15 @@ export const createDefaultSubscription = (): Subscription => ({
       },
     ],
   },
+});
+
+export const createDefaultBillingAddress = (): UserBillingAddress => ({
+  street: "",
+  houseNumber: "",
+  city: "",
+  district: "",
+  postalCode: "",
+  state: "",
 });
 
 // Safe merge function that ensures all nested properties exist
@@ -104,4 +117,12 @@ export const mergeSubscription = (
           [],
       }
     : defaults.stripeData,
+});
+
+export const mergeBillingAddress = (
+  existing: Partial<UserBillingAddress>,
+  defaults: UserBillingAddress
+): UserBillingAddress => ({
+  ...defaults,
+  ...existing,
 });

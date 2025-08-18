@@ -1,3 +1,6 @@
+import { Timestamp } from "firebase/firestore";
+
+import BillingAddress from "@/components/CompleteSignup/BillingAddress";
 import PaymentMethod from "@/components/CompleteSignup/PaymentMethod";
 import PaymentPlan from "@/components/CompleteSignup/PaymentPlan";
 import PersonalInfo from "@/components/CompleteSignup/PersonalInfo";
@@ -10,10 +13,10 @@ import {
   ProfessionalInfoStepProps,
   PaymentPlanStepProps,
   PaymentMethodStepProps,
-  ConfirmationStepProps,
+  BillingAddressProps,
 } from "@/types/formSteps";
 
-export const FORM_STEPS: FormStep[] = [
+export const BASE_FORM_STEPS: FormStep[] = [
   {
     id: "personal-info",
     title: "Precisamos conhecer você!",
@@ -75,16 +78,29 @@ export const FORM_STEPS: FormStep[] = [
       const stepProps = props as PaymentPlanStepProps;
       return (
         <PaymentPlan
-          onNext={(plan) =>
+          onNext={(plan) => {
+            const subscriptionUpdate = {
+              ...stepProps.subscription,
+              plan,
+            };
+
+            if (plan === "free") {
+              subscriptionUpdate.status = "active";
+              subscriptionUpdate.startDate = Timestamp.now();
+            }
+
             stepProps.onNext({
-              subscription: { ...stepProps.subscription, plan },
-            })
-          }
+              subscription: subscriptionUpdate,
+            });
+          }}
           isSubmitting={stepProps.isSubmitting}
         />
       );
     },
   },
+];
+
+export const PAYMENT_FORM_STEPS: FormStep[] = [
   {
     id: "payment-method",
     title: "Método de Pagamento",
@@ -102,29 +118,31 @@ export const FORM_STEPS: FormStep[] = [
     },
   },
   {
-    id: "confirmation",
-    title: "Confirmação",
-    description: "Revisar e finalizar",
-    requiredData: ["userData", "professionalInfo", "subscription"],
+    id: "billing-address",
+    title: "Endereço de cobrança",
+    description:
+      "Precisamos do endereço vinculado ao seu cartão para concluir a assinatura.",
+    requiredData: ["billingAddress"],
     component: (props) => {
-      const stepProps = props as ConfirmationStepProps;
+      const stepProps = props as BillingAddressProps;
       return (
-        <div>
-          <h2>Confirmação</h2>
-          <p>Nome: {stepProps.userData.name}</p>
-          <p>Email: {stepProps.userData.email}</p>
-          <p>Área: {stepProps.professionalInfo.fieldOfWork}</p>
-          <p>Plano: {stepProps.subscription.plan}</p>
-          <button
-            onClick={() => stepProps.onNext()}
-            disabled={stepProps.isSubmitting}
-          >
-            Finalizar Cadastro
-          </button>
-        </div>
+        <BillingAddress
+          billingAddress={stepProps.billingAddress}
+          onNext={(billingAddress) => stepProps.onNext({ billingAddress })}
+          onBack={stepProps.onBack}
+          isSubmitting={stepProps.isSubmitting}
+        />
       );
     },
   },
 ];
 
-export const TOTAL_STEPS = FORM_STEPS.length;
+export const getFormSteps = (isPaidSubscription: boolean): FormStep[] => {
+  return isPaidSubscription
+    ? [...BASE_FORM_STEPS, ...PAYMENT_FORM_STEPS]
+    : BASE_FORM_STEPS;
+};
+
+export const getTotalSteps = (isPaidSubscription: boolean): number => {
+  return getFormSteps(isPaidSubscription).length;
+};

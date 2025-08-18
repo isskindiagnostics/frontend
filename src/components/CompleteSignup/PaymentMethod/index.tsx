@@ -389,7 +389,7 @@ const PaymentMethodForm = ({
             variant="solid"
             disabled={!isFormValid() || isDisabled || !stripe}
           >
-            {isDisabled ? "Processando..." : "Ativar Plano"}
+            {isDisabled ? "Processando" : "Próximo"}
           </Button>
         </div>
       </form>

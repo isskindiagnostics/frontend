@@ -3,7 +3,7 @@ import { Timestamp } from "firebase/firestore";
 export type Subscription = {
   plan: "free" | "premium";
   status: "active" | "trialing" | "canceled" | "past_due" | "incomplete";
-  startDate: Timestamp;
+  startDate: Timestamp | null;
   endDate?: Timestamp | null;
   usage?: SubscriptionUsage;
   stripeData?: PremiumSubscriptionData;
