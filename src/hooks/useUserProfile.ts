@@ -173,7 +173,7 @@ export const useUserProfile = () => {
 
         if (profileCompleted) {
           console.log("Profile completed - redirecting to analysis");
-          router.push("/analysis");
+          router.push("/signup/success");
           return;
         }
       } else {
@@ -291,7 +291,7 @@ export const useUserProfile = () => {
       const profileCompleted = isProfileComplete(currentState);
 
       if (profileCompleted) {
-        router.push("/analysis");
+        router.push("/signup/success");
       } else {
         console.log("Profile is not complete yet");
       }

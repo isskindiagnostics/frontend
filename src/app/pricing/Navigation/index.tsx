@@ -12,7 +12,7 @@ const Navigation = () => {
   return (
     <nav className={nav}>
       <Logo />
-      <Button variant="solid" onClick={() => router.push("/analysis")}>
+      <Button onClick={() => router.push("/analysis")}>
         acessar plataforma
       </Button>
     </nav>

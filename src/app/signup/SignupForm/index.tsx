@@ -146,11 +146,7 @@ export default function SignupForm() {
           </div>
         ) : (
           <>
-            <Button
-              variant="solid"
-              type="submit"
-              className={styles.submitButton}
-            >
+            <Button type="submit" className={styles.submitButton}>
               Criar Conta
             </Button>
 

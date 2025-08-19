@@ -1,7 +1,7 @@
 import { Button, InputField, Select } from "isskinui";
 import { useState } from "react";
 
-import { stepForm } from "@/app/complete-signup/index.css";
+import { stepForm } from "@/app/signup/complete/index.css";
 import { UserProfessionalInfo } from "@/types/user";
 
 import { COUNCIL_VALIDATION, REGISTER_FIELDS } from "../data";
@@ -148,7 +148,7 @@ export default function ProfessionalInfo({
         <Button variant="outlined" disabled={isSubmitting} onClick={onBack}>
           Voltar
         </Button>
-        <Button variant="solid" type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting}>
           Próximo
         </Button>
       </div>

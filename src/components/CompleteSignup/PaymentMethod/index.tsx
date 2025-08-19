@@ -16,7 +16,7 @@ import {
 import { Button, CardFlag, InputField, Notification, theme } from "isskinui";
 import React, { useState } from "react";
 
-import { stepForm } from "@/app/complete-signup/index.css";
+import { stepForm } from "@/app/signup/complete/index.css";
 import { useAuth } from "@/context/AuthContext";
 import { stripePromise } from "@/stripe/config";
 import {
@@ -429,7 +429,6 @@ const PaymentMethodForm = ({
 
           <Button
             type="submit"
-            variant="solid"
             disabled={!isFormValid() || isDisabled || !stripe}
           >
             {isDisabled ? "Processando" : "Próximo"}

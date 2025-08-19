@@ -1,7 +1,7 @@
 import { Button, InputField, Select } from "isskinui";
 import { useCallback, useState } from "react";
 
-import { stepForm } from "@/app/complete-signup/index.css";
+import { stepForm } from "@/app/signup/complete/index.css";
 import { UserBillingAddress } from "@/types/user";
 
 import { BRAZILIAN_STATES_LONG } from "../data";
@@ -245,7 +245,7 @@ export default function BillingAddress({
         <Button variant="outlined" disabled={isSubmitting} onClick={onBack}>
           Voltar
         </Button>
-        <Button variant="solid" type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting}>
           Finalizar
         </Button>
       </div>

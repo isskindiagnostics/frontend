@@ -98,7 +98,7 @@ export default function LoginForm() {
             <Loader size="small" color="#23ABC2" />
           </div>
         ) : (
-          <Button variant="solid" type="submit" className={styles.submitButton}>
+          <Button type="submit" className={styles.submitButton}>
             Login
           </Button>
         )}
