@@ -9,6 +9,7 @@ export const customLabel = style({
 });
 
 export const twoFieldsRow = style({
+  width: "100%",
   display: "flex",
   gap: theme.spacing.xs,
   alignItems: "flex-start",

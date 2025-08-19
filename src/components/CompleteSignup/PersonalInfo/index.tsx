@@ -115,7 +115,6 @@ export default function PersonalInfo({
             error={errors.areaCode}
             disabled={isSubmitting}
             required
-            style={{ padding: 14 }}
           />
           <InputField
             label=""
