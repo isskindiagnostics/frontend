@@ -1,6 +1,6 @@
 import { doc, setDoc, getDoc, updateDoc, Timestamp } from "firebase/firestore";
 import { useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { useAuth } from "@/context/AuthContext";
 import { db } from "@/firebase/config";
@@ -37,6 +37,7 @@ type UserProfileActions = {
   saveStep: (stepData: StepData) => Promise<boolean>;
   completeProfile: () => Promise<boolean>;
   updateLocalState: (updates: Partial<UserProfileState>) => void;
+  refreshUserData: () => Promise<void>;
 };
 
 export const useUserProfile = () => {
@@ -51,7 +52,7 @@ export const useUserProfile = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
-
+  const [dataLoaded, setDataLoaded] = useState(false);
   const router = useRouter();
   const { user } = useAuth();
 
@@ -92,76 +93,6 @@ export const useUserProfile = () => {
     return false;
   };
 
-  // Initialize user profile
-  useEffect(() => {
-    const initializeUserProfile = async () => {
-      if (!user) {
-        setIsLoading(false);
-        return;
-      }
-
-      try {
-        const userRef = doc(db, "users", user.uid);
-        const userSnap = await getDoc(userRef);
-
-        if (userSnap.exists()) {
-          const existingData = userSnap.data() as Partial<User>;
-
-          const safeUserData = mergeUserData(
-            existingData.userData || {},
-            createDefaultUserData(user.email || "", user.emailVerified)
-          );
-
-          const safeProfessionalInfo = mergeProfessionalInfo(
-            existingData.professionalInfo || {},
-            createDefaultProfessionalInfo()
-          );
-
-          const safeSubscription = mergeSubscription(
-            existingData.subscription || {},
-            createDefaultSubscription()
-          );
-
-          const safeBillingAddress = mergeBillingAddress(
-            existingData.billingAddress || {},
-            createDefaultBillingAddress()
-          );
-
-          const profileCompleted = isProfileComplete(existingData);
-
-          setProfileState({
-            userData: safeUserData,
-            professionalInfo: safeProfessionalInfo,
-            subscription: safeSubscription,
-            billingAddress: safeBillingAddress,
-            profileCompleted,
-          });
-
-          if (profileCompleted) {
-            console.log("initializeUserProfile");
-            router.push("/analysis");
-            return;
-          }
-        } else {
-          // Create initial user document
-          const initialProfile = await createInitialUserProfile(user);
-          setProfileState((prev) => ({
-            ...prev,
-            userData: initialProfile.userData,
-            subscription: initialProfile.subscription,
-          }));
-        }
-      } catch (error) {
-        console.error("Error initializing user profile:", error);
-        setSaveError("Erro ao carregar perfil do usuário.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    initializeUserProfile();
-  }, [user, router]);
-
   const createInitialUserProfile = async (
     user: FirebaseUser
   ): Promise<User> => {
@@ -191,6 +122,88 @@ export const useUserProfile = () => {
 
     return initialProfile;
   };
+
+  // Function to load user data
+  const loadUserData = useCallback(async () => {
+    if (!user) {
+      setIsLoading(false);
+      setDataLoaded(false);
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const userRef = doc(db, "users", user.uid);
+      const userSnap = await getDoc(userRef);
+
+      if (userSnap.exists()) {
+        const existingData = userSnap.data() as Partial<User>;
+
+        const safeUserData = mergeUserData(
+          existingData.userData || {},
+          createDefaultUserData(user.email || "", user.emailVerified)
+        );
+
+        const safeProfessionalInfo = mergeProfessionalInfo(
+          existingData.professionalInfo || {},
+          createDefaultProfessionalInfo()
+        );
+
+        const safeSubscription = mergeSubscription(
+          existingData.subscription || {},
+          createDefaultSubscription()
+        );
+
+        const safeBillingAddress = mergeBillingAddress(
+          existingData.billingAddress || {},
+          createDefaultBillingAddress()
+        );
+
+        const profileCompleted = isProfileComplete(existingData);
+
+        setProfileState({
+          userData: safeUserData,
+          professionalInfo: safeProfessionalInfo,
+          subscription: safeSubscription,
+          billingAddress: safeBillingAddress,
+          profileCompleted,
+        });
+
+        setDataLoaded(true);
+
+        if (profileCompleted) {
+          console.log("Profile completed - redirecting to analysis");
+          router.push("/analysis");
+          return;
+        }
+      } else {
+        // Create initial user document
+        const initialProfile = await createInitialUserProfile(user);
+        setProfileState((prev) => ({
+          ...prev,
+          userData: initialProfile.userData,
+          subscription: initialProfile.subscription,
+        }));
+        setDataLoaded(true);
+      }
+    } catch (error) {
+      console.error("Error loading user data:", error);
+      setSaveError("Erro ao carregar perfil do usuário.");
+      setDataLoaded(false);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user, router]);
+
+  // Initialize user profile
+  useEffect(() => {
+    loadUserData();
+  }, [loadUserData]);
+
+  // Function to reload user data
+  const refreshUserData = useCallback(async () => {
+    await loadUserData();
+  }, [loadUserData]);
 
   const saveStep = async (stepData: StepData): Promise<boolean> => {
     if (!user) return false;
@@ -301,6 +314,7 @@ export const useUserProfile = () => {
     saveStep,
     completeProfile,
     updateLocalState,
+    refreshUserData,
   };
 
   return {
@@ -308,6 +322,7 @@ export const useUserProfile = () => {
     isLoading,
     isSubmitting,
     saveError,
+    dataLoaded,
     actions,
   };
 };

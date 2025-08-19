@@ -30,6 +30,7 @@ export default function CompleteSignup() {
     isLoading,
     isSubmitting,
     saveError,
+    dataLoaded,
     actions,
   } = useUserProfile();
 
@@ -157,6 +158,26 @@ export default function CompleteSignup() {
     );
   };
 
+  if (isLoading || !dataLoaded) {
+    return (
+      <>
+        {saveError && <Notification type="error" label={saveError} />}
+
+        <div className={styles.container}>
+          <div className={styles.header}>
+            <SmallLogo className={logo} />
+          </div>
+
+          <main className={styles.main}>
+            <div className={styles.loaderWrapper}>
+              <Loader />
+            </div>
+          </main>
+        </div>
+      </>
+    );
+  }
+
   return (
     <>
       {saveError && <Notification type="error" label={saveError} />}
@@ -176,18 +197,13 @@ export default function CompleteSignup() {
         </div>
 
         <main className={styles.main}>
-          {currentStepData && !isLoading && (
+          {currentStepData && (
             <div className={styles.stepForm}>
               <div className={styles.formHeading}>
                 <h2>{currentStepData.title}</h2>
                 <p>{currentStepData.description}</p>
               </div>
               {renderStep()}
-            </div>
-          )}
-          {isLoading && (
-            <div className={styles.loaderWrapper}>
-              <Loader />
             </div>
           )}
         </main>
