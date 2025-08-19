@@ -1,4 +1,6 @@
+import { CardBrand } from "@stripe/stripe-js";
 import { Timestamp } from "firebase/firestore";
+import { Flag } from "isskinui";
 import Stripe from "stripe";
 
 export interface CreateCustomerRequest {
@@ -161,6 +163,22 @@ export const createFirestoreUpdate = (
   data: SubscriptionUpdate
 ): Record<string, unknown> => {
   return data as Record<string, unknown>;
+};
+
+// Helper function to map a Stripe card brand to the corresponding Flag type
+export const mapStripeBrandToFlag = (stripeBrand: CardBrand): Flag | null => {
+  const brandMap: Record<string, Flag> = {
+    visa: "visa",
+    mastercard: "mastercard",
+    amex: "amex",
+  };
+
+  return brandMap[stripeBrand] || null;
+};
+
+// Helper function to check if a given Stripe card brand is supported
+export const isSupportedCardBrand = (stripeBrand: CardBrand): boolean => {
+  return ["visa", "mastercard", "amex"].includes(stripeBrand);
 };
 
 // Error Types

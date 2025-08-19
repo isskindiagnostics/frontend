@@ -33,6 +33,7 @@ export const formButtonContainer = style({
 });
 
 export const inputFieldWrapper = style({
+  position: "relative",
   width: "100%",
   display: "flex",
   flexDirection: "column",
@@ -46,18 +47,21 @@ export const stripeLabel = style({
   color: theme.colors.baseGrey100,
 });
 
+export const stripeLabelDisabled = style({
+  color: theme.colors.functionsDisabled,
+});
+
 export const stripeInputField = style({
-  fontFamily: theme.typography.fontFamilyBody,
-  fontSize: theme.typography.text.desktop.xl.fontSize,
-  lineHeight: theme.typography.text.desktop.xl.lineHeight,
-  color: theme.colors.brandBlack,
   borderRadius: theme.radius.xs,
   border: `1px solid ${theme.colors.baseGrey100}`,
   padding: "14px 16px",
   transition: "ease-in-out 0.2s",
-  fontWeight: 300,
   backgroundColor: "transparent",
   width: "100%",
+});
+
+export const stripeInputFieldDisabled = style({
+  border: `1px solid ${theme.colors.functionsDisabled}`,
 });
 
 export const stripeInputFieldError = style({
@@ -69,4 +73,11 @@ export const stripeError = style({
   fontSize: theme.typography.text.desktop.md.fontSize,
   lineHeight: theme.typography.text.desktop.md.lineHeight,
   color: theme.colors.functionsError,
+});
+
+export const inputCardBrand = style({
+  position: "absolute",
+  top: 34,
+  right: 5,
+  width: "min-content",
 });

@@ -7,7 +7,13 @@ import {
   useStripe,
   useElements,
 } from "@stripe/react-stripe-js";
-import { Button, InputField, Notification, theme } from "isskinui";
+import {
+  CardBrand,
+  StripeCardCvcElementChangeEvent,
+  StripeCardExpiryElementChangeEvent,
+  StripeCardNumberElementChangeEvent,
+} from "@stripe/stripe-js";
+import { Button, CardFlag, InputField, Notification, theme } from "isskinui";
 import React, { useState } from "react";
 
 import { stepForm } from "@/app/complete-signup/index.css";
@@ -18,6 +24,7 @@ import {
   CreateCustomerResponse,
   CreateSubscriptionRequest,
   CreateSubscriptionResponse,
+  mapStripeBrandToFlag,
   StripeError,
 } from "@/types/stripeApi";
 import { parseAPIResponse } from "@/utils/parseAPIResponse";
@@ -31,12 +38,23 @@ import {
   formButtonContainer,
   stripeError,
   stripeInputFieldError,
+  inputCardBrand,
+  stripeInputFieldDisabled,
+  stripeLabelDisabled,
 } from "../index.css";
 
 type PaymentMethodProps = {
   onNext: (paymentMethodId: string) => void;
   onBack?: () => void;
   isSubmitting?: boolean;
+};
+
+type CardElementType = "cardNumber" | "cardExpiry" | "cardCvc";
+
+type CardElementEventMap = {
+  cardNumber: StripeCardNumberElementChangeEvent;
+  cardExpiry: StripeCardExpiryElementChangeEvent;
+  cardCvc: StripeCardCvcElementChangeEvent;
 };
 
 type CardCompletionState = {
@@ -53,35 +71,35 @@ type CardErrors = {
   general?: string;
 };
 
-type StripeElementChangeEvent = {
-  complete: boolean;
-  error?: {
-    message: string;
-    type: string;
-    code?: string;
-  };
-  elementType: string;
-};
-
-// Stripe Elements styling - TODO
-const elementOptions = {
-  style: {
-    base: {
-      fontSize: "16px",
-      color: "#424770",
-      fontFamily: "Inter, sans-serif",
-      "::placeholder": {
-        color: "#aab7c4",
+const createElementOptions = (
+  isDisabled?: boolean,
+  type: "default" | "cardElement" = "default"
+) => {
+  const elementOptions = {
+    style: {
+      base: {
+        fontFamily: theme.typography.fontFamilyBody,
+        fontSize: theme.typography.text.desktop.xl.fontSize,
+        color: theme.colors.brandBlack,
+        fontWeight: "300",
+        "::placeholder": {
+          color: theme.colors.baseGrey200,
+        },
       },
-      padding: "12px",
+      invalid: {
+        color: theme.colors.brandBlack,
+      },
     },
-    invalid: {
-      color: theme.colors.brandBlack,
-    },
-  },
-  hideIcon: true,
-  disableLink: true,
-} as const;
+    disabled: isDisabled,
+  };
+
+  const cardElementOptions = {
+    ...elementOptions,
+    disableLink: true,
+  };
+
+  return type === "default" ? elementOptions : cardElementOptions;
+};
 
 const PaymentMethodForm = ({
   onNext,
@@ -93,6 +111,7 @@ const PaymentMethodForm = ({
   const { user } = useAuth();
 
   const [cardholderName, setCardholderName] = useState("");
+  const [cardBrand, setCardBrand] = useState<CardBrand>("unknown");
   const [processing, setProcessing] = useState(false);
   const [cardComplete, setCardComplete] = useState<CardCompletionState>({
     cardNumber: false,
@@ -266,12 +285,16 @@ const PaymentMethodForm = ({
   };
 
   const handleCardChange =
-    (elementType: keyof CardCompletionState) =>
-    (event: StripeElementChangeEvent) => {
+    <T extends CardElementType>(elementType: T) =>
+    (event: CardElementEventMap[T]) => {
       setCardComplete((prev) => ({
         ...prev,
         [elementType]: event.complete,
       }));
+
+      if (elementType === "cardNumber" && "brand" in event && event.brand) {
+        setCardBrand(event.brand as CardBrand);
+      }
 
       if (event.error) {
         const translatedError = translateStripeError(
@@ -338,22 +361,38 @@ const PaymentMethodForm = ({
 
         <div className={twoFieldsRow}>
           <div className={inputFieldWrapper}>
-            <label className={stripeLabel}>Número do cartão</label>
+            <label
+              className={`${stripeLabel} ${isDisabled && stripeLabelDisabled} `}
+            >
+              Número do cartão
+            </label>
             <CardNumberElement
-              className={`${stripeInputField} ${errors.cardNumber && stripeInputFieldError}`}
-              options={elementOptions}
+              className={`${stripeInputField} ${isDisabled && stripeInputFieldDisabled} ${isDisabled && stripeInputFieldDisabled} ${errors.cardNumber && stripeInputFieldError}`}
+              options={createElementOptions(isDisabled, "cardElement")}
               onChange={handleCardChange("cardNumber")}
             />
+
+            {mapStripeBrandToFlag(cardBrand) && (
+              <CardFlag
+                flag={mapStripeBrandToFlag(cardBrand)!}
+                className={inputCardBrand}
+              />
+            )}
+
             {errors.cardNumber && (
               <div className={stripeError}>{errors.cardNumber}</div>
             )}
           </div>
 
           <div className={inputFieldWrapper}>
-            <label className={stripeLabel}>Data de vencimento</label>
+            <label
+              className={`${stripeLabel} ${isDisabled && stripeLabelDisabled} `}
+            >
+              Data de vencimento
+            </label>
             <CardExpiryElement
-              className={`${stripeInputField} ${errors.cardExpiry && stripeInputFieldError}`}
-              options={elementOptions}
+              className={`${stripeInputField} ${isDisabled && stripeInputFieldDisabled} ${errors.cardExpiry && stripeInputFieldError}`}
+              options={createElementOptions(isDisabled)}
               onChange={handleCardChange("cardExpiry")}
             />
             {errors.cardExpiry && (
@@ -362,10 +401,14 @@ const PaymentMethodForm = ({
           </div>
 
           <div className={inputFieldWrapper}>
-            <label className={stripeLabel}>CVC</label>
+            <label
+              className={`${stripeLabel} ${isDisabled && stripeLabelDisabled} `}
+            >
+              CVC
+            </label>
             <CardCvcElement
-              className={`${stripeInputField} ${errors.cardCvc && stripeInputFieldError}`}
-              options={elementOptions}
+              className={`${stripeInputField} ${isDisabled && stripeInputFieldDisabled} ${errors.cardCvc && stripeInputFieldError}`}
+              options={createElementOptions(isDisabled)}
               onChange={handleCardChange("cardCvc")}
             />
             {errors.cardCvc && (
