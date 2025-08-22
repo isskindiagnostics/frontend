@@ -76,7 +76,7 @@ export default function SignupForm() {
 
     try {
       await signUp(email, password);
-      router.push("/complete-signup");
+      router.push("/signup/complete");
     } catch (error) {
       if (error instanceof FirebaseError) {
         switch (error.code) {
