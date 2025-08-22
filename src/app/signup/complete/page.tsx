@@ -141,10 +141,6 @@ export default function CompleteSignup() {
       <div className={styles.stepIndicators}>
         {Array.from({ length: totalSteps }, (_, i) => (
           <div
-            onClick={() => {
-              justSelectedPremium.current = false; // TODO - REMOVE
-              goToStep(i + 1);
-            }}
             key={i}
             className={`${styles.stepIndicator} ${
               i < currentStep ? styles.completed : ""
