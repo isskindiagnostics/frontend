@@ -2,7 +2,7 @@ import { globalStyle, style } from "@vanilla-extract/css";
 import { theme } from "isskinui";
 
 const disabledBackground = "#3B3B3B";
-const disabledText = "#777777";
+const disabledText = "#b0b6b7ff";
 
 export const container = style({
   width: "100%",
@@ -81,8 +81,8 @@ globalStyle(`${badgeHighlightDisabled} p`, {
   color: disabledBackground,
 });
 
-globalStyle(`${containerHighlightSelected} p`, {
-  color: "#b0b6b7ff",
+globalStyle(`${containerHighlightSelected} > p`, {
+  color: theme.colors.brandWhite,
 });
 
 export const priceWrapper = style({
