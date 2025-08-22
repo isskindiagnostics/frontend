@@ -81,6 +81,10 @@ globalStyle(`${badgeHighlightDisabled} p`, {
   color: disabledBackground,
 });
 
+globalStyle(`${containerHighlightSelected} p`, {
+  color: "#b0b6b7ff",
+});
+
 export const priceWrapper = style({
   display: "flex",
   alignItems: "end",

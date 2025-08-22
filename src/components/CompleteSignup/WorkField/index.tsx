@@ -22,6 +22,7 @@ export default function WorkField({
 }: WorkFieldProps) {
   const [formData, setFormData] = useState(professionalInfo);
   const [error, setError] = useState<string | null>(null);
+  const isFormValid = formData.fieldOfWork.trim() !== "";
 
   const validateForm = () => {
     if (!formData.fieldOfWork || !formData.fieldOfWork.trim()) {
@@ -70,7 +71,7 @@ export default function WorkField({
           <Button variant="outlined" disabled={isSubmitting} onClick={onBack}>
             Voltar
           </Button>
-          <Button type="submit" disabled={isSubmitting}>
+          <Button type="submit" disabled={isSubmitting || !isFormValid}>
             Próximo
           </Button>
         </div>

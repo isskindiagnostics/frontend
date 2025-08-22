@@ -38,6 +38,12 @@ export default function BillingAddress({
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [isCheckingPostalCode, setIsCheckingPostalCode] =
     useState<boolean>(false);
+  const isFormValid =
+    formData.street.trim() !== "" &&
+    formData.houseNumber.trim() !== "" &&
+    formData.city.trim() !== "" &&
+    formData.postalCode.trim() !== "" &&
+    formData.state.trim() !== "";
 
   const validateForm = (): Record<string, string> => {
     const newErrors: Record<string, string> = {};
@@ -245,7 +251,7 @@ export default function BillingAddress({
         <Button variant="outlined" disabled={isSubmitting} onClick={onBack}>
           Voltar
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting || !isFormValid}>
           Finalizar
         </Button>
       </div>

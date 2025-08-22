@@ -22,6 +22,11 @@ export default function ProfessionalInfo({
 }: ProfessionalInfoProps) {
   const [formData, setFormData] = useState(professionalInfo);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const isFormValid =
+    formData.institution.trim() !== "" &&
+    formData.register.council.trim() !== "" &&
+    formData.register.state.trim() !== "" &&
+    formData.register.number.trim() !== "";
 
   const validateRegisterNumber = (number: string, council: string): boolean => {
     const rules =
@@ -148,7 +153,7 @@ export default function ProfessionalInfo({
         <Button variant="outlined" disabled={isSubmitting} onClick={onBack}>
           Voltar
         </Button>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting || !isFormValid}>
           Próximo
         </Button>
       </div>

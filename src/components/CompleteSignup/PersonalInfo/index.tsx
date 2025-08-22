@@ -25,6 +25,10 @@ export default function PersonalInfo({
 }: PersonalInfoProps) {
   const [formData, setFormData] = useState(userData);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const isFormValid =
+    formData.name.trim() !== "" &&
+    formData.phoneNumber.areaCode !== "" &&
+    formData.phoneNumber.number.trim() !== "";
 
   const validateForm = (): Record<string, string> => {
     const newErrors: Record<string, string> = {};
@@ -133,7 +137,7 @@ export default function PersonalInfo({
       </div>
 
       <div className={formButtonContainer}>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type="submit" disabled={isSubmitting || !isFormValid}>
           Próximo
         </Button>
       </div>
