@@ -1,7 +1,8 @@
 import { HTMLAttributes } from "react";
 
-import { container, wrapper, text } from "./index.css";
 import Loader from "../Loader";
+
+import { container, wrapper, text } from "./index.css";
 
 type LoaderProps = HTMLAttributes<HTMLDivElement> & {};
 

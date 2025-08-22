@@ -1,7 +1,7 @@
 import { JobData } from "@/types/job";
-import { UserData } from "@/types/user";
+import { User } from "@/types/user";
 
-export default async function generatePdf(userData: UserData, jobData: JobData) {
+export default async function generatePdf(userData: User, jobData: JobData) {
   const res = await fetch("/api/pdf", {
     method: "POST",
     body: JSON.stringify({ userData, jobData }),

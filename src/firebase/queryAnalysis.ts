@@ -22,7 +22,7 @@ export async function canPerformAnalysis(uid: string): Promise<boolean> {
   const subscription = userSnap.data().subscription as Subscription;
   if (subscription.plan !== "free") return true;
 
-  const free = subscription.free;
+  const free = subscription.usage;
   const count = free?.analysisCount || 0;
   const limit = free?.analysisLimit || 0;
 
@@ -45,7 +45,7 @@ export async function incrementAnalysisCount(uid: string): Promise<number> {
   if (!userSnap.exists()) return 0;
 
   const subscription = userSnap.data().subscription as Subscription;
-  const free = subscription.free;
+  const free = subscription.usage;
   const currentCount = free?.analysisCount || 0;
   const newCount = currentCount + 1;
 
@@ -159,7 +159,7 @@ export async function getAnalysisUsage(
   if (!userSnap.exists()) return null;
 
   const subscription = userSnap.data().subscription as Subscription;
-  const free = subscription.free;
+  const free = subscription.usage;
   const count = free?.analysisCount || 0;
   const limit = free?.analysisLimit || 0;
 

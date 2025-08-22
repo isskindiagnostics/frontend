@@ -1,11 +1,10 @@
 "use client";
-
 import { FirebaseError } from "firebase/app";
-import { Button, InputField, Notification } from "isskinui";
+import { Button, InputField, Link, Notification } from "isskinui";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import Loader from "@/components/Loader";
+import { bottomLogin } from "@/app/signup/SignupForm/index.css";
 import { useAuth } from "@/context/AuthContext";
 import { useShowToast } from "@/hooks/useShowToast";
 
@@ -77,6 +76,7 @@ export default function LoginForm() {
           onChange={(e) => setEmail(e.target.value)}
           width="100%"
           error={emailInvalid ? "Esse campo é obrigatório" : ""}
+          disabled={isSubmitting}
           required
         />
         <InputField
@@ -89,18 +89,23 @@ export default function LoginForm() {
           type={showPassword ? "text" : "password"}
           iconOnClick={() => setShowPassword(!showPassword)}
           error={passwordInvalid ? "Esse campo é obrigatório" : ""}
+          disabled={isSubmitting}
           required
         />
-        {isSubmitting ? (
-          <div className={styles.loaderContainer}>
-            <Loader size="small" color="#23ABC2" />
-          </div>
-        ) : (
-          <Button variant="solid" type="submit" className={styles.submitButton}>
-            Login
-          </Button>
-        )}
+
+        <Button
+          type="submit"
+          className={styles.submitButton}
+          disabled={isSubmitting}
+        >
+          Login
+        </Button>
       </form>
+
+      <p className={bottomLogin}>
+        Ainda não possui uma conta?{" "}
+        <Link onClick={() => router.push("/signup")}>Faça uma já!</Link>
+      </p>
     </>
   );
 }

@@ -95,7 +95,7 @@ const SubscriptionOverview = ({ href }: SubscriptionOverviewProps) => {
           </p>
         )}
       </div>
-      {/* <Button variant="solid" className={button} onClick={onClick}>
+      {/* <Button   className={button} onClick={onClick}>
         Cancelar Assinatura
       </Button> */}
       <IconLink

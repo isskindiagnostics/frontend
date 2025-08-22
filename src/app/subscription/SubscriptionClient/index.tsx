@@ -3,7 +3,7 @@
 // import { Switch } from "isskinui";
 // import { useState } from "react";
 
-import { useRouter } from "next/navigation";
+// import { useRouter } from "next/navigation";
 
 import ContentBlock from "@/components/ContentBlock";
 import Tabs from "@/components/Tabs";
@@ -28,7 +28,7 @@ const tabs: TabElement[] = [
 ];
 
 const SubscriptionClient = () => {
-  const router = useRouter();
+  // const router = useRouter();
   // const [toggle, setToggle] = useState(false);
 
   // TODO: IMPLEMENT LOADING SCREEN

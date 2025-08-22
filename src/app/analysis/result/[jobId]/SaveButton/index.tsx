@@ -85,7 +85,6 @@ export const SaveButton = ({ jobId, uid }: { jobId: string; uid: string }) => {
         />
       )}
       <Button
-        variant="solid"
         disabled={!hasChanges || comment.trim() === "" || loading}
         onClick={handleSave}
       >

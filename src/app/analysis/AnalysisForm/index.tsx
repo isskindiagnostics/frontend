@@ -130,7 +130,6 @@ const AnalysisForm = () => {
       <TopBar title="Análise">
         {!loading && (
           <Button
-            variant="solid"
             disabled={!isFormValid}
             onClick={handleSubmit}
           >
