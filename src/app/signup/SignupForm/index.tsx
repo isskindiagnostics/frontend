@@ -147,7 +147,7 @@ export default function SignupForm() {
         </Button>
 
         <p className={styles.privacy}>
-          Ao clicar em continuar você concorda com os <br />
+          Ao clicar em criar conta você concorda com os <br />
           <Link href="/terms-of-service" target="_blank">
             Termos de Serviço
           </Link>{" "}

@@ -1,20 +1,3 @@
-export const TOPICS = [
-  "Introdução",
-  "Definições",
-  "Elegibilidade e Cadastro",
-  "Descrição do Serviço",
-  "Responsabilidades do Usuário",
-  "Propriedade Intelectual",
-  "Limitações de Responsabilidade",
-  "Privacidade e Proteção de Dados",
-  "Pagamentos e Cancelamentos",
-  "Suspensão e Rescisão",
-  "Modificações dos Termos",
-  "Lei Aplicável e Jurisdição",
-  "Contato",
-  "Disposições Gerais",
-];
-
 export type ContentElement =
   | { type: "paragraph"; content: string }
   | { type: "paragraph-multiline"; lines: string[] }
@@ -319,7 +302,6 @@ export const TERMS_SECTIONS: TermsSection[] = [
           "CEP 12244-597, Urbanova VI",
           "São José dos Campos - SP",
           "Email: contato@isskindiagnostics.com",
-          "Telefone: +55 (11) 95004-9236",
         ],
       },
     ],

@@ -4,7 +4,6 @@ import { TermsSection } from "../content";
 import { topicList, listItem, topicItem } from "../index.css";
 
 interface TopicNavigationProps {
-  topics: string[];
   sections: TermsSection[];
 }
 

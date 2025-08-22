@@ -1,6 +1,6 @@
 import Navigation from "@/components/Navigation";
 
-import { TOPICS, TERMS_SECTIONS } from "./content";
+import { TERMS_SECTIONS } from "./content";
 import { pageContent, contentWrapper, main } from "./index.css";
 import TermsHeader from "./TermsHeader";
 import TermsSection from "./TermsSection";
@@ -61,7 +61,7 @@ export default function TermsOfService() {
       <Navigation />
       <div className={pageContent}>
         <div>
-          <TopicNavigation topics={TOPICS} sections={TERMS_SECTIONS} />
+          <TopicNavigation sections={TERMS_SECTIONS} />
         </div>
         <div>
           <div style={{ minHeight: 100, width: "100%" }}></div>
