@@ -1,5 +1,3 @@
-import { theme } from "isskinui";
-
 import Cards from "./Cards";
 import { main, pageContent, subline, textWrapper, title } from "./index.css";
 import Navigation from "./Navigation";
@@ -41,7 +39,6 @@ export const metadata: Metadata = {
     icon: "/favicon.ico",
     apple: "/apple-icon.png",
   },
-  themeColor: theme.colors.brandPrimary,
   keywords: [
     "análise dermatológica",
     "isskin",

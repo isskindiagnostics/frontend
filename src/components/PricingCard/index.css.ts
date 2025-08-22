@@ -87,7 +87,7 @@ globalStyle(`${containerHighlightSelected} > p`, {
 
 export const priceWrapper = style({
   display: "flex",
-  alignItems: "end",
+  alignItems: "flex-end",
   gap: 3,
 });
 

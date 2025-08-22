@@ -1,13 +1,20 @@
 export const runtime = "nodejs";
-import handlebars from "handlebars";
 import { NextRequest } from "next/server";
-import puppeteer from "puppeteer";
 
-import htmlTemplate from "@/templates/report.html?raw";
 import { formatDate } from "@/utils/date";
 import { getSkinTypeLabel } from "@/utils/labels";
 
 export async function POST(req: NextRequest) {
+  const [
+    { default: handlebars },
+    { default: puppeteer },
+    { default: htmlTemplate },
+  ] = await Promise.all([
+    import("handlebars"),
+    import("puppeteer"),
+    import("@/templates/report.html?raw"),
+  ]);
+
   const { userData, jobData } = await req.json();
 
   const template = handlebars.compile(htmlTemplate);
@@ -53,7 +60,7 @@ export async function POST(req: NextRequest) {
 
   await browser.close();
 
-  return new Response(pdfBuffer, {
+  return new Response(Buffer.from(pdfBuffer), {
     headers: {
       "Content-Type": "application/pdf",
       "Content-Disposition": "inline; filename=report.pdf",
