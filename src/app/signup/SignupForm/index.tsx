@@ -5,7 +5,6 @@ import { Button, InputField, Link, Notification } from "isskinui";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-import Loader from "@/components/Loader";
 import { useAuth } from "@/context/AuthContext";
 import { useShowToast } from "@/hooks/useShowToast";
 
@@ -139,29 +138,24 @@ export default function SignupForm() {
           disabled={isSubmitting}
           required
         />
+        <Button
+          type="submit"
+          className={styles.submitButton}
+          disabled={isSubmitting}
+        >
+          Criar Conta
+        </Button>
 
-        {isSubmitting ? (
-          <div className={styles.loaderContainer}>
-            <Loader size="small" color="#23ABC2" />
-          </div>
-        ) : (
-          <>
-            <Button type="submit" className={styles.submitButton}>
-              Criar Conta
-            </Button>
-
-            <p className={styles.privacy}>
-              Ao clicar em continuar você concorda com os <br />
-              <Link href="/terms-and-conditions" target="_blank">
-                Termos e Condições
-              </Link>{" "}
-              e{" "}
-              <Link href="/privacy-policy" target="_blank">
-                Políticas de Privacidade.
-              </Link>
-            </p>
-          </>
-        )}
+        <p className={styles.privacy}>
+          Ao clicar em continuar você concorda com os <br />
+          <Link href="/terms-and-conditions" target="_blank">
+            Termos e Condições
+          </Link>{" "}
+          e{" "}
+          <Link href="/privacy-policy" target="_blank">
+            Políticas de Privacidade.
+          </Link>
+        </p>
       </form>
 
       <p className={styles.bottomLogin}>

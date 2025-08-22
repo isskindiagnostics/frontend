@@ -11,7 +11,6 @@ export const form = style({
 
 export const submitButton = style({
   width: "100% !important",
-  marginBottom: 14,
 });
 
 export const loaderContainer = style({
@@ -24,6 +23,7 @@ export const loaderContainer = style({
 
 export const privacy = style({
   textAlign: "center",
+  marginTop: 14,
 });
 
 export const bottomLogin = style({
