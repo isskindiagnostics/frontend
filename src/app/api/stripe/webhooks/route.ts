@@ -8,7 +8,6 @@ import {
   APIError,
   getFirebaseUid,
   isDeletedCustomer,
-  createFirestoreUpdate,
 } from "@/types/stripeApi";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -117,7 +116,7 @@ async function handleSubscriptionUpdate(
     updatedAt: Timestamp.now(),
   };
 
-  await updateDoc(userRef, createFirestoreUpdate(updateData));
+  await updateDoc(userRef, updateData);
 }
 
 async function handlePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
@@ -143,7 +142,7 @@ async function handlePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
     updatedAt: Timestamp.now(),
   };
 
-  await updateDoc(userRef, createFirestoreUpdate(updateData));
+  await updateDoc(userRef, updateData);
 }
 
 async function handlePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
@@ -169,5 +168,5 @@ async function handlePaymentFailed(invoice: Stripe.Invoice): Promise<void> {
     updatedAt: Timestamp.now(),
   };
 
-  await updateDoc(userRef, createFirestoreUpdate(updateData));
+  await updateDoc(userRef, updateData);
 }

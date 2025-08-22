@@ -158,13 +158,6 @@ export type SubscriptionUpdate = {
   updatedAt?: Timestamp | Date;
 };
 
-// Helper function to create type-safe Firestore updates
-export const createFirestoreUpdate = (
-  data: SubscriptionUpdate
-): Record<string, unknown> => {
-  return data as Record<string, unknown>;
-};
-
 // Helper function to map a Stripe card brand to the corresponding Flag type
 export const mapStripeBrandToFlag = (stripeBrand: CardBrand): Flag | null => {
   const brandMap: Record<string, Flag> = {

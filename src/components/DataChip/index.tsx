@@ -1,11 +1,10 @@
-import { Icons } from "isskinui";
 import * as Icon from "isskinui/icons";
 import { HTMLAttributes } from "react";
 
 import * as style from "./index.css";
 
 type DataChipProps = HTMLAttributes<HTMLDivElement> & {
-  icon: Icons;
+  icon: keyof typeof Icon;
   label: string;
   value?: string | number;
 };

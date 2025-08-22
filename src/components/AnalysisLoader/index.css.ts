@@ -1,5 +1,4 @@
 import { style } from "@vanilla-extract/css";
-import { theme } from "isskinui";
 
 export const container = style({
   width: "100%",

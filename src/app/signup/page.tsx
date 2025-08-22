@@ -2,9 +2,9 @@ import SmallLogo from "@/assets/svgs/SmallLogo";
 import Waves from "@/assets/svgs/Waves";
 
 import * as styles from "./index.css";
+import SignupForm from "./SignupForm";
 
 import type { Metadata } from "next";
-import SignupForm from "./SignupForm";
 
 export const metadata: Metadata = {
   title: "Cadastro | Isskin",

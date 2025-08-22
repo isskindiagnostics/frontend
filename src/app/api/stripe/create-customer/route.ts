@@ -9,7 +9,6 @@ import {
   SubscriptionUpdate,
   APIError,
   StripeError,
-  createFirestoreUpdate,
 } from "@/types/stripeApi";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -45,7 +44,7 @@ export async function POST(
       updatedAt: Timestamp.now(), // Use Timestamp instead of Date
     };
 
-    await updateDoc(userRef, createFirestoreUpdate(updateData));
+    await updateDoc(userRef, updateData);
 
     return NextResponse.json({
       customerId: customer.id,

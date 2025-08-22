@@ -20,11 +20,13 @@ export async function canCreateReportPdf(uid: string): Promise<boolean> {
   if (!userSnap.exists()) return false;
 
   const subscription = userSnap.data().subscription as Subscription;
-  if (subscription.plan !== "free") return true;
+  if (subscription.plan !== "premium") return true;
+
+  if (!subscription.usage) return true;
 
   const free = subscription.usage;
-  const count = free?.pdfCount || 0;
-  const limit = free?.pdfLimit || 0;
+  const count = free.pdfCount || 0;
+  const limit = free.pdfLimit || 0;
 
   return count < limit;
 }

@@ -12,7 +12,6 @@ import {
   StripeError,
   getPaymentIntentClientSecret,
   getCardDetails,
-  createFirestoreUpdate,
 } from "@/types/stripeApi";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
@@ -91,7 +90,7 @@ export async function POST(
       updatedAt: now,
     };
 
-    await updateDoc(userRef, createFirestoreUpdate(updateData));
+    await updateDoc(userRef, updateData);
 
     // Extract client secret safely using helper function
     const clientSecret = getPaymentIntentClientSecret(subscription);
