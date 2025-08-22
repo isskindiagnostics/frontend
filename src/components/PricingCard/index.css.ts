@@ -15,21 +15,13 @@ export const container = style({
   boxShadow: theme.shadow.xs,
   justifyContent: "space-between",
   gap: theme.spacing.sm,
-  transition: "ease-in-out 0.5s",
-  border: "none",
-  cursor: "auto",
+  transition: "ease-in-out 0.2s",
+  cursor: "pointer",
+  border: "2px solid transparent",
 
   ":disabled": {
     cursor: "default",
     transform: "translateY(0)",
-  },
-});
-
-export const hoverAnimation = style({
-  cursor: "pointer",
-  ":hover": {
-    transform: "translateY(-7px)",
-    boxShadow: "0px 4px 54.3px 14px rgba(14, 19, 19, 0.1)",
   },
 });
 
@@ -39,6 +31,16 @@ export const containerHighlight = style({
   ":disabled": {
     background: disabledBackground,
   },
+});
+
+export const containerSelected = style({
+  backgroundColor: "#f8feff",
+  borderColor: theme.colors.brandPrimary,
+});
+
+export const containerHighlightSelected = style({
+  background: "linear-gradient(161deg, #6e787eff 5.8%, #32363bff 89.43%)",
+  borderColor: theme.colors.brandPrimary,
 });
 
 export const contentWrapper = style({

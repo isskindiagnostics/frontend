@@ -2,7 +2,6 @@ import { Badge, Check } from "isskinui";
 import { ButtonHTMLAttributes } from "react";
 
 import * as componentStyles from "./index.css";
-import { hoverAnimation } from "./index.css";
 
 type PricingCardProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   subscription: string;
@@ -10,7 +9,7 @@ type PricingCardProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   description: string;
   features: readonly string[];
   variant?: "default" | "highlight";
-  animateOnHover?: boolean;
+  selected?: boolean;
 };
 
 const formatPrice = (priceInCents: number) => {
@@ -23,12 +22,20 @@ const formatPrice = (priceInCents: number) => {
 const getStyleClasses = (
   disabled: boolean,
   variant: "default" | "highlight",
-  animateOnHover: boolean
+  selected: boolean
 ) => {
   const isHighlight = variant === "highlight";
 
   return {
-    container: `${componentStyles.container} ${animateOnHover && hoverAnimation} ${isHighlight && componentStyles.containerHighlight}`,
+    container: (() => {
+      if (selected && isHighlight)
+        return `${componentStyles.container} ${componentStyles.containerHighlightSelected}`;
+      if (selected && !isHighlight)
+        return `${componentStyles.container} ${componentStyles.containerSelected}`;
+      if (isHighlight)
+        return `${componentStyles.container} ${componentStyles.containerHighlight}`;
+      return componentStyles.container;
+    })(),
 
     badge: (() => {
       if (disabled && isHighlight)
@@ -66,13 +73,18 @@ const PricingCard = ({
   features,
   disabled = false,
   variant = "default",
-  animateOnHover = false,
+  selected = false,
   ...props
 }: PricingCardProps) => {
-  const styles = getStyleClasses(disabled, variant, animateOnHover);
+  const styles = getStyleClasses(disabled, variant, selected);
 
   return (
-    <button className={styles.container} disabled={disabled} {...props}>
+    <button
+      type="button"
+      className={styles.container}
+      disabled={disabled}
+      {...props}
+    >
       <div className={componentStyles.contentWrapper}>
         <Badge label={subscription} className={styles.badge} />
 

@@ -97,7 +97,7 @@ export const useUserProfile = () => {
     user: FirebaseUser
   ): Promise<User> => {
     const initialSubscription: Subscription = {
-      plan: "free",
+      plan: null,
       status: "incomplete",
       startDate: null,
       endDate: null,

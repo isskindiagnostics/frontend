@@ -78,6 +78,7 @@ export const BASE_FORM_STEPS: FormStep[] = [
       const stepProps = props as PaymentPlanStepProps;
       return (
         <PaymentPlan
+          subscription={stepProps.subscription}
           onNext={(plan) => {
             const subscriptionUpdate = {
               ...stepProps.subscription,

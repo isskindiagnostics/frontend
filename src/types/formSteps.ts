@@ -68,7 +68,7 @@ export type FormStep = {
 
 // Payment plan selection data
 export type PaymentPlanData = {
-  plan: "free" | "premium";
+  plan: "free" | "premium" | null;
 };
 
 // Payment method data from Stripe

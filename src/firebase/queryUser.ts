@@ -13,6 +13,7 @@ export async function getUserDataById(uid: string): Promise<UserData> {
     return data.userData as UserData;
   }
 
+  //TODO FIX TYPE
   return {
     name: "",
     email: "",

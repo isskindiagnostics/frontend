@@ -33,7 +33,7 @@ export const createDefaultProfessionalInfo = (): UserProfessionalInfo => ({
 });
 
 export const createDefaultSubscription = (): Subscription => ({
-  plan: "free",
+  plan: null,
   status: "incomplete",
   startDate: Timestamp.now(),
   endDate: null,

@@ -1,7 +1,7 @@
 import { Timestamp } from "firebase/firestore";
 
 export type Subscription = {
-  plan: "free" | "premium";
+  plan: "free" | "premium" | null;
   status: "active" | "trialing" | "canceled" | "past_due" | "incomplete";
   startDate: Timestamp | null;
   endDate?: Timestamp | null;
@@ -32,4 +32,3 @@ export type PaymentMethod = {
   expYear: number;
   isDefault: boolean;
 };
-
