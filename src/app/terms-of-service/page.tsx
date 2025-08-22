@@ -1,24 +1,27 @@
 import Navigation from "@/components/Navigation";
 
-import Cards from "./Cards";
-import { main, pageContent, subline, textWrapper, title } from "./index.css";
+import { TOPICS, TERMS_SECTIONS } from "./content";
+import { pageContent, contentWrapper, main } from "./index.css";
+import TermsHeader from "./TermsHeader";
+import TermsSection from "./TermsSection";
+import TopicNavigation from "./TopicNavigation";
 
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Planos e Preços | Isskin",
+  title: "Termos de Serviço | Isskin",
   description:
     "Conheça nossos planos de assinatura! Tenha acesso a relatórios detalhados, suporte dedicado e tecnologia avançada para diagnósticos rápidos e precisos.",
   robots: "index, follow",
   openGraph: {
-    title: "Planos e Preços | Isskin",
+    title: "Termos de Serviço | Isskin",
     description:
       "Planos para médicos com análises ilimitadas, relatórios detalhados e suporte especializado. Comece grátis com 10 análises e faça upgrade quando precisar.",
-    url: "https://https://isskindiagnostics.com/pricing",
+    url: "https://isskindiagnostics.com/pricing",
     siteName: "Isskin Diagnostics",
     images: [
       {
-        url: "https://https://isskindiagnostics.com/og-image.png",
+        url: "https://isskindiagnostics.com/og-image.png",
         width: 1200,
         height: 630,
         alt: "Isskin",
@@ -29,12 +32,12 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Planos e Preços | Isskin",
+    title: "Termos de Serviço | Isskin",
     description:
       "Assinaturas para médicos: grátis com 10 análises, premium ilimitado e suporte dedicado. Comece hoje mesmo!",
     site: "@IsskinDiagnostics",
     creator: "@IsskinDiagnostics",
-    images: ["https://https://isskindiagnostics.com/og-image.png"],
+    images: ["https://isskindiagnostics.com/og-image.png"],
   },
   icons: {
     icon: "/favicon.ico",
@@ -52,18 +55,26 @@ export const metadata: Metadata = {
   ].join(", "),
 };
 
-export default function Pricing() {
+export default function TermsOfService() {
   return (
-    <main className={main}>
+    <main className={main} style={{ backgroundColor: "white" }}>
       <Navigation />
       <div className={pageContent}>
-        <div className={textWrapper}>
-          <h1 className={title}>Escolha o plano ideal para você</h1>
-          <p className={subline}>
-            Analise seus casos com segurança e agilidade, sem complicação.
-          </p>
+        <div>
+          <TopicNavigation topics={TOPICS} sections={TERMS_SECTIONS} />
         </div>
-        <Cards />
+        <div>
+          <div style={{ minHeight: 100, width: "100%" }}></div>
+          <TermsHeader
+            title="Termos de Serviço"
+            lastUpdated="22 de agosto de 2025"
+          />
+          <div className={contentWrapper}>
+            {TERMS_SECTIONS.map((section) => (
+              <TermsSection key={section.id} section={section} />
+            ))}
+          </div>
+        </div>
       </div>
     </main>
   );

@@ -40,6 +40,10 @@ globalStyle("h2", {
   lineHeight: theme.typography.headline.desktop.md.lineHeight,
 });
 
+globalStyle("html", {
+  scrollBehavior: "smooth",
+});
+
 export const container = style({
   width: "100%",
   height: "100%",

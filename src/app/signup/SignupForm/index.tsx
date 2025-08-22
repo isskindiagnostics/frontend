@@ -148,8 +148,8 @@ export default function SignupForm() {
 
         <p className={styles.privacy}>
           Ao clicar em continuar você concorda com os <br />
-          <Link href="/terms-and-conditions" target="_blank">
-            Termos e Condições
+          <Link href="/terms-of-service" target="_blank">
+            Termos de Serviço
           </Link>{" "}
           e{" "}
           <Link href="/privacy-policy" target="_blank">
