@@ -431,7 +431,7 @@ const PaymentMethodForm = ({
             type="submit"
             disabled={!isFormValid() || isDisabled || !stripe}
           >
-            {isDisabled ? "Processando" : "Próximo"}
+            Próximo
           </Button>
         </div>
       </form>

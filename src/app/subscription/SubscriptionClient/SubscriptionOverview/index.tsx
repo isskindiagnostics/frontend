@@ -1,8 +1,8 @@
 import { Button, IconLink } from "isskinui";
 import { useState, useEffect } from "react";
 
-import { uid } from "@/app/uid";
 import SkeletonCell from "@/components/SkeletonCell";
+import { useAuth } from "@/context/AuthContext";
 import { getAnalysisUsage } from "@/firebase/queryAnalysis";
 import { getSubscriptionData } from "@/firebase/querySubscription";
 import { formatDate } from "@/utils/date";
@@ -22,6 +22,7 @@ type SubscriptionOverviewProps = {
 };
 
 const SubscriptionOverview = ({ href }: SubscriptionOverviewProps) => {
+  const { user } = useAuth();
   const [count, setCount] = useState<number | null>(null);
   const [limit, setLimit] = useState<number | null>(null);
   const [memberSince, setMemberSince] = useState<string | null>(null);
@@ -30,7 +31,7 @@ const SubscriptionOverview = ({ href }: SubscriptionOverviewProps) => {
   useEffect(() => {
     const fetchUsage = async () => {
       setLoading(true);
-      const usage = await getAnalysisUsage(uid);
+      const usage = await getAnalysisUsage(user?.uid || "");
       if (!usage) {
         setLoading(false);
         return;
@@ -47,7 +48,7 @@ const SubscriptionOverview = ({ href }: SubscriptionOverviewProps) => {
 
   useEffect(() => {
     const fetchSubscriptionData = async () => {
-      const data = await getSubscriptionData(uid);
+      const data = await getSubscriptionData(user?.uid || "");
       if (!data) return;
 
       const { startDate } = data;

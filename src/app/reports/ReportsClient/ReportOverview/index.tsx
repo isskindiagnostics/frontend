@@ -1,9 +1,9 @@
 import { IconLink, Notification } from "isskinui";
 import Image from "next/image";
 
-import { uid } from "@/app/uid";
 import ContentBlock from "@/components/ContentBlock";
 import SkeletonCell from "@/components/SkeletonCell";
+import { useAuth } from "@/context/AuthContext";
 import { REPORT_ERROR_MESSAGES } from "@/firebase/constants";
 import {
   canCreateReportPdf,
@@ -35,15 +35,16 @@ const ReportOverview = ({
   onClose,
   fetchJob,
 }: ReportOverviewProps) => {
+  const { user } = useAuth();
   const [successMessage, setSuccessMessage] = useShowToast();
   const [errorMessage, setErrorMessage] = useShowToast();
 
   const handleSaveJob = async (jobId: string) => {
     try {
       const jobData = await fetchJob(jobId);
-      const userData = await getUserDataById(uid);
+      const userData = await getUserDataById(user?.uid || "");
 
-      const allowed = await canCreateReportPdf(uid);
+      const allowed = await canCreateReportPdf(user?.uid || "");
 
       if (!allowed) {
         setErrorMessage(REPORT_ERROR_MESSAGES.limit);
@@ -53,7 +54,7 @@ const ReportOverview = ({
       if (jobData) {
         setSuccessMessage("Gerando o relatório do paciente selecionado.");
         generatePdf(userData, jobData);
-        await incrementReportPdfCount(uid);
+        await incrementReportPdfCount(user?.uid || "");
       }
     } catch (error) {
       setErrorMessage(REPORT_ERROR_MESSAGES.generic || "Erro desconhecido");

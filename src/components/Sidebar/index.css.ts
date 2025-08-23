@@ -43,6 +43,6 @@ export const iconLink = style({
   },
 });
 
-export const logout = style({
+export const logoutButton = style({
   marginTop: "auto",
 });
