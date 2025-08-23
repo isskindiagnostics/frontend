@@ -11,6 +11,7 @@ import ContentBlock from "@/components/ContentBlock";
 import HelpCardOverlay from "@/components/HelpCardOverlay";
 import PhotoAnalysis from "@/components/PhotoAnalysis";
 import TopBar from "@/components/TopBar";
+import { useAuth } from "@/context/AuthContext";
 import { db } from "@/firebase/config";
 import { ANALYSIS_ERROR_MESSAGES } from "@/firebase/constants";
 import { saveAnalysisData } from "@/firebase/queryAnalysis";
@@ -21,12 +22,11 @@ import {
 import { useShowToast } from "@/hooks/useShowToast";
 import generateProtocol from "@/utils/generateProtocol";
 
-import { uid } from "../../uid";
-
 import { formSection, photoSection, fieldWrapper } from "./index.css";
 import { genders, insurances, skinTypes } from "./staticData";
 
 const AnalysisForm = () => {
+  const { user } = useAuth();
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useShowToast();
 
@@ -69,18 +69,18 @@ const AnalysisForm = () => {
     try {
       setLoading(true);
 
-      const allowed = await canPerformAnalysis(uid);
+      const allowed = await canPerformAnalysis(user?.uid || "");
       if (!allowed) {
         setLoading(false);
         setErrorMessage(ANALYSIS_ERROR_MESSAGES.limit);
         return;
       }
 
-      const jobId = await startAnalysis(imageFile, uid);
+      const jobId = await startAnalysis(imageFile, user?.uid || "");
       setJobId(jobId);
 
       await saveAnalysisData({
-        uid: uid,
+        uid: user?.uid || "",
         jobId,
         protocol: generateProtocol(),
         name,
@@ -90,7 +90,7 @@ const AnalysisForm = () => {
         skinLocation,
         skinType,
       });
-      await incrementAnalysisCount(uid);
+      await incrementAnalysisCount(user?.uid || "");
     } catch (error) {
       console.error("Error:", error);
       setLoading(false);
@@ -101,7 +101,7 @@ const AnalysisForm = () => {
     if (!jobId) return;
 
     const checkStatus = async () => {
-      const docRef = doc(db, "users", uid, "jobs", jobId);
+      const docRef = doc(db, "users", user?.uid || "", "jobs", jobId);
       const docSnap = await getDoc(docRef);
 
       if (!docSnap.exists()) {
@@ -121,7 +121,7 @@ const AnalysisForm = () => {
     checkStatus();
 
     return () => clearInterval(interval);
-  }, [jobId, router, setErrorMessage]);
+  }, [jobId, router, setErrorMessage, user?.uid]);
 
   return (
     <main className={main}>
@@ -129,10 +129,7 @@ const AnalysisForm = () => {
 
       <TopBar title="Análise">
         {!loading && (
-          <Button
-            disabled={!isFormValid}
-            onClick={handleSubmit}
-          >
+          <Button disabled={!isFormValid} onClick={handleSubmit}>
             Analisar
           </Button>
         )}

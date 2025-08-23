@@ -1,8 +1,7 @@
 "use client";
-
 import { Notification, Search as IsskinSearch } from "isskinui";
 
-import { uid } from "@/app/uid";
+import { useAuth } from "@/context/AuthContext";
 import { REPORT_ERROR_MESSAGES } from "@/firebase/constants";
 import { getJobs } from "@/firebase/queryJobs";
 import {
@@ -19,15 +18,16 @@ type SearchProps = {
 };
 
 const Search = ({ fetchJob }: SearchProps) => {
+  const { user } = useAuth();
   const [successMessage, setSuccessMessage] = useShowToast();
   const [errorMessage, setErrorMessage] = useShowToast();
 
   const handleSuggestionSelect = async (jobId: string) => {
     try {
       const jobData = await fetchJob(jobId);
-      const userData = await getUserDataById(uid);
+      const userData = await getUserDataById(user?.uid || "");
 
-      const allowed = await canCreateReportPdf(uid);
+      const allowed = await canCreateReportPdf(user?.uid || "");
 
       if (!allowed) {
         setErrorMessage(REPORT_ERROR_MESSAGES.limit);
@@ -37,7 +37,7 @@ const Search = ({ fetchJob }: SearchProps) => {
       if (jobData) {
         setSuccessMessage("Gerando o relatório do paciente selecionado.");
         generatePdf(userData, jobData);
-        await incrementReportPdfCount(uid);
+        await incrementReportPdfCount(user?.uid || "");
       }
     } catch (error) {
       setErrorMessage(REPORT_ERROR_MESSAGES.generic || "Erro desconhecido");
@@ -52,7 +52,7 @@ const Search = ({ fetchJob }: SearchProps) => {
 
       <IsskinSearch
         placeholder="Pesquisar"
-        getSuggestions={(val) => getJobs(uid!, val)}
+        getSuggestions={(val) => getJobs(user?.uid || "", val)}
         onSuggestionSelect={handleSuggestionSelect}
       />
     </>

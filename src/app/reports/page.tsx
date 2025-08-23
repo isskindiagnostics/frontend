@@ -1,12 +1,10 @@
 import { Metadata } from "next";
-import { Suspense } from "react";
 
 import Sidebar from "@/components/Sidebar";
 
 import { container } from "../global.css";
 
 import ReportsContent from "./ReportsContent";
-import ReportsSkeleton from "./ReportsSkeleton";
 
 export const metadata: Metadata = {
   title: "Relatórios",
@@ -19,9 +17,7 @@ export default function Reports() {
   return (
     <div className={container}>
       <Sidebar currentPage="reports" />
-      <Suspense fallback={<ReportsSkeleton />}>
-        <ReportsContent />
-      </Suspense>
+      <ReportsContent />
     </div>
   );
 }
