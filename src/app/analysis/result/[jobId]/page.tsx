@@ -66,7 +66,7 @@ export default function ResultsPage({
   }
 
   if (loading) {
-    return <ResultsSkeleton />; // TODO
+    return <ResultsSkeleton />;
   }
 
   if (!data) {

@@ -9,7 +9,7 @@ import {
 
 export const createDefaultUserData = (
   email = "",
-  isEmailVerified = false
+  emailVerified = false
 ): UserData => ({
   name: "",
   email,
@@ -19,7 +19,7 @@ export const createDefaultUserData = (
   },
   accountType: "individual",
   profilePicture: "",
-  isEmailVerified,
+  emailVerified,
 });
 
 export const createDefaultProfessionalInfo = (): UserProfessionalInfo => ({
