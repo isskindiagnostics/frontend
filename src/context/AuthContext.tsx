@@ -4,12 +4,12 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
-  sendPasswordResetEmail,
   sendEmailVerification,
   updateEmail,
   reauthenticateWithCredential,
   EmailAuthProvider,
   User,
+  updatePassword,
 } from "firebase/auth";
 import { doc, getDoc, setDoc, updateDoc, Timestamp } from "firebase/firestore";
 import { createContext, useContext, useEffect, useState } from "react";
@@ -22,7 +22,10 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   logout: () => Promise<void>;
-  resetPassword: (email: string) => Promise<void>;
+  updateUserPassword: (
+    currentPassword: string,
+    newPassword: string
+  ) => Promise<void>;
   sendVerificationEmail: () => Promise<void>;
   updateUserEmail: (newEmail: string, currentPassword: string) => Promise<void>;
   refreshUser: () => Promise<void>;
@@ -78,10 +81,35 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     await signOut(auth);
   };
 
-  const resetPassword = async (email: string) => {
-    await sendPasswordResetEmail(auth, email);
-  };
+  const updateUserPassword = async (
+    currentPassword: string,
+    newPassword: string
+  ) => {
+    if (!user) {
+      throw new Error("No authenticated user");
+    }
 
+    try {
+      // Re-authenticate the user first with current password
+      const credential = EmailAuthProvider.credential(
+        user.email!,
+        currentPassword
+      );
+      await reauthenticateWithCredential(user, credential);
+
+      // Update password
+      await updatePassword(user, newPassword);
+
+      // Optionally update the user document timestamp in Firestore
+      const userRef = doc(db, "users", user.uid);
+      await updateDoc(userRef, {
+        updatedAt: Timestamp.now(),
+      });
+    } catch (error) {
+      console.error("Error updating password:", error);
+      throw error;
+    }
+  };
   const sendVerificationEmail = async () => {
     if (!user) {
       throw new Error("No authenticated user");
@@ -149,7 +177,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         signIn,
         signUp,
         logout,
-        resetPassword,
+        updateUserPassword,
         sendVerificationEmail,
         updateUserEmail,
         refreshUser,
