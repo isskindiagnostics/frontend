@@ -1,5 +1,4 @@
 "use client";
-
 import { FirebaseError } from "firebase/app";
 import { Button, InputField, Link, Notification } from "isskinui";
 import { useRouter } from "next/navigation";
@@ -16,6 +15,7 @@ export default function SignupForm() {
 
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const { sendVerificationEmail } = useAuth();
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [generalError, setGeneralError] = useShowToast();
@@ -59,6 +59,14 @@ export default function SignupForm() {
     return newErrors;
   };
 
+  const handleResendVerification = async () => {
+    try {
+      await sendVerificationEmail();
+    } catch (error) {
+      console.error("Error sending verification email:", error);
+    }
+  };
+
   const handleSignup = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setGeneralError("");
@@ -75,6 +83,7 @@ export default function SignupForm() {
 
     try {
       await signUp(email, password);
+      handleResendVerification();
       router.push("/signup/complete");
     } catch (error) {
       if (error instanceof FirebaseError) {

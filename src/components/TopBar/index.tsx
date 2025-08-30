@@ -1,7 +1,11 @@
+"use client";
 import Image from "next/image";
 import { HTMLAttributes, PropsWithChildren } from "react";
 
-import ProfileImg from "@/assets/images/doctor.png";
+import ProfileImg from "@/assets/images/default-profile-image.png";
+import { useUserData } from "@/hooks/useUserData";
+
+import SkeletonCell from "../SkeletonCell";
 
 import { pageTitle, profileImg, topBar } from "./index.css";
 
@@ -12,17 +16,24 @@ type TopBarProps = PropsWithChildren<
 >;
 
 const TopBar = ({ title, className, children, ...props }: TopBarProps) => {
+  const { userData, isLoading } = useUserData();
+
   return (
     <div className={`${topBar} ${className}`} {...props}>
       <h1 className={pageTitle}>{title}</h1>
       {children}
-      <Image
-        className={profileImg}
-        src={ProfileImg}
-        alt="Sua foto de perfil"
-        width={34}
-        height={34}
-      />
+
+      {isLoading ? (
+        <SkeletonCell width={34} height={34} style={{ borderRadius: "50%" }} />
+      ) : (
+        <Image
+          className={profileImg}
+          src={userData?.userData.profilePicture || ProfileImg}
+          alt="Sua foto de perfil"
+          width={34}
+          height={34}
+        />
+      )}
     </div>
   );
 };

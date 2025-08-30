@@ -3,8 +3,9 @@ import { theme } from "isskinui";
 
 export const container = style({
   position: "relative",
-  width: 120,
-  height: 120,
+  minWidth: 94,
+  width: 94,
+  height: 94,
   borderRadius: "50%",
   overflow: "hidden",
   cursor: "pointer",

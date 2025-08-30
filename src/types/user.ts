@@ -20,7 +20,7 @@ export type UserData = {
   };
   accountType: "individual" | "organization";
   profilePicture?: string;
-  isEmailVerified?: boolean;
+  emailVerified?: boolean;
 };
 
 export type UserProfessionalInfo = {
