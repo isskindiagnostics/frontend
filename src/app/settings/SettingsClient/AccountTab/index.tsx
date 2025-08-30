@@ -2,7 +2,8 @@
 import { useUserData } from "@/hooks/useUserData";
 
 import AccountSkeleton from "./AccountSkeleton";
-import { accountContentWrapper } from "./index.css";
+// import AuthenticationData from "./AuthenticationData";
+import { accountContentWrapper, blocksWrapper } from "./index.css";
 import PasswordData from "./PasswordData";
 import ProfileData from "./ProfileData";
 
@@ -16,7 +17,12 @@ export default function AcountTab() {
   return (
     <div className={accountContentWrapper}>
       <ProfileData />
-      <PasswordData />
+
+      <div className={blocksWrapper}>
+        <PasswordData />
+        {/* TODO!!! */}
+        {/* <AuthenticationData /> */}
+      </div>
     </div>
   );
 }

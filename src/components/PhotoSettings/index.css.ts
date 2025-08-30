@@ -3,6 +3,7 @@ import { theme } from "isskinui";
 
 export const container = style({
   position: "relative",
+  minWidth: 94,
   width: 94,
   height: 94,
   borderRadius: "50%",

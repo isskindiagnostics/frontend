@@ -145,6 +145,7 @@ const PhotoSettings = ({
       <div className={editOverlay} onClick={open}>
         <Edit className={icon} />
       </div>
+      
       {isUploading && (
         <SkeletonCell
           width={94}

@@ -8,6 +8,7 @@ import {
   headingAction,
   accountContentWrapper,
   passwordBlock,
+  blocksWrapper,
 } from "../index.css";
 
 export default function AccountSkeleton() {
@@ -32,15 +33,35 @@ export default function AccountSkeleton() {
         </div>
       </ContentBlock>
 
-      <ContentBlock className={`${accountContentBlock} ${passwordBlock}`}>
-        <div>
-          <div className={headingAction}>
-            <h3>Senha</h3>
-            <SkeletonCell width={125} height={28} />
+      <div className={blocksWrapper}>
+        <ContentBlock className={`${accountContentBlock} ${passwordBlock}`}>
+          <div>
+            <div className={headingAction}>
+              <h3>Senha</h3>
+              <SkeletonCell width={125} height={28} />
+            </div>
+            <p>
+              Use uma senha forte e exclusiva para manter sua conta protegida.
+            </p>
           </div>
-          <p>Use uma senha forte e exclusiva para manter sua conta protegida.</p>
-        </div>
-      </ContentBlock>
+        </ContentBlock>
+
+        {/* TODO!!! */}
+        {/* <ContentBlock className={`${accountContentBlock} ${passwordBlock}`}>
+          <div>
+            <div className={headingAction}>
+              <h3>Autenticação de dois fatores</h3>
+
+              <SkeletonCell width={125} height={28} />
+            </div>
+            <p>
+              A autenticação de dois fatores adiciona uma camada extra de
+              segurança à sua conta, exigindo mais do que apenas uma senha para
+              fazer login.
+            </p>
+          </div>
+        </ContentBlock> */}
+      </div>
     </div>
   );
 }

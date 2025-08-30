@@ -11,6 +11,13 @@ export const passwordBlock = style({
   maxWidth: 542,
 });
 
+export const blocksWrapper = style({
+  width: "100%",
+  display: "flex",
+  flexDirection: "column",
+  gap: theme.spacing.lg,
+});
+
 export const profileSettings = style({
   display: "flex",
   gap: theme.spacing.lg,
