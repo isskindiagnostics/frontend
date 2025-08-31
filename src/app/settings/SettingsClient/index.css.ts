@@ -23,3 +23,9 @@ export const contentWrapper = style({
     },
   },
 });
+
+export const titleAndDescription = style({
+  display: "flex",
+  flexDirection: "column",
+  gap: 6,
+});

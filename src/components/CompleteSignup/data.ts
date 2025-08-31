@@ -9,6 +9,12 @@ export const WORKING_FIELD = [
   { icon: "Nurse", description: "Enfermeiro" },
 ];
 
+export const WORKING_FIELD_SELECT = [
+  { label: "Médico Generalista", value: "generalDoctor" },
+  { label: "Dermatologista", value: "dermatologist" },
+  { label: "Enfermeiro", value: "nurse" },
+];
+
 export const BRAZILIAN_STATES = [
   { label: "AC", value: "ac" },
   { label: "AL", value: "al" },
