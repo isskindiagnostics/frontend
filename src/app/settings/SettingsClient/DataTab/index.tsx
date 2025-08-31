@@ -14,12 +14,12 @@ import { useUserData } from "@/hooks/useUserData";
 
 import { titleAndDescription } from "../index.css";
 
+import DataSkeleton from "./DataSkeleton";
 import {
   accountButtonWrapper,
   dataContentBlock,
   inputWrapper,
 } from "./index.css";
-import DataSkeleton from "./DataSkeleton";
 
 export default function DataTab() {
   const { userData, isLoading, updateUserData } = useUserData();

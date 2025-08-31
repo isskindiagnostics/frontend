@@ -21,13 +21,17 @@ export function getAge(birthDate: string): number {
 }
 
 export function formatDate(
-  dateInput: string | Timestamp,
+  dateInput: Date | Timestamp | string | number,
   format: FormatType = "short"
 ): string {
   let date: Date;
 
-  if (dateInput instanceof Timestamp) {
-    date = dateInput.toDate();
+  if (dateInput instanceof Date) {
+    date = dateInput;
+  } else if (dateInput instanceof Timestamp) {
+    date = dateInput.toDate()
+  } else if (typeof dateInput === "number") {
+    date = new Date(dateInput);
   } else if (typeof dateInput === "string") {
     const dateMatch = dateInput.match(/(\d{1,2})\s+de\s+(\w+)\s+de\s+(\d{4})/);
 
@@ -60,7 +64,7 @@ export function formatDate(
       date = new Date(dateInput);
     }
   } else {
-    date = new Date(dateInput);
+    return "Invalid date";
   }
 
   if (format === "short") {
