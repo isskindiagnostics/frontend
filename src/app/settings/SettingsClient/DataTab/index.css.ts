@@ -1,21 +1,11 @@
 import { style } from "@vanilla-extract/css";
 import { theme } from "isskinui";
 
-export const accountContentBlock = style({
+export const dataContentBlock = style({
   width: "100%",
+  maxWidth: 715,
   gap: theme.spacing.lg,
   height: "max-content",
-});
-
-export const passwordBlock = style({
-  maxWidth: 542,
-});
-
-export const blocksWrapper = style({
-  width: "100%",
-  display: "flex",
-  flexDirection: "column",
-  gap: theme.spacing.lg,
 });
 
 export const profileSettings = style({
@@ -36,18 +26,4 @@ export const accountButtonWrapper = style({
   display: "flex",
   gap: theme.spacing.lg,
   justifyContent: "flex-end",
-});
-
-export const accountContentWrapper = style({
-  width: "100%",
-  display: "flex",
-  gap: theme.spacing.lg,
-});
-
-export const headingAction = style({
-  width: "100%",
-  height: 32,
-  display: "flex",
-  justifyContent: "space-between",
-  alignItems: "center",
 });

@@ -7,6 +7,7 @@ import ContentBlock from "@/components/ContentBlock";
 import { useAuth } from "@/context/AuthContext";
 import { useShowToast } from "@/hooks/useShowToast";
 
+import { titleAndDescription } from "../../index.css";
 import {
   accountButtonWrapper,
   accountContentBlock,
@@ -14,7 +15,6 @@ import {
   inputWrapper,
   passwordBlock,
 } from "../index.css";
-
 
 export default function PasswordData() {
   const { updateUserPassword } = useAuth();
@@ -121,7 +121,7 @@ export default function PasswordData() {
       {errorMessage && <Notification type="error" label={errorMessage} />}
 
       <ContentBlock className={`${accountContentBlock} ${passwordBlock}`}>
-        <div>
+        <div className={titleAndDescription}>
           <div className={headingAction}>
             <h3>Senha</h3>
             {!isPasswordOpen && (

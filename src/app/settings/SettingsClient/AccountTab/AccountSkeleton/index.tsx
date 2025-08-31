@@ -1,6 +1,7 @@
 import ContentBlock from "@/components/ContentBlock";
 import SkeletonCell from "@/components/SkeletonCell";
 
+import { titleAndDescription } from "../../index.css";
 import {
   accountContentBlock,
   profileSettings,
@@ -19,9 +20,9 @@ export default function AccountSkeleton() {
           <SkeletonCell
             width={94}
             height={94}
-            style={{ borderRadius: "50%" }}
+            style={{ borderRadius: "50%", minWidth: 94 }}
           />
-          <div>
+          <div className={titleAndDescription}>
             <h3>Perfil</h3>
             <p>Mantenha os dados da sua conta seguros e atualizados.</p>
           </div>
@@ -35,7 +36,7 @@ export default function AccountSkeleton() {
 
       <div className={blocksWrapper}>
         <ContentBlock className={`${accountContentBlock} ${passwordBlock}`}>
-          <div>
+          <div className={titleAndDescription}>
             <div className={headingAction}>
               <h3>Senha</h3>
               <SkeletonCell width={125} height={28} />

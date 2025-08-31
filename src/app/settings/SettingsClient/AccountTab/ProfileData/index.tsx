@@ -10,6 +10,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useShowToast } from "@/hooks/useShowToast";
 import { useUserData } from "@/hooks/useUserData";
 
+import { titleAndDescription } from "../../index.css";
 import {
   accountButtonWrapper,
   accountContentBlock,
@@ -200,7 +201,7 @@ export default function ProfileData() {
             onUploadComplete={handleUploadComplete}
             onUploadError={handleUploadError}
           />
-          <div>
+          <div className={titleAndDescription}>
             <h3>Perfil</h3>
             <p>Mantenha os dados da sua conta seguros e atualizados.</p>
           </div>
@@ -251,7 +252,7 @@ export default function ProfileData() {
             <div className={accountButtonWrapper}>
               <EmailVerificationButton /> {/* TODO: Not shwoing */}
               <Button onClick={handleSave} disabled={isSaving}>
-                {isSaving ? "Salvando" : "Salvar alterações"}
+                Salvar alterações
               </Button>
             </div>
           )}
