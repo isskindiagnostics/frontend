@@ -30,6 +30,8 @@ const tabs: TabElement[] = [
 const SubscriptionClient = () => {
   const { isLoading } = useUserData();
   // const [toggle, setToggle] = useState(false);
+  const { userData } = useUserData();
+  const status = userData?.subscription.status;
 
   if (isLoading) {
     return <SubscriptionSkeleton />;
@@ -59,7 +61,7 @@ const SubscriptionClient = () => {
           <div className={blocks}>
             <SubscriptionOverview href="/pricing" />
 
-            <NextBilling />
+            {status !== "canceled" && <NextBilling />}
           </div>
         </ContentBlock>
 
