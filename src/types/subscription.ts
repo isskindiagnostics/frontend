@@ -1,12 +1,22 @@
 import { Timestamp } from "firebase/firestore";
 
 export type Subscription = {
-  plan: "free" | "premium" | null;
+  plan: Plan;
   status: "active" | "trialing" | "canceled" | "past_due" | "incomplete";
   startDate: Timestamp | null;
   endDate?: Timestamp | null;
   usage?: SubscriptionUsage;
   stripeData?: PremiumSubscriptionData;
+  cancellationHistory?: CancellationFeedback[];
+};
+
+export type Plan = "free" | "premium" | null;
+
+export type CancellationFeedback = {
+  reason: string;
+  feedback?: string;
+  timestamp: Timestamp;
+  subscriptionType: Plan;
 };
 
 export type SubscriptionUsage = {

@@ -34,6 +34,7 @@ export const price = style({
   fontFamily: theme.typography.fontFamilyHeadline,
   color: theme.colors.brandWhite,
   fontWeight: 600,
+  minWidth: "max-content",
 });
 
 export const button = style({
@@ -41,6 +42,10 @@ export const button = style({
   color: `${theme.colors.brandBlack} !important`,
   ":hover": {
     backgroundColor: "#ffffffdd !important",
+  },
+  ":disabled": {
+    borderColor: "#b0b6b7ff",
+    color: "#b0b6b7ff !important",
   },
 });
 

@@ -16,7 +16,7 @@
     "firebase": "^12.0.0",
     "firebase-admin": "^13.4.0",
     "handlebars": "^4.7.8",
-    "isskinui": "^1.7.5",
+    "isskinui": "^1.8.3",
     "motion": "^12.23.9",
     "next": "15.4.2",
     "next-transpile-modules": "^10.0.1",

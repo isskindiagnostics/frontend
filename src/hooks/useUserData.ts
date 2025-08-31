@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from "react";
 
 import { useAuth } from "@/context/AuthContext";
 import { db } from "@/firebase/config";
+import { CancellationFeedback } from "@/types/subscription";
 import { User } from "@/types/user";
 
 export const useUserData = () => {
@@ -43,7 +44,10 @@ export const useUserData = () => {
 
   const updateUserData = useCallback(
     async (
-      updates: Record<string, string | number | boolean>
+      updates: Record<
+        string,
+        string | number | boolean | CancellationFeedback[]
+      >
     ): Promise<boolean> => {
       if (!user?.uid) {
         setError("No authenticated user");
