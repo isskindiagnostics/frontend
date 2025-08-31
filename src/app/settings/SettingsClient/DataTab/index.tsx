@@ -19,9 +19,10 @@ import {
   dataContentBlock,
   inputWrapper,
 } from "./index.css";
+import DataSkeleton from "./DataSkeleton";
 
 export default function DataTab() {
-  const { userData, updateUserData } = useUserData();
+  const { userData, isLoading, updateUserData } = useUserData();
   const [successMessage, setSuccessMessage] = useShowToast();
   const [errorMessage, setErrorMessage] = useShowToast();
   const [registerNumberError, setRegisterNumberError] = useState("");
@@ -166,6 +167,10 @@ export default function DataTab() {
       setIsSaving(false);
     }
   };
+
+  if (isLoading) {
+    return <DataSkeleton />;
+  }
 
   return (
     <>
