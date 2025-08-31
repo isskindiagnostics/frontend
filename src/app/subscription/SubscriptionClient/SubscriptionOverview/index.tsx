@@ -1,5 +1,5 @@
 import { Timestamp } from "firebase/firestore";
-import { Button, IconLink, Notification, PopUp } from "isskinui";
+import { Badge, Button, IconLink, Notification, PopUp } from "isskinui";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -11,10 +11,12 @@ import { formatDate } from "@/utils/date";
 
 import {
   button,
+  canceledBadge,
   container,
   iconLink,
   memberDate,
   price,
+  subscriptionPlan,
   summary,
   title,
 } from "./index.css";
@@ -168,7 +170,17 @@ const SubscriptionOverview = ({ href }: SubscriptionOverviewProps) => {
         <div className={summary}>
           <div>
             <div>
-              <p className={title}>{plan === "free" ? "Básico" : "Premium"}</p>
+              <div
+                className={subscriptionPlan}
+                style={{ paddingBottom: status === "canceled" ? 10 : 0 }}
+              >
+                <p className={title}>
+                  {plan === "free" ? "Básico" : "Premium"}
+                </p>
+                {status === "canceled" && (
+                  <Badge className={canceledBadge} label={"Cancelado"} />
+                )}
+              </div>
               {status === "canceled" ? (
                 <p className={memberDate}>
                   Expira em {formatDate(endDate || "", "long")}

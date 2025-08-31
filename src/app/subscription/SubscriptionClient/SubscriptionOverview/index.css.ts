@@ -52,3 +52,12 @@ export const button = style({
 export const iconLink = style({
   color: `${theme.colors.brandWhite} !important`,
 });
+
+export const subscriptionPlan = style({
+  display: "flex",
+  gap: theme.spacing.xs,
+});
+
+export const canceledBadge = style({
+  backgroundColor: `${theme.colors.functionsError} !important`,
+});
