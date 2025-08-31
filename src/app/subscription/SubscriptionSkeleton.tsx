@@ -7,6 +7,7 @@ import {
   contentWrapper,
   titleWrapper,
 } from "./SubscriptionClient/index.css";
+import * as nextBillingStyles from "./SubscriptionClient/NextBilling/index.css";
 import {
   summary,
   container as overviewContainer,
@@ -61,7 +62,25 @@ const SubscriptionSkeleton = () => {
               </div>
               <SkeletonCell width={103} height={40} colors={colors} />
             </div>
-            {/* <NextBilling /> */}
+            <div className={nextBillingStyles.container}>
+              <div className={nextBillingStyles.topWrapper}>
+                <SkeletonCell width={134} height={24} />
+
+                <SkeletonCell width={134} height={24} />
+              </div>
+
+              <div className={nextBillingStyles.cardContainer}>
+                <SkeletonCell width={51} height={34} />
+                <div className={nextBillingStyles.cardDetails}>
+                  <SkeletonCell
+                    width={200}
+                    height={24}
+                    style={{ marginBottom: 10 }}
+                  />
+                  <SkeletonCell width={216} height={24} />
+                </div>
+              </div>
+            </div>
           </div>
         </ContentBlock>
       </div>

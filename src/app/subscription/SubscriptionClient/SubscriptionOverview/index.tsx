@@ -7,6 +7,7 @@ import { formatPrice } from "@/components/PricingCard";
 import { useShowToast } from "@/hooks/useShowToast";
 import { useUserData } from "@/hooks/useUserData";
 import { SUBSCRIPTION_PLANS } from "@/stripe/config";
+import { calculateSubscriptionEndDate } from "@/stripe/utils";
 import { formatDate } from "@/utils/date";
 
 import {
@@ -29,25 +30,13 @@ export const cancellationEndDate = (
   billingCycleAnchor?: Timestamp,
   startDate?: Timestamp | null
 ): string => {
-  if (billingCycleAnchor) {
-    // If we have billing cycle anchor, that's when the next billing would be
-    return formatDate(billingCycleAnchor, "long");
-  }
+  const endDateTimestamp = calculateSubscriptionEndDate(
+    billingCycleAnchor,
+    startDate,
+    "month"
+  );
 
-  if (startDate) {
-    // Fallback: calculate based on start date + 1 month
-    const start = startDate.toDate();
-    const nextBilling = new Date(
-      start.getFullYear(),
-      start.getMonth() + 1,
-      start.getDate()
-    );
-    return formatDate(nextBilling.toDateString(), "long");
-  }
-
-  // Last resort: 30 days from now
-  const futureDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-  return formatDate(futureDate.toDateString(), "long");
+  return formatDate(endDateTimestamp, "long");
 };
 
 const SubscriptionOverview = ({ href }: SubscriptionOverviewProps) => {

@@ -1,6 +1,6 @@
 "use client";
 import { Switch } from "isskinui";
-import { useState } from "react";
+// import { useState } from "react";
 
 import ContentBlock from "@/components/ContentBlock";
 import Tabs from "@/components/Tabs";
@@ -29,7 +29,9 @@ const tabs: TabElement[] = [
 
 const SubscriptionClient = () => {
   const { isLoading } = useUserData();
-  const [toggle, setToggle] = useState(false);
+  // const [toggle, setToggle] = useState(false);
+  const { userData } = useUserData();
+  const status = userData?.subscription.status;
 
   if (isLoading) {
     return <SubscriptionSkeleton />;
@@ -44,8 +46,10 @@ const SubscriptionClient = () => {
             <h3>Seu plano</h3>
             <Switch
               label="Renovar automaticamente"
-              toggle={toggle}
-              onClick={() => setToggle(!toggle)}
+              toggle={true}
+              disabled={true}
+              // toggle={toggle}
+              // onClick={() => setToggle(!toggle)}
             />
           </div>
 
@@ -57,7 +61,7 @@ const SubscriptionClient = () => {
           <div className={blocks}>
             <SubscriptionOverview href="/pricing" />
 
-            <NextBilling />
+            {status !== "canceled" && <NextBilling />}
           </div>
         </ContentBlock>
 

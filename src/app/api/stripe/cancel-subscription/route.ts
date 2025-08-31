@@ -34,11 +34,6 @@ export async function POST(
     const currentSubscription =
       await stripe.subscriptions.retrieve(subscriptionId);
 
-    // Cancel subscription at period end
-    await stripe.subscriptions.update(subscriptionId, {
-      cancel_at_period_end: true,
-    });
-
     const customerId =
       typeof currentSubscription.customer === "string"
         ? currentSubscription.customer
@@ -62,65 +57,59 @@ export async function POST(
       );
     }
 
-    // Calculate end date - use current_period_end if available
-    const typedSubscription = currentSubscription as unknown as {
-      current_period_end?: number;
-      current_period_start?: number;
-      items?: {
-        data: Array<{
-          price?: {
-            recurring?: {
-              interval: string;
-            };
-          };
-        }>;
-      };
-    };
-
-    let endDate: Timestamp;
-
-    if (typedSubscription.current_period_end) {
-      // Use the existing current_period_end
-      endDate = new Timestamp(typedSubscription.current_period_end, 0);
-    } else if (typedSubscription.current_period_start) {
-      // Calculate based on current_period_start + interval
-      const interval =
-        typedSubscription.items?.data[0]?.price?.recurring?.interval || "month";
-      const startTimestamp = typedSubscription.current_period_start;
-      const startDate = new Date(startTimestamp * 1000);
-
-      let endDateCalculated: Date;
-      if (interval === "year") {
-        endDateCalculated = new Date(
-          startDate.getFullYear() + 1,
-          startDate.getMonth(),
-          startDate.getDate()
-        );
-      } else {
-        // Default to month
-        endDateCalculated = new Date(
-          startDate.getFullYear(),
-          startDate.getMonth() + 1,
-          startDate.getDate()
-        );
+    // Calculate the actual end date based on billing cycle
+    // We need to expand the subscription items to get pricing info
+    const subscriptionWithItems = await stripe.subscriptions.retrieve(
+      subscriptionId,
+      {
+        expand: ["items.data.price"],
       }
+    );
 
-      endDate = new Timestamp(
-        Math.floor(endDateCalculated.getTime() / 1000),
-        0
-      );
-    } else {
-      // Fallback: 30 days from now
-      const futureDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
-      endDate = new Timestamp(Math.floor(futureDate.getTime() / 1000), 0);
+    // Get the billing interval from the first subscription item
+    const firstItem = subscriptionWithItems.items.data[0];
+    const price = firstItem.price as Stripe.Price;
+    const interval = price.recurring?.interval || "month";
+    const intervalCount = price.recurring?.interval_count || 1;
+
+    // Calculate end date based on billing cycle anchor and interval
+    const billingCycleAnchor = currentSubscription.billing_cycle_anchor;
+    const anchorDate = new Date(billingCycleAnchor * 1000);
+
+    // Calculate next billing date from anchor
+    let endDate: Date;
+    switch (interval) {
+      case "day":
+        endDate = new Date(
+          anchorDate.getTime() + intervalCount * 24 * 60 * 60 * 1000
+        );
+        break;
+      case "week":
+        endDate = new Date(
+          anchorDate.getTime() + intervalCount * 7 * 24 * 60 * 60 * 1000
+        );
+        break;
+      case "month":
+        endDate = new Date(anchorDate);
+        endDate.setMonth(endDate.getMonth() + intervalCount);
+        break;
+      case "year":
+        endDate = new Date(anchorDate);
+        endDate.setFullYear(endDate.getFullYear() + intervalCount);
+        break;
+      default:
+        // Fallback to 30 days from now
+        endDate = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000);
     }
+
+    const endTimestamp = new Timestamp(Math.floor(endDate.getTime() / 1000), 0);
 
     // Update user document
     const userRef = doc(db, "users", firebaseUid);
 
     const updateData: SubscriptionUpdate = {
       "subscription.status": "canceled",
-      "subscription.endDate": endDate,
+      "subscription.endDate": endTimestamp,
       updatedAt: Timestamp.now(),
     };
 
@@ -128,7 +117,7 @@ export async function POST(
 
     return NextResponse.json({
       success: true,
-      endDate: endDate.toDate().toISOString(),
+      endDate: endTimestamp.toDate().toISOString(),
     });
   } catch (error) {
     console.error("Error cancelling subscription:", error);
