@@ -69,7 +69,7 @@ export default function FeedbackClient() {
       // Create cancellation feedback object
       const cancellationFeedback: CancellationFeedback = {
         reason: selectedReason || "Não informado",
-        feedback: additionalFeedback || undefined,
+        ...(additionalFeedback && { feedback: additionalFeedback }),
         timestamp: Timestamp.now(),
         subscriptionType: userData?.subscription.plan || "premium",
       };
