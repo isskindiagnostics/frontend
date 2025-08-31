@@ -1,3 +1,5 @@
+import { Timestamp } from "firebase/firestore";
+
 type FormatType = "short" | "long";
 
 export function getAge(birthDate: string): number {
@@ -19,10 +21,47 @@ export function getAge(birthDate: string): number {
 }
 
 export function formatDate(
-  dateString: string,
+  dateInput: string | Timestamp,
   format: FormatType = "short"
 ): string {
-  const date = new Date(dateString);
+  let date: Date;
+
+  if (dateInput instanceof Timestamp) {
+    date = dateInput.toDate();
+  } else if (typeof dateInput === "string") {
+    const dateMatch = dateInput.match(/(\d{1,2})\s+de\s+(\w+)\s+de\s+(\d{4})/);
+
+    if (dateMatch) {
+      const [, day, monthName, year] = dateMatch;
+
+      const monthMap: Record<string, number> = {
+        janeiro: 0,
+        fevereiro: 1,
+        março: 2,
+        abril: 3,
+        maio: 4,
+        junho: 5,
+        julho: 6,
+        agosto: 7,
+        setembro: 8,
+        outubro: 9,
+        novembro: 10,
+        dezembro: 11,
+      };
+
+      const monthIndex = monthMap[monthName.toLowerCase()];
+      if (monthIndex !== undefined) {
+        date = new Date(parseInt(year), monthIndex, parseInt(day));
+      } else {
+        console.warn("Unknown month name:", monthName);
+        return "Invalid date";
+      }
+    } else {
+      date = new Date(dateInput);
+    }
+  } else {
+    date = new Date(dateInput);
+  }
 
   if (format === "short") {
     return date.toLocaleDateString("pt-BR", {

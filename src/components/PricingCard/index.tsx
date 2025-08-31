@@ -12,7 +12,7 @@ type PricingCardProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   selected?: boolean;
 };
 
-const formatPrice = (priceInCents: number) => {
+export const formatPrice = (priceInCents: number) => {
   if (priceInCents === 0) return "R$0,00";
   return (priceInCents / 100)
     .toLocaleString("pt-BR", { style: "currency", currency: "BRL" })

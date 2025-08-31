@@ -9,7 +9,7 @@ import { db } from "@/firebase/config";
 import { saveAnalysisComment } from "@/firebase/queryAnalysis";
 import { useCommentStore } from "@/stores/useCommentStore";
 
-type NotificationText = {
+export type ToastText = {
   type: "success" | "error" | "general" | "warning";
   label: string;
 };
@@ -20,7 +20,7 @@ export const SaveButton = ({ jobId, uid }: { jobId: string; uid: string }) => {
   const [showNotification, setShowNotification] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const [notificationText, setNotificationText] = useState<NotificationText>({
+  const [notificationText, setNotificationText] = useState<ToastText>({
     type: "success",
     label: "Alterações salvas com sucesso!",
   });

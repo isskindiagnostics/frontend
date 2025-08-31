@@ -1,17 +1,17 @@
 "use client";
-
-// import { Switch } from "isskinui";
-// import { useState } from "react";
-
-// import { useRouter } from "next/navigation";
+import { Switch } from "isskinui";
+import { useState } from "react";
 
 import ContentBlock from "@/components/ContentBlock";
 import Tabs from "@/components/Tabs";
 import { TabElement } from "@/components/Tabs/TabItem";
+import { useUserData } from "@/hooks/useUserData";
+
+import SubscriptionSkeleton from "../SubscriptionSkeleton";
 
 import { container, titleWrapper, blocks, contentWrapper } from "./index.css";
-// import NextBilling from "./NextBilling";
-// import PaymentMethods from "./PaymentMethods";
+import NextBilling from "./NextBilling";
+import PaymentMethods from "./PaymentMethods";
 import SubscriptionOverview from "./SubscriptionOverview";
 
 const tabs: TabElement[] = [
@@ -20,18 +20,21 @@ const tabs: TabElement[] = [
     selected: true,
     onSelect: () => console.log("clicked"),
   },
-  // {
-  //   label: "Faturas",
-  //   selected: false,
-  //   onSelect: () => console.log("clicked"),
-  // },
+  {
+    label: "Faturas",
+    selected: false,
+    onSelect: () => console.log("clicked"),
+  },
 ];
 
 const SubscriptionClient = () => {
-  // const router = useRouter();
-  // const [toggle, setToggle] = useState(false);
+  const { isLoading } = useUserData();
+  const [toggle, setToggle] = useState(false);
 
-  // TODO: IMPLEMENT LOADING SCREEN
+  if (isLoading) {
+    return <SubscriptionSkeleton />;
+  }
+
   return (
     <div className={container}>
       <Tabs tabs={tabs} />
@@ -39,11 +42,11 @@ const SubscriptionClient = () => {
         <ContentBlock>
           <div className={titleWrapper}>
             <h3>Seu plano</h3>
-            {/* <Switch
+            <Switch
               label="Renovar automaticamente"
               toggle={toggle}
               onClick={() => setToggle(!toggle)}
-            /> */}
+            />
           </div>
 
           <p>
@@ -53,11 +56,12 @@ const SubscriptionClient = () => {
 
           <div className={blocks}>
             <SubscriptionOverview href="/pricing" />
-            {/* <NextBilling /> */}
+
+            <NextBilling />
           </div>
         </ContentBlock>
 
-        {/* <PaymentMethods /> */}
+        <PaymentMethods />
       </div>
     </div>
   );

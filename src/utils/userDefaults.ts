@@ -59,6 +59,7 @@ export const createDefaultSubscription = (): Subscription => ({
       },
     ],
   },
+  cancellationHistory: [],
 });
 
 export const createDefaultBillingAddress = (): UserBillingAddress => ({

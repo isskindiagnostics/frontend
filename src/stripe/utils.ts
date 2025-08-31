@@ -21,19 +21,6 @@ export const maskCardNumber = (last4: string): string => {
   return `${last4}`;
 };
 
-// export const getCardIcon = (brand: string): string => {
-//   // You can return appropriate card icons based on brand
-//   const iconMap: Record<string, string> = {
-//     visa: "💳",
-//     mastercard: "💳",
-//     amex: "💳",
-//     discover: "💳",
-//     // Add more as needed
-//   };
-
-//   return iconMap[brand.toLowerCase()] || "💳";
-// }; // TODO
-
 export const validateCardholderName = (name: string): boolean => {
   return name.trim().length >= 2 && /^[a-zA-Z\s]+$/.test(name.trim());
 };
