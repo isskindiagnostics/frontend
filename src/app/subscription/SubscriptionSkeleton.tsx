@@ -6,12 +6,12 @@ import {
   container,
   contentWrapper,
   titleWrapper,
-} from "./SubscriptionClient/index.css";
-import * as nextBillingStyles from "./SubscriptionClient/NextBilling/index.css";
+} from "./SubscriptionClient/PlanTab/index.css";
+import * as nextBillingStyles from "./SubscriptionClient/PlanTab/NextBilling/index.css";
 import {
   summary,
   container as overviewContainer,
-} from "./SubscriptionClient/SubscriptionOverview/index.css";
+} from "./SubscriptionClient/PlanTab/SubscriptionOverview/index.css";
 
 const colors = {
   wrapper: "#343434ff",
