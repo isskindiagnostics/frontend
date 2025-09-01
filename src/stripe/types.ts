@@ -39,3 +39,20 @@ export type SubscriptionUpdate = {
   "subscription.stripeData.savedCards"?: PaymentMethod[];
   updatedAt: Timestamp;
 };
+
+export type StripeInvoice = {
+  id: string;
+  number?: string;
+  created: number;
+  currency: string;
+  amount_paid: number;
+  status: string;
+  invoice_pdf: string | null;
+  hosted_invoice_url: string | null;
+};
+
+
+export type StripeInvoicesResponse = {
+  invoices: StripeInvoice[];
+  has_more: boolean;
+};

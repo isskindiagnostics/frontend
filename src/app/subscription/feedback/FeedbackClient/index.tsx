@@ -9,7 +9,7 @@ import { useShowToast } from "@/hooks/useShowToast";
 import { useUserData } from "@/hooks/useUserData";
 import { CancellationFeedback } from "@/types/subscription";
 
-import { cancellationEndDate } from "../../SubscriptionClient/SubscriptionOverview";
+import { cancellationEndDate } from "../../SubscriptionClient/PlanTab/SubscriptionOverview";
 
 import {
   cancellationButtonWrapper,

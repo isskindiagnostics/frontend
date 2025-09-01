@@ -1,5 +1,5 @@
 "use client";
-import { Card, Flag, IconLink } from "isskinui";
+import { Card, Flag } from "isskinui";
 
 import ContentBlock from "@/components/ContentBlock";
 import { useUserData } from "@/hooks/useUserData";
