@@ -2,7 +2,6 @@
 import {
   Badge,
   IconLink,
-  Share,
   theme,
   Notification,
   Download,
