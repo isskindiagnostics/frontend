@@ -60,8 +60,8 @@ export const SUBSCRIPTION_PLANS_SHORT = {
       "Apoio completo para um atendimento médico moderno e eficiente.",
     price: 4999, // in cents
     stripePriceId: process.env.STRIPE_PREMIUM_PRICE_ID!,
-    analysisLimit: -1, // Unlimited
-    pdfLimit: -1, // Unlimited
+    analysisLimit: 20, // Unlimited
+    pdfLimit: 20, // Unlimited
     features: [
       "Análises ilimitadas",
       "Relatórios de análise ilimitados",

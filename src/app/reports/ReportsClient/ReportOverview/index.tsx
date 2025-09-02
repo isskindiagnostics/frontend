@@ -9,8 +9,8 @@ import {
   canCreateReportPdf,
   incrementReportPdfCount,
 } from "@/firebase/queryReport";
-import { getUserDataById } from "@/firebase/queryUser";
 import { useShowToast } from "@/hooks/useShowToast";
+import { useUserData } from "@/hooks/useUserData";
 import { JobDataWithId } from "@/types/job";
 import generatePdf from "@/utils/generatePdf";
 
@@ -36,13 +36,13 @@ const ReportOverview = ({
   fetchJob,
 }: ReportOverviewProps) => {
   const { user } = useAuth();
+  const { userData } = useUserData();
   const [successMessage, setSuccessMessage] = useShowToast();
   const [errorMessage, setErrorMessage] = useShowToast();
 
   const handleSaveJob = async (jobId: string) => {
     try {
       const jobData = await fetchJob(jobId);
-      const userData = await getUserDataById(user?.uid || "");
 
       const allowed = await canCreateReportPdf(user?.uid || "");
 
@@ -51,10 +51,12 @@ const ReportOverview = ({
         return;
       }
 
-      if (jobData) {
+      if (jobData && userData) {
         setSuccessMessage("Gerando o relatório do paciente selecionado.");
         generatePdf(userData, jobData);
         await incrementReportPdfCount(user?.uid || "");
+      } else {
+        setErrorMessage("Dados insuficientes para gerar o relatório.");
       }
     } catch (error) {
       setErrorMessage(REPORT_ERROR_MESSAGES.generic || "Erro desconhecido");
