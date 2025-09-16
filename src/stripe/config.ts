@@ -40,17 +40,18 @@ export const SUBSCRIPTION_PLANS = {
 };
 
 export const SUBSCRIPTION_PLANS_SHORT = {
-  free: {
-    id: "free",
-    name: "Grátis",
-    description: "Ideal para explorar e entender a nossa plataforma.",
-    price: 0,
-    analysisLimit: 5,
-    pdfLimit: 5,
+  flex: {
+    id: "flex",
+    name: "Flex",
+    description: "Ideal para quem faz análises exporadicamente.",
+    price: 899,
+    analysisLimit: 1,
+    pdfLimit: 1,
     features: [
-      "5 análises totais",
-      "5 relatórios de análise totais",
+      "Análises de acordo com demanda",
+      "Relatórios de análise ilimitados",
       "Suporte básico via FAQs",
+      "Personalização do relatório",
     ],
   },
   premium: {
@@ -60,13 +61,14 @@ export const SUBSCRIPTION_PLANS_SHORT = {
       "Apoio completo para um atendimento médico moderno e eficiente.",
     price: 4999, // in cents
     stripePriceId: process.env.STRIPE_PREMIUM_PRICE_ID!,
-    analysisLimit: 20, // Unlimited
-    pdfLimit: 20, // Unlimited
+    analysisLimit: 10,
+    pdfLimit: 10,
     features: [
-      "Análises ilimitadas",
+      "10 análises por mês",
       "Relatórios de análise ilimitados",
       "Suporte prioritário",
       "Personalização do relatório",
+      "7 dias grátis",
     ],
   },
 } as const;
