@@ -52,6 +52,7 @@ export default function PaymentPlan({
             description={plan.description}
             features={plan.features}
             variant={key === "premium" ? "highlight" : "default"}
+            billingCycle={key === "premium" ? "monthly" : "payPerUse"}
             selected={selectedPlan === key}
             onClick={() => handlePlanSelect(key)}
             disabled={isSubmitting}

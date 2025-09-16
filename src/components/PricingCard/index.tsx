@@ -8,6 +8,7 @@ type PricingCardProps = ButtonHTMLAttributes<HTMLButtonElement> & {
   price: number;
   description: string;
   features: readonly string[];
+  billingCycle: "monthly" | "payPerUse";
   variant?: "default" | "highlight";
   selected?: boolean;
 };
@@ -74,6 +75,7 @@ const PricingCard = ({
   disabled = false,
   variant = "default",
   selected = false,
+  billingCycle = "monthly",
   ...props
 }: PricingCardProps) => {
   const styles = getStyleClasses(disabled, variant, selected);
@@ -94,7 +96,7 @@ const PricingCard = ({
           </p>
           {price !== 0 && (
             <p className={`${componentStyles.perMonth} ${styles.textContent}`}>
-              /mês
+              {billingCycle === "monthly" ? "/mês" : "/análise"}
             </p>
           )}
         </div>
