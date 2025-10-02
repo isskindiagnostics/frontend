@@ -16,6 +16,7 @@ export default function Cards() {
           description={plan.description}
           features={plan.features}
           variant={key === "premium" ? "highlight" : "default"}
+          billingCycle={key === "premium" ? "monthly" : "payPerUse"}
         />
       ))}
     </div>
