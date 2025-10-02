@@ -6,10 +6,13 @@ export async function startAnalysis(
   formData.append("image", image);
   formData.append("userId", userId);
 
-  const res = await fetch("http://localhost:3001/analyze", {
-    method: "POST",
-    body: formData,
-  });
+  const res = await fetch(
+    "https://uncategorical-nicki-turbidimetrically.ngrok-free.dev/analyze", // TODO: CHANGE TO ENV VARIABLE
+    {
+      method: "POST",
+      body: formData,
+    }
+  );
 
   if (!res.ok) {
     throw new Error("Erro ao iniciar análise");
