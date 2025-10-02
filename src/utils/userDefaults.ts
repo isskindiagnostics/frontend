@@ -39,9 +39,9 @@ export const createDefaultSubscription = (): Subscription => ({
   endDate: null,
   usage: {
     analysisCount: 0,
-    analysisLimit: 5,
+    analysisLimit: 0,
     pdfCount: 0,
-    pdfLimit: 5,
+    pdfLimit: 0,
   },
   stripeData: {
     customerId: "",
@@ -55,6 +55,7 @@ export const createDefaultSubscription = (): Subscription => ({
         last4: "",
         expMonth: 12,
         expYear: 2040,
+        cardholderName: "",
         isDefault: true,
       },
     ],

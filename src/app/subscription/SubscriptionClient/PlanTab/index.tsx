@@ -14,6 +14,7 @@ const PlanTab = () => {
   // const [toggle, setToggle] = useState(false);
   const { userData } = useUserData();
   const status = userData?.subscription.status;
+  const subscriptionType = userData?.subscription.plan;
 
   return (
     <div className={contentWrapper}>
@@ -37,7 +38,8 @@ const PlanTab = () => {
         <div className={blocks}>
           <SubscriptionOverview href="/pricing" />
 
-          {status !== "canceled" && <NextBilling />}
+          {status !== "canceled" ||
+            (subscriptionType !== "flex" && <NextBilling />)}
         </div>
       </ContentBlock>
 

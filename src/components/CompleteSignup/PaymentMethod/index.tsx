@@ -49,21 +49,21 @@ type PaymentMethodProps = {
   isSubmitting?: boolean;
 };
 
-type CardElementType = "cardNumber" | "cardExpiry" | "cardCvc";
+export type CardElementType = "cardNumber" | "cardExpiry" | "cardCvc";
 
-type CardElementEventMap = {
+export type CardElementEventMap = {
   cardNumber: StripeCardNumberElementChangeEvent;
   cardExpiry: StripeCardExpiryElementChangeEvent;
   cardCvc: StripeCardCvcElementChangeEvent;
 };
 
-type CardCompletionState = {
+export type CardCompletionState = {
   cardNumber: boolean;
   cardExpiry: boolean;
   cardCvc: boolean;
 };
 
-type CardErrors = {
+export type CardErrors = {
   cardNumber?: string;
   cardExpiry?: string;
   cardCvc?: string;
@@ -71,7 +71,7 @@ type CardErrors = {
   general?: string;
 };
 
-const createElementOptions = (
+export const createElementOptions = (
   isDisabled?: boolean,
   type: "default" | "cardElement" = "default"
 ) => {

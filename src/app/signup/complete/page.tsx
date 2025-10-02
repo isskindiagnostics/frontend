@@ -36,19 +36,13 @@ export default function CompleteSignup() {
 
   const justSelectedPremium = useRef(false);
 
-  const isPaidSubscription = useMemo(() => {
+  const isPremium = useMemo(() => {
     return subscription?.plan === "premium";
   }, [subscription?.plan]);
 
-  const formSteps = useMemo(
-    () => getFormSteps(isPaidSubscription),
-    [isPaidSubscription]
-  );
+  const formSteps = useMemo(() => getFormSteps(isPremium), [isPremium]);
 
-  const totalSteps = useMemo(
-    () => getTotalSteps(isPaidSubscription),
-    [isPaidSubscription]
-  );
+  const totalSteps = useMemo(() => getTotalSteps(isPremium), [isPremium]);
 
   const { currentStep, nextStep, prevStep, goToStep, getProgressPercentage } =
     useFormNavigation({

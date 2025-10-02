@@ -29,9 +29,10 @@ export function formatDate(
   if (dateInput instanceof Date) {
     date = dateInput;
   } else if (dateInput instanceof Timestamp) {
-    date = dateInput.toDate()
+    date = dateInput.toDate();
   } else if (typeof dateInput === "number") {
-    date = new Date(dateInput);
+    const timestamp = dateInput < 10000000000 ? dateInput * 1000 : dateInput;
+    date = new Date(timestamp);
   } else if (typeof dateInput === "string") {
     const dateMatch = dateInput.match(/(\d{1,2})\s+de\s+(\w+)\s+de\s+(\d{4})/);
 

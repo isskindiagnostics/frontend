@@ -1,4 +1,11 @@
-import { doc, updateDoc, Timestamp, increment } from "firebase/firestore";
+import {
+  doc,
+  updateDoc,
+  Timestamp,
+  getDoc,
+  arrayUnion,
+  increment,
+} from "firebase/firestore";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -20,13 +27,20 @@ type ChargeFlexRequest = {
   paymentMethodId: string;
   userId: string;
   saveCard?: boolean;
+  userName?: string;
+  userEmail?: string;
+  quantity?: number;
 };
 
-export async function POST(
-  req: NextRequest
-): Promise<
+export async function POST(req: NextRequest): Promise<
   NextResponse<
-    | { success: boolean; requiresAction?: boolean; clientSecret?: string }
+    | {
+        success: boolean;
+        requiresAction?: boolean;
+        clientSecret?: string;
+        receiptUrl?: string;
+        chargeId?: string;
+      }
     | APIError
   >
 > {
@@ -36,6 +50,9 @@ export async function POST(
       paymentMethodId,
       userId,
       saveCard = false,
+      userName,
+      userEmail,
+      quantity = 1,
     }: ChargeFlexRequest = await req.json();
 
     if (!paymentMethodId || !userId) {
@@ -48,11 +65,17 @@ export async function POST(
     let finalCustomerId = customerId;
     const userRef = doc(db, "users", userId);
 
+    const userDoc = await getDoc(userRef);
+    const currentData = userDoc.data();
+    const currentUserEmail = userEmail || currentData?.userData?.email;
+
     if (!finalCustomerId) {
       const customer = await stripe.customers.create({
         metadata: {
           firebaseUid: userId,
         },
+        name: userName,
+        email: userEmail,
       });
       finalCustomerId = customer.id;
     }
@@ -61,16 +84,31 @@ export async function POST(
       customer: finalCustomerId,
     });
 
+    if (saveCard || !customerId) {
+      await stripe.customers.update(finalCustomerId, {
+        invoice_settings: {
+          default_payment_method: paymentMethodId,
+        },
+      });
+    }
+
+    const flexPricePerUnit = SUBSCRIPTION_PLANS_SHORT.flex.price;
+    const totalAmount = flexPricePerUnit * quantity;
+
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: SUBSCRIPTION_PLANS_SHORT.flex.price,
+      amount: totalAmount,
       currency: "brl",
       customer: finalCustomerId,
       payment_method: paymentMethodId,
       confirm: true,
+      description: `${quantity} Análise${quantity > 1 ? "s" : ""} Flex`,
+      statement_descriptor_suffix: "FLEX", // Changed to suffix (max 22 chars for card)
       metadata: {
         planType: "flex",
         userId: userId,
+        quantity: quantity.toString(),
       },
+      receipt_email: currentUserEmail, // This sends a receipt automatically
       return_url: `${process.env.NEXT_PUBLIC_APP_URL}/subscription`,
     });
 
@@ -86,10 +124,18 @@ export async function POST(
       throw new Error("Payment failed");
     }
 
+    const charges = await stripe.charges.list({
+      payment_intent: paymentIntent.id,
+      limit: 1,
+    });
+
+    const charge = charges.data[0];
+    const receiptUrl = charge?.receipt_url || undefined;
+
     const updateData: SubscriptionUpdate = {
       "subscription.plan": "flex",
       "subscription.status": "active",
-      "subscription.usage.analysisLimit": increment(1),
+      "subscription.usage.analysisLimit": increment(quantity),
       "subscription.stripeData.customerId": finalCustomerId,
       updatedAt: Timestamp.now(),
     };
@@ -102,12 +148,6 @@ export async function POST(
       const paymentMethod =
         await stripe.paymentMethods.retrieve(paymentMethodId);
       const cardDetails = getCardDetails(paymentMethod);
-
-      await stripe.customers.update(finalCustomerId, {
-        invoice_settings: {
-          default_payment_method: paymentMethodId,
-        },
-      });
 
       updateData["subscription.stripeData.defaultPaymentMethodId"] =
         paymentMethodId;
@@ -125,9 +165,28 @@ export async function POST(
 
     await updateDoc(userRef, updateData);
 
-    return NextResponse.json({ success: true });
+    await updateDoc(userRef, {
+      "subscription.paymentHistory": arrayUnion({
+        date: Timestamp.now(),
+        amount: totalAmount,
+        currency: "brl",
+        quantity: quantity,
+        type: "flex_purchase" as const,
+        paymentIntentId: paymentIntent.id,
+        chargeId: charge?.id,
+        receiptUrl: receiptUrl,
+        status: "succeeded" as const,
+        description: `${quantity} Análise${quantity > 1 ? "s" : ""} Flex`,
+      }),
+    });
+
+    return NextResponse.json({
+      success: true,
+      receiptUrl,
+      chargeId: charge?.id,
+    });
   } catch (error) {
-    console.error("Error charging flex analysis:", error);
+    console.log("Error charging flex analysis:", error);
     const stripeError = error as StripeError;
     const errorMessage = stripeError.message || "Failed to process payment";
     return NextResponse.json({ error: errorMessage }, { status: 500 });

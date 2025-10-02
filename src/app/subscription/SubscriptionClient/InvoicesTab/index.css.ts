@@ -93,9 +93,10 @@ export const noBorder = style({
 });
 
 export const columnWidths = [
-  style({ width: "25%" }), // Protocolo
-  style({ width: "27%" }), // Datas
-  style({ width: "30%" }), // Preço
+  style({ width: "22%" }), // Protocolo
+  style({ width: "20%" }), // Data
+  style({ width: "25%" }), // Descrição
+  style({ width: "15%" }), // Preço
   style({ width: "15%" }), // Status
   style({ width: "2%" }), // Icon column
 ];

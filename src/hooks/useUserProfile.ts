@@ -79,6 +79,14 @@ export const useUserProfile = () => {
       );
     }
 
+    if (subscription.plan === "flex") {
+      return (
+        subscription.status === "active" &&
+        !!userData.userData?.name &&
+        !!userData.professionalInfo?.fieldOfWork
+      );
+    }
+
     // For premium plan, everything must be complete
     if (subscription.plan === "premium") {
       return (

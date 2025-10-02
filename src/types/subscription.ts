@@ -10,7 +10,7 @@ export type Subscription = {
   cancellationHistory?: CancellationFeedback[];
 };
 
-export type Plan = "free" | "premium" | null;
+export type Plan = "flex" | "premium" | "free" | null;
 
 export type CancellationFeedback = {
   reason: string;
@@ -40,5 +40,6 @@ export type PaymentMethod = {
   last4: string;
   expMonth: number;
   expYear: number;
+  cardholderName: string;
   isDefault: boolean;
 };

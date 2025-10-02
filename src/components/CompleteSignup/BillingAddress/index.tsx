@@ -14,7 +14,7 @@ type BillingAddressProps = {
   isSubmitting: boolean;
 };
 
-type ViaCepResponse = {
+export type ViaCepResponse = {
   cep: string;
   logradouro: string;
   complemento: string;
