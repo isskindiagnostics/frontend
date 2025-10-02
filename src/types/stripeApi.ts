@@ -1,5 +1,5 @@
 import { CardBrand } from "@stripe/stripe-js";
-import { Timestamp } from "firebase/firestore";
+import { FieldValue, Timestamp } from "firebase/firestore";
 import { Flag } from "isskinui";
 import Stripe from "stripe";
 
@@ -132,7 +132,7 @@ export interface WebhookEvent {
 
 // Firebase Update Types - Compatible with Firestore updateDoc
 export type SubscriptionUpdate = {
-  "subscription.plan"?: "free" | "premium";
+  "subscription.plan"?: "flex" | "premium" | "free";
   "subscription.status"?:
     | "active"
     | "trialing"
@@ -141,7 +141,7 @@ export type SubscriptionUpdate = {
     | "incomplete";
   "subscription.startDate"?: Timestamp;
   "subscription.endDate"?: Timestamp | null;
-  "subscription.usage.analysisLimit"?: number;
+  "subscription.usage.analysisLimit"?: number | FieldValue;
   "subscription.usage.pdfLimit"?: number;
   "subscription.stripeData.subscriptionId"?: string;
   "subscription.stripeData.customerId"?: string;
@@ -154,6 +154,19 @@ export type SubscriptionUpdate = {
     expMonth: number;
     expYear: number;
     isDefault: boolean;
+  }>;
+  "subscription.paymentHistory"?: Array<{
+    date: Timestamp;
+    amount: number;
+    currency?: string;
+    quantity?: number;
+    type: "flex_purchase" | "subscription_payment" | "refund";
+    paymentIntentId?: string;
+    chargeId?: string;
+    invoiceId?: string;
+    receiptUrl?: string;
+    status: "succeeded" | "failed" | "refunded";
+    description?: string;
   }>;
   updatedAt?: Timestamp | Date;
 };

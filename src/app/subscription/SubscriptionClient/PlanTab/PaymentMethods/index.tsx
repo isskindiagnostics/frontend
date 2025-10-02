@@ -34,6 +34,7 @@ const PaymentMethods = () => {
           expirationDate={new Date(defaultCard?.expYear || "")}
           isDefault={defaultCard?.isDefault || true}
           flag={flag}
+          variant="blue"
         />
       </div>
     </ContentBlock>

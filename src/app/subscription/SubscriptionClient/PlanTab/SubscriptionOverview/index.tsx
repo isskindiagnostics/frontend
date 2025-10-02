@@ -107,6 +107,17 @@ const SubscriptionOverview = ({ href }: SubscriptionOverviewProps) => {
       );
     }
 
+    if (plan === "flex") {
+      return (
+        <Button
+          className={button}
+          onClick={() => router.push("subscription/purchase-analysis")}
+        >
+          Comprar Análise
+        </Button>
+      );
+    }
+
     if (status === "canceled" && endDate) {
       return (
         <Button
@@ -164,7 +175,11 @@ const SubscriptionOverview = ({ href }: SubscriptionOverviewProps) => {
                 style={{ paddingBottom: status === "canceled" ? 10 : 0 }}
               >
                 <p className={title}>
-                  {plan === "free" ? "Básico" : "Premium"}
+                  {plan === "flex"
+                    ? "Flex"
+                    : plan === "premium"
+                      ? "Premium"
+                      : "Básico"}
                 </p>
                 {status === "canceled" && (
                   <Badge className={canceledBadge} label={"Cancelado"} />

@@ -84,10 +84,15 @@ export const BASE_FORM_STEPS: FormStep[] = [
               ...stepProps.subscription,
               plan,
             };
-
-            if (plan === "free") {
+            if (plan === "flex") {
               subscriptionUpdate.status = "active";
               subscriptionUpdate.startDate = Timestamp.now();
+              subscriptionUpdate.usage = {
+                analysisCount: 0,
+                analysisLimit: 0,
+                pdfCount: 0,
+                pdfLimit: 0,
+              };
             }
 
             stepProps.onNext({
@@ -105,7 +110,7 @@ export const PAYMENT_FORM_STEPS: FormStep[] = [
   {
     id: "payment-method",
     title: "Método de Pagamento",
-    description: "Digite os dados do seu cartão para ativar o plano Premium.",
+    description: "Digite os dados do seu cartão para continuar.",
     requiredData: ["subscription"],
     component: (props) => {
       const stepProps = props as PaymentMethodStepProps;
@@ -138,12 +143,12 @@ export const PAYMENT_FORM_STEPS: FormStep[] = [
   },
 ];
 
-export const getFormSteps = (isPaidSubscription: boolean): FormStep[] => {
-  return isPaidSubscription
+export const getFormSteps = (isPremium: boolean): FormStep[] => {
+  return isPremium
     ? [...BASE_FORM_STEPS, ...PAYMENT_FORM_STEPS]
     : BASE_FORM_STEPS;
 };
 
-export const getTotalSteps = (isPaidSubscription: boolean): number => {
-  return getFormSteps(isPaidSubscription).length;
+export const getTotalSteps = (isPremium: boolean): number => {
+  return getFormSteps(isPremium).length;
 };
