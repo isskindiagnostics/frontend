@@ -13,7 +13,7 @@ globalStyle("html, body", {
 globalStyle("body", {
   width: "100%",
   height: "100vh",
-  backgroundColor: theme.colors.backgroundDefault,
+  background: "linear-gradient(111deg, #F9FAFA 0.12%, #EFF6F8 100%)",
 });
 
 globalStyle("p", {
@@ -38,6 +38,10 @@ globalStyle("h1", {
 globalStyle("h2", {
   fontSize: theme.typography.headline.desktop.md.fontSize,
   lineHeight: theme.typography.headline.desktop.md.lineHeight,
+});
+
+globalStyle("html", {
+  scrollBehavior: "smooth",
 });
 
 export const container = style({

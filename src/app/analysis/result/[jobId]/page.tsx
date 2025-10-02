@@ -1,12 +1,17 @@
+"use client";
 import { Icons } from "isskinui";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { use, useEffect, useState } from "react";
 
 import { container, main, pageContent } from "@/app/global.css";
 import ContentBlock from "@/components/ContentBlock";
 import DataChip from "@/components/DataChip";
 import Sidebar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
+import { useAuth } from "@/context/AuthContext";
 import { getJobById } from "@/firebase/queryJobs";
+import { JobDataWithId } from "@/types/job";
 import { getAge } from "@/utils/date";
 import {
   getGenderLabel,
@@ -16,19 +21,11 @@ import {
   getRecCardLabel,
 } from "@/utils/labels";
 
-import { uid } from "../../../uid";
-
 import CommentBlock from "./CommentBlock";
 import * as styles from "./index.css";
 import RestartAnalysis from "./RestartAnalysis";
+import ResultsSkeleton from "./ResultsSkeleton";
 import { SaveButton } from "./SaveButton";
-
-import type { Metadata } from "next";
-
-export const metadata: Metadata = {
-  title: "Análise",
-  description: "Description specific to this page",
-};
 
 type Chip = {
   icon: Icons;
@@ -36,13 +33,41 @@ type Chip = {
   value: string | number;
 };
 
-export default async function ResultsPage({
+export default function ResultsPage({
   params,
 }: {
   params: Promise<{ jobId: string }>;
 }) {
-  const { jobId } = await params;
-  const data = await getJobById(uid, jobId);
+  const { user } = useAuth();
+  const router = useRouter();
+  const [data, setData] = useState<JobDataWithId | null>(null);
+  const [loading, setLoading] = useState(true);
+  const { jobId } = use(params);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!user) return;
+
+      try {
+        const jobData = await getJobById(user.uid, jobId);
+        setData(jobData);
+      } catch (error) {
+        console.error("Error fetching job:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [user, jobId]);
+
+  if (!user) {
+    router.push("/login");
+  }
+
+  if (loading) {
+    return <ResultsSkeleton />;
+  }
 
   if (!data) {
     return <div>Resultado não encontrado.</div>; // TODO: change to 404 page
@@ -85,7 +110,7 @@ export default async function ResultsPage({
       <main className={main}>
         <TopBar title="Análise">
           <RestartAnalysis />
-          <SaveButton jobId={jobId} uid={uid} />
+          <SaveButton jobId={jobId} uid={user?.uid || ""} />
         </TopBar>
 
         <div className={pageContent}>

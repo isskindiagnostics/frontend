@@ -1,11 +1,10 @@
 "use client";
-
 import { Notification } from "isskinui";
 import { useState } from "react";
 
 import { main } from "@/app/global.css";
-import { uid } from "@/app/uid";
 import TopBar from "@/components/TopBar";
+import { useAuth } from "@/context/AuthContext";
 import { useShowToast } from "@/hooks/useShowToast";
 import { JobDataWithId } from "@/types/job";
 import { sortJobs, SortReports } from "@/utils/sortJobs";
@@ -25,6 +24,7 @@ export default function ReportsClient({
   jobs: JobDataWithId[];
   insurances: string[];
 }) {
+  const { user } = useAuth();
   const {
     jobs,
     hasMore,
@@ -33,12 +33,12 @@ export default function ReportsClient({
     setJobs,
     fetchJob,
     deleteById,
-  } = useJobs(initialJobs, uid);
+  } = useJobs(initialJobs, user?.uid || "");
   const [selectedInsurance, setSelectedInsurance] = useState<string | null>(
     null
   );
   const [selectedJob, setSelectedJob] = useState<string | null>(null);
-  const [showToast, setShowToast] = useShowToast();
+  const [errorMessage, setErrorMessage] = useShowToast();
 
   const [overviewData, setOverviewData] = useState<JobDataWithId | null>(null);
   const [overviewLoading, setOverviewLoading] = useState(false);
@@ -53,7 +53,9 @@ export default function ReportsClient({
       await deleteById(jobId);
       setJobs((prev) => prev.filter((job) => job.id !== jobId));
     } catch {
-      setShowToast(true);
+      setErrorMessage(
+        "Ocorreu um erro ao excluir. Por favor, tente mais tarde."
+      );
     }
   };
 
@@ -81,12 +83,7 @@ export default function ReportsClient({
 
   return (
     <main className={main}>
-      {showToast && (
-        <Notification
-          type="error"
-          label="Ocorreu um erro ao excluir. Por favor, tente mais tarde."
-        />
-      )}
+      {errorMessage && <Notification type="error" label={errorMessage} />}
 
       <TopBar title="Relatórios">
         <Search fetchJob={fetchJob} />

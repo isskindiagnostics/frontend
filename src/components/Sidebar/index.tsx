@@ -1,16 +1,16 @@
 "use client";
-
 import { ChartPie, Document, Logout, Money, Settings } from "isskinui";
 import { useRouter } from "next/navigation";
 
 import Logo from "@/assets/icons/Logo";
+import { useAuth } from "@/context/AuthContext";
 
 import {
   container,
   logoContainer,
   subsection,
   subline,
-  logout,
+  logoutButton,
 } from "./index.css";
 import SidebarItem from "./SidebarItem";
 
@@ -23,6 +23,7 @@ type SidebarProps = {
 
 const Sidebar = ({ currentPage, onClick }: SidebarProps) => {
   const router = useRouter();
+  const { logout } = useAuth();
 
   const handleClick = (page?: Pages) => {
     if (page) {
@@ -76,10 +77,17 @@ const Sidebar = ({ currentPage, onClick }: SidebarProps) => {
       </div>
 
       <SidebarItem
-        className={logout}
+        className={logoutButton}
         label="Sair"
         icon={<Logout width={22} height={22} />}
-        onClick={() => console.log("To implement")}
+        onClick={async () => {
+          try {
+            await logout();
+            router.push("/login");
+          } catch (error) {
+            console.error("Logout failed:", error);
+          }
+        }}
       />
     </div>
   );

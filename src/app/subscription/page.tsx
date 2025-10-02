@@ -1,14 +1,26 @@
-import { theme } from "isskinui";
+import Sidebar from "@/components/Sidebar";
+import TopBar from "@/components/TopBar";
+
+import { container } from "../global.css";
+
+import { main } from "./index.css";
+import SubscriptionClient from "./SubscriptionClient";
 
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Assinatura",
-  description: "Description specific to this page",
+  description: "",
 };
 
-export default function Signup() {
+export default function Subscription() {
   return (
-    <p style={{ fontFamily: theme.typography.fontFamilyBody }}>Assinatura</p>
+    <div className={container}>
+      <Sidebar currentPage="subscription" />
+      <main className={main}>
+        <TopBar title="Assinatura" />
+        <SubscriptionClient />
+      </main>
+    </div>
   );
 }
