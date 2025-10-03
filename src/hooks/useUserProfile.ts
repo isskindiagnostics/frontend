@@ -113,7 +113,7 @@ export const useUserProfile = () => {
         analysisCount: 0,
         analysisLimit: 10,
         pdfCount: 0,
-        pdfLimit: 5,
+        pdfLimit: -1,
       },
     };
 

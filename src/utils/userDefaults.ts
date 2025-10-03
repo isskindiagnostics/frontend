@@ -41,7 +41,7 @@ export const createDefaultSubscription = (): Subscription => ({
     analysisCount: 0,
     analysisLimit: 0,
     pdfCount: 0,
-    pdfLimit: 0,
+    pdfLimit: -1,
   },
   stripeData: {
     customerId: "",

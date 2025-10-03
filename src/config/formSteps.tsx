@@ -6,6 +6,7 @@ import PaymentPlan from "@/components/CompleteSignup/PaymentPlan";
 import PersonalInfo from "@/components/CompleteSignup/PersonalInfo";
 import ProfessionalInfo from "@/components/CompleteSignup/ProfessionalInfo";
 import WorkField from "@/components/CompleteSignup/WorkField";
+import { SUBSCRIPTION_PLANS } from "@/stripe/config";
 import {
   FormStep,
   PersonalInfoStepProps,
@@ -89,9 +90,18 @@ export const BASE_FORM_STEPS: FormStep[] = [
               subscriptionUpdate.startDate = Timestamp.now();
               subscriptionUpdate.usage = {
                 analysisCount: 0,
-                analysisLimit: 0,
+                analysisLimit: SUBSCRIPTION_PLANS.flex.analysisLimit,
                 pdfCount: 0,
-                pdfLimit: 0,
+                pdfLimit: SUBSCRIPTION_PLANS.flex.pdfLimit,
+              };
+            } else if (plan === "premium") {
+              subscriptionUpdate.status = "incomplete";
+              subscriptionUpdate.startDate = Timestamp.now();
+              subscriptionUpdate.usage = {
+                analysisCount: 0,
+                analysisLimit: SUBSCRIPTION_PLANS.premium.analysisLimit,
+                pdfCount: 0,
+                pdfLimit: SUBSCRIPTION_PLANS.premium.pdfLimit,
               };
             }
 
