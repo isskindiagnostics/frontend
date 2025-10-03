@@ -131,7 +131,7 @@ export type NewCardFormProps = {
   onCardExpiryChange: (event: StripeCardExpiryElementChangeEvent) => void;
   onCardCvcChange: (event: StripeCardCvcElementChangeEvent) => void;
   hasPaymentMethod: boolean;
-  onBackToSavedCard: () => void;
+  onBackToSavedCard?: () => void;
 };
 
 export type BillingAddressFormProps = {
