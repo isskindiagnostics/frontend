@@ -38,8 +38,9 @@ const PlanTab = () => {
         <div className={blocks}>
           <SubscriptionOverview href="/pricing" />
 
-          {status !== "canceled" ||
-            (subscriptionType !== "flex" && <NextBilling />)}
+          {subscriptionType === "premium" && status !== "canceled" && (
+            <NextBilling />
+          )}
         </div>
       </ContentBlock>
 
