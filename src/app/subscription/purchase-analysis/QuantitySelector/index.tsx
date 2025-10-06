@@ -3,7 +3,7 @@ import { Button, InputField } from "isskinui";
 import { formButtonContainer } from "@/components/CompleteSignup/index.css";
 import ContentBlock from "@/components/ContentBlock";
 import { formatPrice } from "@/components/PricingCard";
-import { SUBSCRIPTION_PLANS_SHORT } from "@/stripe/config";
+import { SUBSCRIPTION_PLANS } from "@/stripe/config";
 
 import {
   headingAction,
@@ -26,7 +26,7 @@ export default function QuantitySelector({
   onPurchase,
   hasPaymentMethod,
 }: QuantitySelectorProps) {
-  const flexPrice = SUBSCRIPTION_PLANS_SHORT.flex.price;
+  const flexPrice = SUBSCRIPTION_PLANS.flex.price;
 
   return (
     <ContentBlock className={quantityBlock}>

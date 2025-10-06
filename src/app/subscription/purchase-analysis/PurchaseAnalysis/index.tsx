@@ -9,7 +9,7 @@ import { formButtonContainer } from "@/components/CompleteSignup/index.css";
 import Sidebar from "@/components/Sidebar";
 import TopBar from "@/components/TopBar";
 import { useUserData } from "@/hooks/useUserData";
-import { SUBSCRIPTION_PLANS_SHORT } from "@/stripe/config";
+import { SUBSCRIPTION_PLANS } from "@/stripe/config";
 
 import BillingAddressForm from "../BillingAddressForm";
 import { useBillingAddress } from "../hooks/useBillingAddress";
@@ -58,14 +58,15 @@ export default function PurchaseAnalysisForm() {
 
   const hasPaymentMethod =
     userData?.subscription?.stripeData?.savedCards &&
-    userData.subscription.stripeData.savedCards[0].brand !== ""; // TODO IMPROVE THIS
+    (userData?.subscription?.stripeData?.savedCards.length > 1 ||
+      userData.subscription.stripeData.savedCards[0].brand !== ""); // TODO IMPROVE THIS
 
   const defaultCard = userData?.subscription?.stripeData?.savedCards?.find(
     (card) => card.isDefault
   );
 
   const cardHolder = userData?.userData.name;
-  const flexPrice = SUBSCRIPTION_PLANS_SHORT.flex.price;
+  const flexPrice = SUBSCRIPTION_PLANS.flex.price;
   const totalPrice = flexPrice * quantity;
 
   const handlePurchase = async () => {
