@@ -4,7 +4,7 @@ import { theme } from "isskinui";
 export const button = style({
   display: "flex",
   alignItems: "center",
-  width: 174,
+  width: 193,
   height: "min-content",
   padding: "12px 15px",
   gap: 13,

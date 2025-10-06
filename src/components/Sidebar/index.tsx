@@ -70,7 +70,7 @@ const Sidebar = ({ currentPage, onClick }: SidebarProps) => {
         />
         <SidebarItem
           label="Configurações"
-          icon={<Settings width={22} height={22} />}
+          icon={<Settings style={{ minWidth: 22 }} width={22} height={22} />}
           selected={currentPage === "settings"}
           onClick={() => currentPage !== "settings" && handleClick("settings")}
         />
