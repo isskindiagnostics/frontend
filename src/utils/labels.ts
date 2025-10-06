@@ -139,6 +139,7 @@ export function getInsuranceLabel(value: string): string {
     promed: "Promed",
     vivest: "Vivest",
     planserv: "Planserv",
+    sus: "SUS",
   };
 
   return insuranceMap[value] ?? value;

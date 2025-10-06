@@ -1,4 +1,3 @@
-
 export const insurances = [
   { label: "Amil", value: "amil" },
   { label: "Bradesco Saúde", value: "bradesco_saude" },
@@ -25,6 +24,7 @@ export const insurances = [
   { label: "Promed", value: "promed" },
   { label: "Vivest", value: "vivest" },
   { label: "Planserv", value: "planserv" },
+  { label: "SUS", value: "sus" },
 ];
 
 export const genders = [
