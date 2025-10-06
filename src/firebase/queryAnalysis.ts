@@ -45,12 +45,12 @@ export async function incrementAnalysisCount(uid: string): Promise<number> {
   if (!userSnap.exists()) return 0;
 
   const subscription = userSnap.data().subscription as Subscription;
-  const free = subscription.usage;
-  const currentCount = free?.analysisCount || 0;
+  const usage = subscription.usage;
+  const currentCount = usage?.analysisCount || 0;
   const newCount = currentCount + 1;
 
   await updateDoc(userRef, {
-    "subscription.usage.analysisCountt": newCount,
+    "subscription.usage.analysisCount": newCount,
   });
 
   return newCount;
