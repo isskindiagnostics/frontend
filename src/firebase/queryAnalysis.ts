@@ -50,7 +50,7 @@ export async function incrementAnalysisCount(uid: string): Promise<number> {
   const newCount = currentCount + 1;
 
   await updateDoc(userRef, {
-    "subscription.free.analysisCount": newCount,
+    "subscription.usage.analysisCountt": newCount,
   });
 
   return newCount;
