@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
 import { db } from "@/firebase/config";
-import { SUBSCRIPTION_PLANS_SHORT } from "@/stripe/config";
+import { SUBSCRIPTION_PLANS } from "@/stripe/config";
 import {
   SubscriptionUpdate,
   APIError,
@@ -62,7 +62,7 @@ export async function POST(
     });
 
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: SUBSCRIPTION_PLANS_SHORT.flex.price,
+      amount: SUBSCRIPTION_PLANS.flex.price,
       currency: "brl",
       customer: finalCustomerId,
       payment_method: paymentMethodId,

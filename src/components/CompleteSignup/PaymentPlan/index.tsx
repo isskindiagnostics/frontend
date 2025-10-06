@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { stepForm } from "@/app/signup/complete/index.css";
 import PricingCard from "@/components/PricingCard";
-import { SUBSCRIPTION_PLANS_SHORT, PlanType } from "@/stripe/config";
+import { SUBSCRIPTION_PLANS, PlanType } from "@/stripe/config";
 import { Subscription } from "@/types/subscription";
 
 import { cardsRow, formButtonContainer } from "../index.css";
@@ -44,7 +44,7 @@ export default function PaymentPlan({
   return (
     <form className={stepForm} onSubmit={handleSubmit}>
       <div className={cardsRow}>
-        {Object.entries(SUBSCRIPTION_PLANS_SHORT).map(([key, plan]) => (
+        {Object.entries(SUBSCRIPTION_PLANS).map(([key, plan]) => (
           <PricingCard
             key={key}
             subscription={plan.name}
