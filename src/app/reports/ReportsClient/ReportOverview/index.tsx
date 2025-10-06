@@ -6,7 +6,7 @@ import SkeletonCell from "@/components/SkeletonCell";
 import { useAuth } from "@/context/AuthContext";
 import { REPORT_ERROR_MESSAGES } from "@/firebase/constants";
 import {
-  canCreateReportPdf,
+  // canCreateReportPdf,
   incrementReportPdfCount,
 } from "@/firebase/queryReport";
 import { useShowToast } from "@/hooks/useShowToast";
@@ -44,12 +44,12 @@ const ReportOverview = ({
     try {
       const jobData = await fetchJob(jobId);
 
-      const allowed = await canCreateReportPdf(user?.uid || "");
+      // const allowed = await canCreateReportPdf(user?.uid || "");
 
-      if (!allowed) {
-        setErrorMessage(REPORT_ERROR_MESSAGES.limit);
-        return;
-      }
+      // if (!allowed) {
+      // setErrorMessage(REPORT_ERROR_MESSAGES.limit);
+      //   return;
+      // }
 
       if (jobData && userData) {
         setSuccessMessage("Gerando o relatório do paciente selecionado.");

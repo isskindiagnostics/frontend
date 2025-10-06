@@ -16,7 +16,7 @@ import { db } from "@/firebase/config";
 import { ANALYSIS_ERROR_MESSAGES } from "@/firebase/constants";
 import { saveAnalysisData } from "@/firebase/queryAnalysis";
 import {
-  canPerformAnalysis,
+  // canPerformAnalysis,
   incrementAnalysisCount,
 } from "@/firebase/queryAnalysis";
 import { useShowToast } from "@/hooks/useShowToast";
@@ -69,12 +69,12 @@ const AnalysisForm = () => {
     try {
       setLoading(true);
 
-      const allowed = await canPerformAnalysis(user?.uid || "");
-      if (!allowed) {
-        setLoading(false);
-        setErrorMessage(ANALYSIS_ERROR_MESSAGES.limit);
-        return;
-      }
+      // const allowed = await canPerformAnalysis(user?.uid || "");
+      // if (!allowed) {
+      //   setLoading(false);
+      // setErrorMessage(ANALYSIS_ERROR_MESSAGES.limit);
+      //   return;
+      // }
 
       const jobId = await startAnalysis(imageFile, user?.uid || "");
       setJobId(jobId);
