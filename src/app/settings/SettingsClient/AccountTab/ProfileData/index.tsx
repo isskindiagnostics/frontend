@@ -73,11 +73,6 @@ export default function ProfileData() {
     }
   };
 
-  const handleUploadError = (error: Error) => {
-    setErrorMessage("Falha ao carregar a imagem. Por favor, tente novamente.");
-    console.error("Upload failed:", error);
-  };
-
   const handleSave = async () => {
     if (!hasChanges) return;
 
@@ -199,7 +194,6 @@ export default function ProfileData() {
             defaultImage={userData?.userData?.profilePicture}
             width={94}
             onUploadComplete={handleUploadComplete}
-            onUploadError={handleUploadError}
           />
           <div className={titleAndDescription}>
             <h3>Perfil</h3>

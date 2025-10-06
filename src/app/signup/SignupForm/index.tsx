@@ -50,9 +50,9 @@ export default function SignupForm() {
           "A senha deve conter pelo menos uma letra maiúscula.";
       } else if (!/\d/.test(password)) {
         newErrors["password"] = "A senha deve conter pelo menos um número.";
-      } else if (!/[@$!%*?&]/.test(password)) {
+      } else if (!/[^a-zA-Z0-9]/.test(password)) {
         newErrors["password"] =
-          "A senha deve conter pelo menos um caractere especial (@$!%*?&).";
+          "A senha deve conter pelo menos um caractere especial.";
       }
     }
 

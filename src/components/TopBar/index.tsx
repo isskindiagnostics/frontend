@@ -7,7 +7,7 @@ import { useUserData } from "@/hooks/useUserData";
 
 import SkeletonCell from "../SkeletonCell";
 
-import { pageTitle, profileImg, topBar } from "./index.css";
+import { imageContainer, pageTitle, profileImg, topBar } from "./index.css";
 
 type TopBarProps = PropsWithChildren<
   HTMLAttributes<HTMLDivElement> & {
@@ -26,13 +26,14 @@ const TopBar = ({ title, className, children, ...props }: TopBarProps) => {
       {isLoading ? (
         <SkeletonCell width={34} height={34} style={{ borderRadius: "50%" }} />
       ) : (
-        <Image
-          className={profileImg}
-          src={userData?.userData.profilePicture || ProfileImg}
-          alt="Sua foto de perfil"
-          width={34}
-          height={34}
-        />
+        <div className={imageContainer}>
+          <Image
+            className={profileImg}
+            src={userData?.userData.profilePicture || ProfileImg}
+            alt="Sua foto de perfil"
+            fill
+          />
+        </div>
       )}
     </div>
   );
