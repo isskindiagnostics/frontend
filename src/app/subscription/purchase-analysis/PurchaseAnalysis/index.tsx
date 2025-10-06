@@ -170,7 +170,7 @@ export default function PurchaseAnalysisForm() {
                 disabled={
                   isProcessing || !isCardFormValid() || !isAddressFormValid()
                 }
-                variant="outlined"
+                variant="solid"
               >
                 Salvar cartão
               </Button>
