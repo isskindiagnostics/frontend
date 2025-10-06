@@ -6,7 +6,7 @@ export async function startAnalysis(
   formData.append("image", image);
   formData.append("userId", userId);
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/analyze`, {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/analyze`, {
     method: "POST",
     body: formData,
   });
