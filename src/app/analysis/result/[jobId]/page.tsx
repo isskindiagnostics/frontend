@@ -17,7 +17,7 @@ import {
   getGenderLabel,
   getSkinTypeLabel,
   getProbabilityLabel,
-  getDxLabel,
+  // getDxLabel,
   getRecCardLabel,
 } from "@/utils/labels";
 
@@ -157,7 +157,7 @@ export default function ResultsPage({
                   </p>
                 </div>
 
-                <div className={styles.dxWrapper}>
+                {/* <div className={styles.dxWrapper}>
                   <div className={styles.dxTypeLabel}>
                     <p>Tipo</p>
                     <div className={styles.betaBadge}>Beta</div>
@@ -165,7 +165,7 @@ export default function ResultsPage({
                   <p className={styles.dxValue}>
                     {getDxLabel(data.result.dx_prediction)}
                   </p>
-                </div>
+                </div> */}
               </div>
             </ContentBlock>
 
