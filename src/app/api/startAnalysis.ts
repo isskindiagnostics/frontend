@@ -7,7 +7,8 @@ export async function startAnalysis(
   formData.append("userId", userId);
 
   const res = await fetch(
-    "https://uncategorical-nicki-turbidimetrically.ngrok-free.dev/analyze", // TODO: CHANGE TO ENV VARIABLE
+    "http://localhost:3001/analyze",
+    // "https://uncategorical-nicki-turbidimetrically.ngrok-free.dev/analyze", // TODO: CHANGE TO ENV VARIABLE
     {
       method: "POST",
       body: formData,
