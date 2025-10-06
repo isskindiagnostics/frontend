@@ -13,6 +13,15 @@ export const pageTitle = style({
   marginRight: "auto",
 });
 
-export const profileImg = style({
+export const imageContainer = style({
+  width: 34,
+  height: 34,
+  position: "relative",
   borderRadius: "50%",
+  display: "block",
+  overflow: "hidden",
+});
+
+export const profileImg = style({
+  objectFit: "cover",
 });
