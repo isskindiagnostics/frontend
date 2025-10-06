@@ -17,7 +17,8 @@ const PaymentMethods = () => {
   );
   const hasPaymentMethod =
     userData?.subscription?.stripeData?.savedCards &&
-    userData.subscription.stripeData.savedCards[0].brand !== ""; // TODO IMPROVE THIS
+    (userData?.subscription?.stripeData?.savedCards.length > 1 ||
+      userData.subscription.stripeData.savedCards[0].brand !== ""); // TODO IMPROVE THIS
 
   const flag = (defaultCard?.brand as Flag) || "visa";
 
