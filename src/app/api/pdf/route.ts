@@ -13,15 +13,10 @@ type RequestBody = {
 
 export async function POST(req: NextRequest) {
   try {
-    const [
-      { default: handlebars },
-      { default: puppeteer },
-      { default: htmlTemplate },
-    ] = await Promise.all([
-      import("handlebars"),
-      import("puppeteer"),
-      import("@/templates/report.html?raw"),
-    ]);
+    const { default: handlebars } = await import("handlebars");
+    const { default: htmlTemplate } = await import(
+      "@/templates/report.html?raw"
+    );
 
     const template = handlebars.compile(htmlTemplate);
     const { user, jobData }: RequestBody = await req.json();
@@ -55,20 +50,32 @@ export async function POST(req: NextRequest) {
 
     const html = template(formattedData);
 
-    const browser = await puppeteer.launch({
-      headless: true,
-      args: ["--no-sandbox", "--disable-setuid-sandbox"],
+    // Use PDFShift API
+    const apiKey = process.env.PDFSHIFT_API_KEY;
+    if (!apiKey) {
+      throw new Error("PDFSHIFT_API_KEY is not configured");
+    }
+
+    const response = await fetch("https://api.pdfshift.io/v3/convert/pdf", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Basic ${Buffer.from(`api:${apiKey}`).toString("base64")}`,
+      },
+      body: JSON.stringify({
+        source: html,
+        landscape: false,
+        use_print: true,
+        format: "A4",
+      }),
     });
 
-    const page = await browser.newPage();
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`PDFShift error: ${errorText}`);
+    }
 
-    await page.setContent(html);
-    const pdfBuffer = await page.pdf({
-      format: "A4",
-      printBackground: true,
-    });
-
-    await browser.close();
+    const pdfBuffer = await response.arrayBuffer();
 
     return new Response(Buffer.from(pdfBuffer), {
       headers: {
