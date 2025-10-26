@@ -14,6 +14,7 @@ export const navContainer = style({
   borderRadius: 19,
   padding: 8,
   margin: "16px 0",
+  zIndex: 99,
 
   "@media": {
     "screen and (min-width: 500px)": {
