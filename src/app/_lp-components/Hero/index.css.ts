@@ -6,7 +6,7 @@ export const heroSection = style({
   background:
     "linear-gradient(111deg, #C6E6EB 0.12%, #FFF 49.04%, #E2EBFA 100%)",
   width: "100%",
-  height: "100vh",
+  height: "110vh",
   display: "flex",
   alignItems: "center",
   justifyContent: "center",
